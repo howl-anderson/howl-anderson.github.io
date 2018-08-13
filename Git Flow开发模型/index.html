@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="TL;DR Git Flow是一种得到广泛认可的模型，通过确定分支的实际用途（master/develop/feature等），达到团队共同认知认可全部开发过程效果。">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git Flow开发模型">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/Git Flow开发模型/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="TL;DR Git Flow是一种得到广泛认可的模型，通过确定分支的实际用途（master/develop/feature等），达到团队共同认知认可全部开发过程效果。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-13T11:08:02.482Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git Flow开发模型">
+<meta name="twitter:description" content="TL;DR Git Flow是一种得到广泛认可的模型，通过确定分支的实际用途（master/develop/feature等），达到团队共同认知认可全部开发过程效果。">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/Git Flow开发模型/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Git Flow开发模型 | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/Git Flow开发模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git Flow开发模型
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-08-13 12:38:08" itemprop="dateCreated datePublished" datetime="2017-08-13T12:38:08+08:00">2017-08-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-08-13 19:08:02" itemprop="dateModified" datetime="2018-08-13T19:08:02+08:00">2018-08-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/软件工程/" itemprop="url" rel="index"><span itemprop="name">软件工程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/Git Flow开发模型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="Git Flow开发模型/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>TL;DR</strong> Git Flow是一种得到广泛认可的模型，通过确定分支的实际用途（master/develop/feature等），达到团队共同认知认可全部开发过程效果。</p>
+<a id="more"></a>
+<h2 id="为什么需要Git开发规范（模型）"><a href="#为什么需要Git开发规范（模型）" class="headerlink" title="为什么需要Git开发规范（模型）"></a>为什么需要Git开发规范（模型）</h2><p>随着Git的普及，几乎所有的开发团队都在使用Git进行版本管理和团队协作。但是Git本身提供的功能很多，灵活性太大，每个人都可以有自己的使用方式和代码管理风格。</p>
+<h3 id="混乱的开发流程"><a href="#混乱的开发流程" class="headerlink" title="混乱的开发流程"></a>混乱的开发流程</h3><p>如果整个团队没有一个共同的Git使用共识，那么合作起来需要沟通和作出妥协，沟通不畅的情况下还可能导致的问题。</p>
+<p>轻则，分支名字千奇百怪：有的用日期，有的用功能名称，有的用Bug编号，有的用开发者自己的名字，甚至是混合体；本地分支和远程分支几十个，谁也不知道具体的分支是做什么的。</p>
+<p>严重的情况则比如：</p>
+<blockquote>
+<p>A向master提交了未经测试的下一个迭代或者版本才会上线的代码，并push到了服务器，这个时候线上代码出现问题需要紧急修复，B负责此事，他没有和A沟通，认为master上的代码就是线上代码，直接pull下来，修复了bug所在的代码片段，并将代码发布到了线上，这个时候A提交的未经测试的代码出现在了线上，同时由于未经过测试所以出现了很严重的Bug导致系统不可用。</p>
+</blockquote>
+<p>这种情况在团队人员水平参差不齐或者来自不同的小组，缺乏良好沟通和合作经验的情况下，很有可能会出现。</p>
+<h2 id="常见的Git规范"><a href="#常见的Git规范" class="headerlink" title="常见的Git规范"></a>常见的Git规范</h2><p>针对这种情况，这个团队需要一个全员都认可并知晓的Git代码管理规范，这种规范最好是经过长时间工程实践考验的，通用的，容易学习和灵活的。目前工程领域里有两个开发规范或者说开发模型符合这些特征：一个是开源项目比较通用的同时也是Github官方推荐的Pull Request的方式，另一个是今天我们将要重点说明的Git Flow模型。</p>
+<h2 id="Git-Flow简介"><a href="#Git-Flow简介" class="headerlink" title="Git Flow简介"></a>Git Flow简介</h2><p>Git Flow模型源自Vincent Driessen在2010年发布的一篇文章: <a href="http://nvie.com/posts/a-successful-git-branching-model/" target="_blank" rel="noopener">A successful Git branching model</a>, 这边文章得到了很多人的认同（比如阮一峰的<a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="noopener">Git分支管理策略</a>）并且在工业界得到了广泛的应用。</p>
+<h3 id="两个永久分支"><a href="#两个永久分支" class="headerlink" title="两个永久分支"></a>两个永久分支</h3><p>Git Flow 模型中有两个永久存在的分支：<code>master</code> 和 <code>develop</code></p>
+<h4 id="master分支"><a href="#master分支" class="headerlink" title="master分支"></a>master分支</h4><p>master分支上的代码<strong>永远</strong>代表着<strong>当前</strong>生产环境的代码状况，并且master分支<strong>只接受代码合并</strong>，不接受commit提交</p>
+<h4 id="develop分支"><a href="#develop分支" class="headerlink" title="develop分支"></a>develop分支</h4><p>develop分支的代码代表这<strong>下一个迭代</strong>将要发布的代码情况，没有确定下来将要在下一个迭代发布的代码不能合并在这个分支。devlop分支的代码和master分支同步或者领先master分支，绝对不会出现落后master分支的情况。</p>
+<h3 id="若干辅助分支"><a href="#若干辅助分支" class="headerlink" title="若干辅助分支"></a>若干辅助分支</h3><h4 id="feature分支"><a href="#feature分支" class="headerlink" title="feature分支"></a>feature分支</h4><p>业务的需求等都可以看作是产品的特性，feature分支就是正在开发的多个特性构成的集合，feature分支可以同时拥有多个，具备统一的命名规范（具体命名规范在下文中详述）。feature分支起源于develop分支，最终也将合并至develop分支，但也有例外：试验性的特性如果最终证明是失败的，将被删除而不合并入develop。每一个feature代表着一个特性，这些特性只在开发完毕准备下个迭代发布时合并入develop分支，不在下一个迭代发布的特性不能合并到develop分支。</p>
+<h4 id="hotfix分支"><a href="#hotfix分支" class="headerlink" title="hotfix分支"></a>hotfix分支</h4><p>线上代码出现严重Bug需要紧急修复时使用该分支。hotfix分支起源于master分支（也就是线上代码），开发完成后合并至master分支同时合并到develop分支以确保下一个版本的代码也包含这个hotfix补丁。</p>
+<h4 id="release分支"><a href="#release分支" class="headerlink" title="release分支"></a>release分支</h4><p>当develop分支代码测试完毕，准备发布时，将从develop分支发起release分支，进入release阶段的代码将不允许新特性的添加（也就是不允许feature分支合并入develop分支或者release分支），又称特性冻结（feature freeze）。release分支将进行最终最严格的测试。release分支接受为了修复bug而产生的提交。release分支持续变动，直至开发工作验收通过，这时release分支将会打上版本标签（tag）合并至master分支同时合并至devlop分支以确保develop分支是master分支的直接后继。</p>
+<h4 id="bugfix分支"><a href="#bugfix分支" class="headerlink" title="bugfix分支"></a>bugfix分支</h4><p>bugfix分支和hotfix分支目的类似，但bug紧急程度不需要立即修复，而是留到下一个版本发布时修正。和hotfix不同的是bugfix起源于develop分支也最终合并于develop分支，这一点和feature分支非常相似。</p>
+<h4 id="support分支"><a href="#support分支" class="headerlink" title="support分支"></a>support分支</h4><p>如果项目有老版本的代码因为各种原因需要维护时，会需要support分支来管理这些过时但是依旧需要维护的代码。</p>
+<h4 id="special分支"><a href="#special分支" class="headerlink" title="special分支"></a>special分支</h4><p>对应于软件的各种特别版本：节日特别版（圣诞等），周年特别版等</p>
+<h2 id="Git-Flow-AVH-介绍"><a href="#Git-Flow-AVH-介绍" class="headerlink" title="Git Flow AVH 介绍"></a>Git Flow AVH 介绍</h2><p>除了这些标准规范，作者还提供了Git的插件帮助开发者更快和更好的处理具体的细节，我们现在介绍的是比较流行的Git Flow AVH版本。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>这里使用Linux下安装为例子，更加详细和更多平台的安装指南请查阅官方维基<a href="https://github.com/petervanderdoes/gitflow-avh/wiki" target="_blank" rel="noopener">git-flow AVH Edition</a></p>
+<p>安装开发版本:</p>
+<pre><code>wget --no-check-certificate -q  https://raw.githubusercontent.com/petervanderdoes/gitflow-avh/develop/contrib/gitflow-installer.sh &amp;amp;&amp;amp; sudo bash gitflow-installer.sh install develop; rm gitflow-installer.sh
+`&lt;/pre&gt;
+
+安装稳定版本:
+
+&lt;pre&gt;`wget --no-check-certificate -q  https://raw.githubusercontent.com/petervanderdoes/gitflow-avh/develop/contrib/gitflow-installer.sh &amp;amp;&amp;amp; sudo bash gitflow-installer.sh install stable; rm gitflow-installer.sh
+</code></pre><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><p>Git flow 通过让你回答一些分支命名规则等信息来初始化。<br>大体问题如下：</p>
+<ul>
+<li>默认的生产发布分支（production releases）的名字是什么【默认是master】</li>
+<li>默认的develop（”next release” development）分支的名字是什么【默认是develop】</li>
+<li>默认的feature分支的前缀是什么【默认是feature/】</li>
+<li>默认的bugfix分支的前缀是什么【默认是bugfix/】</li>
+<li>默认的release分支的前缀是什么【默认是release/】</li>
+<li>默认的hotfix分支的前缀是什么【默认是hotfix/】</li>
+<li>默认是support分支的前缀是什么【默认是support/】</li>
+<li>默认的版本号的前缀是什么【默认是是空】</li>
+<li>Git flow的hooks和filters的路径 [默认是git项目中的.git/hooks目录]</li>
+</ul>
+<p>通过这些问题，Git flow获取了相关的配置设定，初始化完成</p>
+<h3 id="通用模式"><a href="#通用模式" class="headerlink" title="通用模式"></a>通用模式</h3><p>Git flow的命令存在一个通用的模式，亦即 <code>git flow MODE ACTION NAME [BASE]</code>, 下面将一一介绍：</p>
+<h4 id="MODE"><a href="#MODE" class="headerlink" title="MODE"></a>MODE</h4><p>MODE亦即模式，表示你想要使用的git flow的功能，功能负责映射命令到分支和相应的动作，常见模式有</p>
+<ul>
+<li>feature</li>
+<li>bugfix</li>
+<li>hotfix</li>
+<li>release</li>
+</ul>
+<h4 id="ACTION"><a href="#ACTION" class="headerlink" title="ACTION"></a>ACTION</h4><p>ACTION亦即动作，表示你想要在这个模式下执行的动作，常见的动作模式有</p>
+<ul>
+<li>start</li>
+<li>finish</li>
+</ul>
+<h4 id="NAME"><a href="#NAME" class="headerlink" title="NAME"></a>NAME</h4><p>NAME亦即名字，表示你要完成的对象的名字，这个部分完全由你自己定义，有下面几个建议</p>
+<ul>
+<li>feature / bugfix 模式下使用英文描述命名，因为这个可以方便的了解这些分支的用途</li>
+<li>hotfix / release 模式使用版本号命名</li>
+</ul>
+<h4 id="BASE"><a href="#BASE" class="headerlink" title="[BASE]"></a>[BASE]</h4><p>按照传统惯例，[]内包裹的部分是可选的，这也不例外，base仅在start动作才有，finish动作并无此参数，base表示的是你想要操作的对象不是以默认的分支作为起点，而是以base参数指定的commit id作为起点</p>
+<h3 id="使用范例"><a href="#使用范例" class="headerlink" title="使用范例"></a>使用范例</h3><h4 id="开始新的feature"><a href="#开始新的feature" class="headerlink" title="开始新的feature"></a>开始新的feature</h4><p>假设你想要开始一个新的feature，这个feature对应产品需求的“增加回复功能“，你可以使用命令如：<code>git flow feature start add_replay_function</code>, 该命令将会执行如下动作：</p>
+<ul>
+<li>基于develop分支（或者你在初始化时指定的develop对应的分支）创建 ‘feature/add_replay_function’分支（如果你在初始化时改变了默认的feature/的分支前缀，这里也会发生相应的变动）</li>
+<li>切换到刚刚新建的分支</li>
+</ul>
+<p>在命令中<code>feature</code>是MODE，<code>start</code>是ACTION，<code>add_replay_function</code>是NAME</p>
+<h4 id="完成新的feature"><a href="#完成新的feature" class="headerlink" title="完成新的feature"></a>完成新的feature</h4><p>当你完成一个feature的开发时，你可以使用命令：<code>git flow feature finish add_replay_function</code>，该命令将会执行如下操作：</p>
+<ul>
+<li>将分支’feature/add_replay_function’（名字可能有所不同，见”开始新的feature”部分，下同）合并到develop分支</li>
+<li>将本地的’feature/add_replay_function’分支删除</li>
+<li>切换到develop分支</li>
+</ul>
+<p>在命令中<code>feature</code>是MODE，<code>finish</code>是ACTION，<code>add_replay_function</code>是NAME</p>
+<h4 id="开始release"><a href="#开始release" class="headerlink" title="开始release"></a>开始release</h4><p>当一切准备就绪，准备开始发布新版1.0的时候，你可以使用命令如：<code>git flow release start 1.0</code>, 该命令将会执行如下动作：</p>
+<ul>
+<li>基于 develop 分支创建 release/1.0 分支</li>
+<li>切换至 release/1.0 分支</li>
+</ul>
+<p>在命令中<code>release</code>是MODE，<code>start</code>是ACTION，<code>1.0</code>是NAME，注意这里的名字实际时版本号，这里推荐使用版本号</p>
+<h4 id="完成release"><a href="#完成release" class="headerlink" title="完成release"></a>完成release</h4><p>当发布完成之后，使用命令：<code>git flow release finish 1.0</code>, 该命令将会执行如下动作：</p>
+<ul>
+<li>合并 release/1.0 到 master</li>
+<li>master分支被打上tag</li>
+<li>合并 release/1.0 到 develop</li>
+<li>删除本地的 release/1.0 分支</li>
+<li>切换至 develop 分支</li>
+</ul>
+<p>中间可能会要求你填写的信息：</p>
+<ul>
+<li>要求你填写 release/1.0 合并到 master 的 merge message，有默认值，可以直接使用默认值</li>
+<li>要求你填写 tag 信息，这次提交将会被打上tag，没有默认值，建议填写本次发布的内容，改变等信息</li>
+<li>可能会让你填写 release/1.0 合并到 develop 的 merge message，有默认值，可以直接使用默认值</li>
+</ul>
+<p>通过以上的例子，你应该已经理解git flow的工作模式，剩下的命令你都可以举一反三，灵活应用，更多信息请查看官方文档。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/时间数据库Whisper的实现简介/" rel="next" title="时间数据库Whisper的实现简介">
+                <i class="fa fa-chevron-left"></i> 时间数据库Whisper的实现简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Python context manager 上下文管理器/" rel="prev" title="Python context manager 上下文管理器">
+                Python context manager 上下文管理器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要Git开发规范（模型）"><span class="nav-number">1.</span> <span class="nav-text">为什么需要Git开发规范（模型）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#混乱的开发流程"><span class="nav-number">1.1.</span> <span class="nav-text">混乱的开发流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见的Git规范"><span class="nav-number">2.</span> <span class="nav-text">常见的Git规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-Flow简介"><span class="nav-number">3.</span> <span class="nav-text">Git Flow简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两个永久分支"><span class="nav-number">3.1.</span> <span class="nav-text">两个永久分支</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#master分支"><span class="nav-number">3.1.1.</span> <span class="nav-text">master分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#develop分支"><span class="nav-number">3.1.2.</span> <span class="nav-text">develop分支</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#若干辅助分支"><span class="nav-number">3.2.</span> <span class="nav-text">若干辅助分支</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#feature分支"><span class="nav-number">3.2.1.</span> <span class="nav-text">feature分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hotfix分支"><span class="nav-number">3.2.2.</span> <span class="nav-text">hotfix分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#release分支"><span class="nav-number">3.2.3.</span> <span class="nav-text">release分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bugfix分支"><span class="nav-number">3.2.4.</span> <span class="nav-text">bugfix分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#support分支"><span class="nav-number">3.2.5.</span> <span class="nav-text">support分支</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#special分支"><span class="nav-number">3.2.6.</span> <span class="nav-text">special分支</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-Flow-AVH-介绍"><span class="nav-number">4.</span> <span class="nav-text">Git Flow AVH 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">4.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化"><span class="nav-number">4.2.</span> <span class="nav-text">初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用模式"><span class="nav-number">4.3.</span> <span class="nav-text">通用模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MODE"><span class="nav-number">4.3.1.</span> <span class="nav-text">MODE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ACTION"><span class="nav-number">4.3.2.</span> <span class="nav-text">ACTION</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NAME"><span class="nav-number">4.3.3.</span> <span class="nav-text">NAME</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BASE"><span class="nav-number">4.3.4.</span> <span class="nav-text">[BASE]</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用范例"><span class="nav-number">4.4.</span> <span class="nav-text">使用范例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#开始新的feature"><span class="nav-number">4.4.1.</span> <span class="nav-text">开始新的feature</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完成新的feature"><span class="nav-number">4.4.2.</span> <span class="nav-text">完成新的feature</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开始release"><span class="nav-number">4.4.3.</span> <span class="nav-text">开始release</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完成release"><span class="nav-number">4.4.4.</span> <span class="nav-text">完成release</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/Git Flow开发模型/';
+        this.page.identifier = 'Git Flow开发模型/';
+        this.page.title = 'Git Flow开发模型';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

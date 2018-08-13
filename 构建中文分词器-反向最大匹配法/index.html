@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的右边到左边（反向）依次寻找最大匹配。">
+<meta name="keywords" content="中文分词器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="构建中文分词器-反向最大匹配法">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/构建中文分词器-反向最大匹配法/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的右边到左边（反向）依次寻找最大匹配。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-13T13:59:54.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="构建中文分词器-反向最大匹配法">
+<meta name="twitter:description" content="最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的右边到左边（反向）依次寻找最大匹配。">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/构建中文分词器-反向最大匹配法/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>构建中文分词器-反向最大匹配法 | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/构建中文分词器-反向最大匹配法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">构建中文分词器-反向最大匹配法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-08-13 21:47:42 / Modified: 21:59:54" itemprop="dateCreated datePublished" datetime="2018-08-13T21:47:42+08:00">2018-08-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/构建中文分词器-反向最大匹配法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="构建中文分词器-反向最大匹配法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的右边到左边（反向）依次寻找最大匹配。<br><a id="more"></a></p>
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>从解释的角度，可以理解为：判断待分词字符串的后 N 个字符构成的字符串是否在字典中，如果在，则匹配结束。如果没有匹配成功，则依次缩减 N 直到匹配成功。</p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>以 <code>中国的首都是北京</code> 为例, 假设 N 初始化为 4：</p>
+<ol>
+<li>匹配 <code>都是北京</code>， 字典中无此词语，匹配失败，缩减 N 为 3</li>
+<li>匹配 <code>是北京</code>， 字典中无此词语，匹配失败，缩减 N 为 2</li>
+<li>匹配 <code>北京</code>， 字典中有此词语，匹配成功，结束匹配</li>
+</ol>
+<p>继续匹配剩余未分词字符串 <code>中国的首都是</code>，直至字符串全部被分词。</p>
+<h1 id="局限"><a href="#局限" class="headerlink" title="局限"></a>局限</h1><p>因为只考虑了能否构成词汇，完全没有考虑上下文，所以部分情况下会出现问题。<br>例如 <code>中国的首都是北京</code> 则会被分成 <code>中国</code> / <code>的</code> / <code>首</code> / <code>都是</code> / <code>北京</code></p>
+<h1 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h1><p>本算法耗时最大的部分在于扫描词典，因此可以通过特定的数据结构优化加速字典查找过程：</p>
+<ol>
+<li>按照长度分别构建多个字典，能够一定程度的加速字典扫描的速度</li>
+<li>使用 Trie-Tree 能够极大的加速查找过程</li>
+</ol>
+<h1 id="关联算法"><a href="#关联算法" class="headerlink" title="关联算法"></a>关联算法</h1><p>和 <code>最大正向匹配法</code> 思想完全一样，用于解决 <code>最大正向匹配法</code> 的某些问题。比如：<code>我们在野生动物园玩</code> 在 <code>最大正向匹配法</code> 中无法正确分词，但 <code>反向最大匹配法</code> 能够正确分词。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/中文分词器/" rel="tag"># 中文分词器</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/构建中文分词器-正向最大匹配法/" rel="next" title="构建中文分词器 - 正向最大匹配法">
+                <i class="fa fa-chevron-left"></i> 构建中文分词器 - 正向最大匹配法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解释"><span class="nav-number">1.</span> <span class="nav-text">解释</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#局限"><span class="nav-number">3.</span> <span class="nav-text">局限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化方案"><span class="nav-number">4.</span> <span class="nav-text">优化方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关联算法"><span class="nav-number">5.</span> <span class="nav-text">关联算法</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/构建中文分词器-反向最大匹配法/';
+        this.page.identifier = '构建中文分词器-反向最大匹配法/';
+        this.page.title = '构建中文分词器-反向最大匹配法';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

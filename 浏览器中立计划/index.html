@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="TL;DR 作为Firefox曾经的老用户，很早就使用了Firefox。后来因为Google Chrome浏览器的崛起，切换到了Chrome平台(没错，Chrome不仅仅是一个浏览器，还是一个平台)。但最近Firefox 57发布，做了诸多改进，速度比Chrome更快，作为Firefox的曾经的拥趸，我想切换成Firefox + Chrome的模式，但是很快我发现这个切换成本比想象中的大，因为Ch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器中立计划">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/浏览器中立计划/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="TL;DR 作为Firefox曾经的老用户，很早就使用了Firefox。后来因为Google Chrome浏览器的崛起，切换到了Chrome平台(没错，Chrome不仅仅是一个浏览器，还是一个平台)。但最近Firefox 57发布，做了诸多改进，速度比Chrome更快，作为Firefox的曾经的拥趸，我想切换成Firefox + Chrome的模式，但是很快我发现这个切换成本比想象中的大，因为Ch">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.xiaoquankong.ai/浏览器中立计划/firefox_57.png">
+<meta property="og:image" content="https://blog.xiaoquankong.ai/浏览器中立计划/xmarks.png">
+<meta property="og:image" content="https://blog.xiaoquankong.ai/浏览器中立计划/LastPass-Logo-Color.png">
+<meta property="og:updated_time" content="2018-08-13T11:08:02.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浏览器中立计划">
+<meta name="twitter:description" content="TL;DR 作为Firefox曾经的老用户，很早就使用了Firefox。后来因为Google Chrome浏览器的崛起，切换到了Chrome平台(没错，Chrome不仅仅是一个浏览器，还是一个平台)。但最近Firefox 57发布，做了诸多改进，速度比Chrome更快，作为Firefox的曾经的拥趸，我想切换成Firefox + Chrome的模式，但是很快我发现这个切换成本比想象中的大，因为Ch">
+<meta name="twitter:image" content="https://blog.xiaoquankong.ai/浏览器中立计划/firefox_57.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/浏览器中立计划/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>浏览器中立计划 | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/浏览器中立计划/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浏览器中立计划
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-11-18 20:39:00" itemprop="dateCreated datePublished" datetime="2017-11-18T20:39:00+08:00">2017-11-18</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-08-13 19:08:02" itemprop="dateModified" datetime="2018-08-13T19:08:02+08:00">2018-08-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/浏览器中立计划/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="浏览器中立计划/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>TL;DR</strong> 作为Firefox曾经的老用户，很早就使用了Firefox。后来因为Google Chrome浏览器的崛起，切换到了Chrome平台(没错，Chrome不仅仅是一个浏览器，还是一个平台)。但最近Firefox 57发布，做了诸多改进，速度比Chrome更快，作为Firefox的曾经的拥趸，我想切换成Firefox + Chrome的模式，但是很快我发现这个切换成本比想象中的大，因为Chrome浏览器上面的书签、浏览记录和网站密码很难同步到Firefox，反之亦然。于是我开始了浏览器中立计划: 如何做到自己独立于浏览器，不受被特定浏览器的特性捆绑。<br><a id="more"></a></p>
+<h1 id="Firefox-57"><a href="#Firefox-57" class="headerlink" title="Firefox 57"></a>Firefox 57</h1><p><img src="firefox_57.png" alt="Firefox 57"></p>
+<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>2017年11月14日，Firefox 57正式对外发布，官方的介绍(地址在<a href="https://blog.mozilla.org/blog/2017/11/14/introducing-firefox-quantum/" target="_blank" rel="noopener">这里</a>)是这样说的：</p>
+<blockquote>
+<p>It’s fast. Really fast. Firefox Quantum is over twice as fast as Firefox from 6 months ago, built on a completely overhauled core engine with brand new technology stolen from our advanced research group, and graced with a beautiful new look designed to get out of the way and let you do what you do best: surf a ton of pages, open a zillion tabs, all guilt free because Firefox Quantum uses less memory than the competition. computer will thank you.  🙂</p>
+</blockquote>
+<p>纵览Firefox 57的发布说明，可以总结成：Firefox 57使用了全新技术的CSS渲染引擎，使用了现代CPU的多核和低功耗的特性，速度更快。更改了UI，让界面更好看。同时更改了扩展的机制，废弃了除 WebExtensions 以外的所有扩展机制。</p>
+<h2 id="使用评价"><a href="#使用评价" class="headerlink" title="使用评价"></a>使用评价</h2><p>总的来说，Firefox感官上确实非常快。据官方自己的说法：开非常多的tab也不会卡，这个在Chrome里面很明显，使用过Chrome的小伙伴都知道，Chrome的tab开太多后，浏览器和系统都非常卡。但是Firefox的扩展机制缩小后，很多插件都不能用了，这个比较麻烦。</p>
+<h1 id="浏览器中立计划"><a href="#浏览器中立计划" class="headerlink" title="浏览器中立计划"></a>浏览器中立计划</h1><p>这里我想切换成Firefox + Chrome的模式，但我发现切换成本很大：Chrome的书签、浏览记录和网站密码很难同步到Firefox，反之亦然。于是我开始了浏览器中立计划: 让这些信息脱离浏览器的绑定。</p>
+<h2 id="书签同步"><a href="#书签同步" class="headerlink" title="书签同步"></a>书签同步</h2><p>本来以为Firefox下会有谷歌书签的插件的，后来发现完全没有，我想这应该是因为Google没有开放API的问题吧（Google没有以前那么开放了，sad）。经过调研以后，发现有个Xmarks的服务可以提供跨浏览器的第三方书签服务。Xmarks现在已经是Lastpass旗下的产品了。唯一要注意的是Chrome浏览器版的Xmarks在自动同步上面和Chrome自带的自动同步有些冲突，可能会导致账号不停的退出然后要求登陆，解决方案就是按照Xmarks的提示：先关掉Xmarks的自动同步，再登陆账号。</p>
+<p><img src="xmarks.png" alt="xmarks"></p>
+<h2 id="密码同步"><a href="#密码同步" class="headerlink" title="密码同步"></a>密码同步</h2><p>浏览器给我带来的最大的便利就是可以记住各种各样网站的密码，现在的网站那么多，密码管理起来很麻烦。幸运的是有不少不错的密码类管理服务：<a href="https://lastpass.com/" target="_blank" rel="noopener">Lastpass</a>, <a href="https://1password.com/" target="_blank" rel="noopener">1Password</a>, or <a href="https://keepersecurity.com/" target="_blank" rel="noopener">Keeper</a> （这个名单是Github在保存Two-factor recovery codes时推荐的列表）。最终我选择了比较常见的Lastpass，当然也是因为Xmarks也是Lastpass旗下的产品，本来以为可以使用一个账号登陆呢，结果不行，很失望。使用这类密码类管理服务的好处就是它不仅能够保存网站密码，还能保存SSH key等纯文本的密钥，还能用来保存二进制的文件。</p>
+<p><img src="LastPass-Logo-Color.png" alt="LastPass"></p>
+<h2 id="浏览记录同步"><a href="#浏览记录同步" class="headerlink" title="浏览记录同步"></a>浏览记录同步</h2><p>暂时无解，只能使用各自的账号体系同步：Chrome使用谷歌账号，Firefox使用Firefox的账号体系。幸运的是浏览记录同步不是那么重要的功能，当然也许以后有大神或者公司可以开发类似的服务，那么整个浏览器中立计划也就完备了。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Python-bisect模块的妙用/" rel="next" title="Python bisect模块的妙用">
+                <i class="fa fa-chevron-left"></i> Python bisect模块的妙用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Netgear-WNDR4300固件刷openwrt-LEDE/" rel="prev" title="Netgear WNDR4300固件刷openwrt/LEDE">
+                Netgear WNDR4300固件刷openwrt/LEDE <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Firefox-57"><span class="nav-number">1.</span> <span class="nav-text">Firefox 57</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#发布"><span class="nav-number">1.1.</span> <span class="nav-text">发布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用评价"><span class="nav-number">1.2.</span> <span class="nav-text">使用评价</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#浏览器中立计划"><span class="nav-number">2.</span> <span class="nav-text">浏览器中立计划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#书签同步"><span class="nav-number">2.1.</span> <span class="nav-text">书签同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#密码同步"><span class="nav-number">2.2.</span> <span class="nav-text">密码同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览记录同步"><span class="nav-number">2.3.</span> <span class="nav-text">浏览记录同步</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/浏览器中立计划/';
+        this.page.identifier = '浏览器中立计划/';
+        this.page.title = '浏览器中立计划';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="TL;DR 本文章收集了一些机器学习相关的理论方面的入门级的资料，适合初学者作为入门课程101。">
+<meta name="keywords" content="机器学习,资料汇总">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习相关的理论资料汇总">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/机器学习相关的理论资料汇总/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="TL;DR 本文章收集了一些机器学习相关的理论方面的入门级的资料，适合初学者作为入门课程101。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-13T11:08:02.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习相关的理论资料汇总">
+<meta name="twitter:description" content="TL;DR 本文章收集了一些机器学习相关的理论方面的入门级的资料，适合初学者作为入门课程101。">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/机器学习相关的理论资料汇总/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>机器学习相关的理论资料汇总 | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/机器学习相关的理论资料汇总/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">机器学习相关的理论资料汇总
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2017-11-13 11:53:40" itemprop="dateCreated datePublished" datetime="2017-11-13T11:53:40+08:00">2017-11-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-08-13 19:08:02" itemprop="dateModified" datetime="2018-08-13T19:08:02+08:00">2018-08-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/机器学习/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/机器学习相关的理论资料汇总/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="机器学习相关的理论资料汇总/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>TL;DR</strong> 本文章收集了一些机器学习相关的理论方面的入门级的资料，适合初学者作为入门课程101。<br><a id="more"></a></p>
+<h1 id="数学基础"><a href="#数学基础" class="headerlink" title="数学基础"></a>数学基础</h1><h2 id="线性代数"><a href="#线性代数" class="headerlink" title="线性代数"></a>线性代数</h2><ul>
+<li><a href="http://cs231n.stanford.edu/vecDerivs.pdf" target="_blank" rel="noopener">Vector, Matrix, and Tensor Derivatives</a> <strong>CS321n</strong> 介绍矩阵和向量导数的算法</li>
+<li><a href="https://web.stanford.edu/~jduchi/projects/matrix_prop.pdf" target="_blank" rel="noopener">Properties of the Trace and Matrix Derivatives</a></li>
+<li><a href="https://atmos.washington.edu/~dennis/MatrixCalculus.pdf" target="_blank" rel="noopener">Matrix Differentiation ( and some other stuff )</a> <strong>排版非常好看</strong></li>
+</ul>
+<h1 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h1><h2 id="Backpropagation"><a href="#Backpropagation" class="headerlink" title="Backpropagation"></a>Backpropagation</h2><ul>
+<li><a href="http://colah.github.io/posts/2015-08-Backprop/" target="_blank" rel="noopener">Calculus on Computational Graphs: Backpropagation</a> <strong>推荐入门</strong> 从计算图的角度介绍BP算法</li>
+</ul>
+<h2 id="LSTM"><a href="#LSTM" class="headerlink" title="LSTM"></a>LSTM</h2><h3 id="博文"><a href="#博文" class="headerlink" title="博文"></a>博文</h3><ul>
+<li><a href="http://blog.echen.me/2017/05/30/exploring-lstms/" target="_blank" rel="noopener">Exploring LSTMs</a> <strong>入门推荐</strong> 非常详细的用易于理解的方式介绍了LSTM中各种门，后面更大篇幅探索了一下LSTM在各种简单问题上的内部参数情况，但后面的部分，我暂时没看懂:(</li>
+<li><a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank" rel="noopener">Understanding LSTM Networks</a> <strong>Stanford CS224n 推荐阅读</strong> 非常细致的介绍了LSTM中的各种门，建议先阅读上一篇文章再看这个文章，在理解为什么需要各种门的基础上再学习各种门是怎么实现的会更加清晰来龙去脉。</li>
+</ul>
+<h3 id="MOOC"><a href="#MOOC" class="headerlink" title="MOOC"></a>MOOC</h3><p><strong>TODO</strong></p>
+<h3 id="大学课程"><a href="#大学课程" class="headerlink" title="大学课程"></a>大学课程</h3><ul>
+<li><a href="http://web.stanford.edu/class/cs224n/" target="_blank" rel="noopener">Stanford CS224n: Natural Language Processing with Deep Learning</a> 没啥好介绍的，来自Stanford NLP group的，质量什么的没得说。</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/资料汇总/" rel="tag"># 资料汇总</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/神经网络里的激活函数/" rel="next" title="神经网络里的激活函数">
+                <i class="fa fa-chevron-left"></i> 神经网络里的激活函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/理解LSTM的工作原理/" rel="prev" title="理解LSTM的工作原理">
+                理解LSTM的工作原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数学基础"><span class="nav-number">1.</span> <span class="nav-text">数学基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#线性代数"><span class="nav-number">1.1.</span> <span class="nav-text">线性代数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#神经网络"><span class="nav-number">2.</span> <span class="nav-text">神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Backpropagation"><span class="nav-number">2.1.</span> <span class="nav-text">Backpropagation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LSTM"><span class="nav-number">2.2.</span> <span class="nav-text">LSTM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#博文"><span class="nav-number">2.2.1.</span> <span class="nav-text">博文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MOOC"><span class="nav-number">2.2.2.</span> <span class="nav-text">MOOC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#大学课程"><span class="nav-number">2.2.3.</span> <span class="nav-text">大学课程</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/机器学习相关的理论资料汇总/';
+        this.page.identifier = '机器学习相关的理论资料汇总/';
+        this.page.title = '机器学习相关的理论资料汇总';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

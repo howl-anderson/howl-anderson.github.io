@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="TL;DR 本文从代码级别详细介绍了 Whisper 的实现和一些其中用到的编程技巧">
+<meta name="keywords" content="Python,时间序列数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="时间数据库Whisper的实现简介">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/时间数据库Whisper的实现简介/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="TL;DR 本文从代码级别详细介绍了 Whisper 的实现和一些其中用到的编程技巧">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-13T11:08:02.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="时间数据库Whisper的实现简介">
+<meta name="twitter:description" content="TL;DR 本文从代码级别详细介绍了 Whisper 的实现和一些其中用到的编程技巧">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/时间数据库Whisper的实现简介/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>时间数据库Whisper的实现简介 | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/时间数据库Whisper的实现简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">时间数据库Whisper的实现简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2016-12-05 11:56:37" itemprop="dateCreated datePublished" datetime="2016-12-05T11:56:37+08:00">2016-12-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-08-13 19:08:02" itemprop="dateModified" datetime="2018-08-13T19:08:02+08:00">2018-08-13</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/时间序列数据库/" itemprop="url" rel="index"><span itemprop="name">时间序列数据库</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/时间数据库Whisper的实现简介/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="时间数据库Whisper的实现简介/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>TL;DR</strong> 本文从代码级别详细介绍了 Whisper 的实现和一些其中用到的编程技巧</p>
+<a id="more"></a>
+<h2 id="什么是Whisper"><a href="#什么是Whisper" class="headerlink" title="什么是Whisper"></a>什么是Whisper</h2><p>很多人熟悉著名的指标监控系统：<a href="http://graphite.readthedocs.org/" target="_blank" rel="noopener">Graphite</a></p>
+<p>这里有一些来自Graphite官方的介绍，翻译成中文后大致是：</p>
+<blockquote>
+<p>Graphite是一个运行在廉价硬件上的企业级的监控工具</p>
+<p>  Graphite做两件事：</p>
+<ul>
+<li>存储数值化的时间序列数据</li>
+<li>按需渲染数据图形</li>
+</ul>
+</blockquote>
+<p>Whisper是Graphite核心组件之一。负责“存储数值化的时间序列数据”的两个部分：一个是负责接收网络数据的Carbon组件，另一个就是负责存储到磁盘的Whisper组件。</p>
+<p>正式的说，Whisper是为Graphite项目定制的时间序列数据库（或者软件库），其本身也是可以单独作为或者集成为通用的时间数据库。</p>
+<p><strong>重要</strong>:</p>
+<p>以下代码／结构分析基于<code>whisper==0.9.10</code>，不同的版本可能会存在变动。</p>
+<h2 id="数据库结构总揽"><a href="#数据库结构总揽" class="headerlink" title="数据库结构总揽"></a>数据库结构总揽</h2><h3 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h3><p>一个Whisper数据库，由单个文件构成。这个文件可以分成三个部分：Header，Archives，data。<br>每个部分都是C兼容的数据结构构成，在实现上whisper使用<code>struct</code>库来实现pack和unpack。<br>每一个archive都对应着一个precision不同的存储区域。</p>
+<h3 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h3><p>Header由四个字段构成：aggregationType, maxRetention, xff, archiveCount</p>
+<h4 id="aggregationType"><a href="#aggregationType" class="headerlink" title="aggregationType"></a>aggregationType</h4><p>数据类型：Long int (aka ‘L’ in struct format), 用来控制高精度向低精度聚合时采用的策略（算法）<br>具体策略如下：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">aggregationTypeToMethod = dict(&#123;</span><br><span class="line">  <span class="number">1</span>: <span class="string">'average'</span>,</span><br><span class="line">  <span class="number">2</span>: <span class="string">'sum'</span>,</span><br><span class="line">  <span class="number">3</span>: <span class="string">'last'</span>,</span><br><span class="line">  <span class="number">4</span>: <span class="string">'max'</span>,</span><br><span class="line">  <span class="number">5</span>: <span class="string">'min'</span>,</span><br><span class="line">  <span class="number">6</span>: <span class="string">'avg_zero'</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<h4 id="maxRetention"><a href="#maxRetention" class="headerlink" title="maxRetention"></a>maxRetention</h4><p>数据类型：Long int, 该数据库能够存储的最大时间长度（单位秒）</p>
+<h4 id="xff"><a href="#xff" class="headerlink" title="xff"></a>xff</h4><p>全称: xFilesFactor, 数据类型：<code>Float</code> (aka ‘f’ in struct format), 当higher precision向lower precision聚合时，如果有效数据低于这个threshold，那么聚合后的结果将设置成<code>None</code>。</p>
+<h4 id="archiveCount"><a href="#archiveCount" class="headerlink" title="archiveCount"></a>archiveCount</h4><p>数据类型：Long int, 描述archive的数量</p>
+<h3 id="Archives"><a href="#Archives" class="headerlink" title="Archives"></a>Archives</h3><h4 id="综述-1"><a href="#综述-1" class="headerlink" title="综述"></a>综述</h4><p><a name="archivelist_check"></a><br>whisper在创建数据库文件时，关于Archives做了如下检查：</p>
+<ul>
+<li>至少有个archive</li>
+<li>Archives的精度在顺序上必须严格递减，不能精度相同</li>
+<li>Arhcives的精度上必须是整数关系，高精度必须是低精度的整数倍</li>
+<li>Archives的retention必须严格递增，不能相同</li>
+<li>高精度的archive必须有足够的点保证至少完成一次Consolidation</li>
+</ul>
+<p>举例：</p>
+<ol>
+<li>Higher: 1s/20</li>
+<li>Lower: 60s/1</li>
+</ol>
+<p>满足前四点，但不满足最后一个条件</p>
+<p>具体检查代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> archiveList:</span><br><span class="line">    <span class="keyword">raise</span> InvalidConfiguration(<span class="string">"You must specify at least one archive configuration!"</span>)</span><br><span class="line"></span><br><span class="line">archiveList.sort(key=<span class="keyword">lambda</span> a: a[<span class="number">0</span>])  <span class="comment"># Sort by precision (secondsPerPoint)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, archive <span class="keyword">in</span> enumerate(archiveList):</span><br><span class="line">    <span class="keyword">if</span> i == len(archiveList) - <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    nextArchive = archiveList[i + <span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> archive[<span class="number">0</span>] &lt; nextArchive[<span class="number">0</span>]:</span><br><span class="line">        <span class="keyword">raise</span> InvalidConfiguration(<span class="string">"A Whisper database may not be configured having "</span></span><br><span class="line">                                   <span class="string">"two archives with the same precision (archive%d: %s, archive%d: %s)"</span> %</span><br><span class="line">                                   (i, archive, i + <span class="number">1</span>, nextArchive))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> nextArchive[<span class="number">0</span>] % archive[<span class="number">0</span>] != <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">raise</span> InvalidConfiguration(<span class="string">"Higher precision archives' precision "</span></span><br><span class="line">                                   <span class="string">"must evenly divide all lower precision archives' precision "</span></span><br><span class="line">                                   <span class="string">"(archive%d: %s, archive%d: %s)"</span> %</span><br><span class="line">                                   (i, archive[<span class="number">0</span>], i + <span class="number">1</span>, nextArchive[<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line">    retention = archive[<span class="number">0</span>] * archive[<span class="number">1</span>]</span><br><span class="line">    nextRetention = nextArchive[<span class="number">0</span>] * nextArchive[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> nextRetention &gt; retention:</span><br><span class="line">        <span class="keyword">raise</span> InvalidConfiguration(<span class="string">"Lower precision archives must cover "</span></span><br><span class="line">                                   <span class="string">"larger time intervals than higher precision archives "</span></span><br><span class="line">                                   <span class="string">"(archive%d: %s seconds, archive%d: %s seconds)"</span> %</span><br><span class="line">                                   (i, retention, i + <span class="number">1</span>, nextRetention))</span><br><span class="line"></span><br><span class="line">    archivePoints = archive[<span class="number">1</span>]</span><br><span class="line">    pointsPerConsolidation = nextArchive[<span class="number">0</span>] // archive[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> archivePoints &gt;= pointsPerConsolidation:</span><br><span class="line">        <span class="keyword">raise</span> InvalidConfiguration(<span class="string">"Each archive must have at least enough points "</span></span><br><span class="line">                                   <span class="string">"to consolidate to the next archive (archive%d consolidates %d of "</span></span><br><span class="line">                                   <span class="string">"archive%d's points but it has only %d total points)"</span> %</span><br><span class="line">                                   (i + <span class="number">1</span>, pointsPerConsolidation, i, archivePoints))</span><br></pre></td></tr></table></figure>
+<h4 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h4><p>Archives对应着不同精度的存储实现，其有三个部分组成：<code>offset</code>, <code>secondsPerPoint</code>, <code>points</code></p>
+<h5 id="offset"><a href="#offset" class="headerlink" title="offset"></a>offset</h5><p>数据类型：Long int，offset指示相应的data区域在这个文件中的offset</p>
+<h5 id="secondsPerPoint"><a href="#secondsPerPoint" class="headerlink" title="secondsPerPoint"></a>secondsPerPoint</h5><p>数据类型：Long int, 表示每个点所代表的采样时长，e.g. archive的精度／precision，<strong>显然最高精度只能是1秒一次</strong></p>
+<h5 id="points"><a href="#points" class="headerlink" title="points"></a>points</h5><p>数据类型：Long int, 表示数据点的数量</p>
+<h6 id="衍生指标"><a href="#衍生指标" class="headerlink" title="衍生指标"></a>衍生指标</h6><p>这些指标本身不存在于文件中，由其他指标计算得到</p>
+<p>####### retention<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'retention'</span>: secondsPerPoint * points</span><br></pre></td></tr></table></figure></p>
+<p>表示这个archive的保存时长，单位秒</p>
+<p>####### size<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'size'</span>: points * pointSize</span><br></pre></td></tr></table></figure></p>
+<p>表示data部分所占据的字节长度</p>
+<h3 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h3><p>这个部分表示具体的数据点，数据点线性排列在文件中，每个数据点有两个部分构成：Interval, data</p>
+<h4 id="Interval"><a href="#Interval" class="headerlink" title="Interval"></a>Interval</h4><p>数据类型：Long int，表示时间戳（从UNIX纪元 (aka 1970-01-01 00:00 UTC) 开始的秒数）</p>
+<h4 id="data"><a href="#data" class="headerlink" title="data"></a>data</h4><p>数据类型：double (aka ‘d’ in struct format)，表示具体的metric数值</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="ASCII-art-图表"><a href="#ASCII-art-图表" class="headerlink" title="ASCII art 图表"></a>ASCII art 图表</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">+-------------------------------------------------------------------------+</span><br><span class="line">|AT|MR|xff|AC|offset|SPP|points|      ...      |Interval|data|     ...    |</span><br><span class="line">+-------------------------------------------------------------------------+</span><br><span class="line">|            |   Archive One   |      ...      |  Point One  |     ...    |</span><br><span class="line">+-------------------------------------------------------------------------+</span><br><span class="line">|    Header  |             Archives            |            Data          |</span><br><span class="line">+-------------------------------------------------------------------------+</span><br><span class="line">|                              Whisper file                               |</span><br><span class="line">+-------------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line">AT: aggregationType</span><br><span class="line">MR: maxRetention</span><br><span class="line">AC: archiveCount</span><br><span class="line">SPP: secondsPerPoint</span><br></pre></td></tr></table></figure>
+<h2 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h2><h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><p>关键参数：</p>
+<ul>
+<li>path 数据库文件的路径</li>
+<li>archiveList</li>
+<li>xFilesFactor=None</li>
+<li>aggregationMethod=None</li>
+</ul>
+<h4 id="archiveList"><a href="#archiveList" class="headerlink" title="archiveList"></a>archiveList</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Validate archive configurations...</span></span><br><span class="line">validateArchiveList(archiveList)</span><br></pre></td></tr></table></figure>
+<p>检查条件参见 <a href="#archivelist_check">inline page</a></p>
+<h4 id="写入Header"><a href="#写入Header" class="headerlink" title="写入Header"></a>写入Header</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">aggregationType = struct.pack(longFormat, aggregationMethodToType.get(aggregationMethod, <span class="number">1</span>))</span><br><span class="line">oldest = max([secondsPerPoint * points <span class="keyword">for</span> secondsPerPoint, points <span class="keyword">in</span> archiveList])</span><br><span class="line">maxRetention = struct.pack(longFormat, oldest)</span><br><span class="line">xFilesFactor = struct.pack(floatFormat, float(xFilesFactor))</span><br><span class="line">archiveCount = struct.pack(longFormat, len(archiveList))</span><br><span class="line">packedMetadata = aggregationType + maxRetention + xFilesFactor + archiveCount</span><br><span class="line">fh.write(packedMetadata)</span><br></pre></td></tr></table></figure>
+<h4 id="写入ArchiveList"><a href="#写入ArchiveList" class="headerlink" title="写入ArchiveList"></a>写入ArchiveList</h4><p>其中比较重要的是offset的计算</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">headerSize = metadataSize + (archiveInfoSize * len(archiveList))</span><br><span class="line">archiveOffsetPointer = headerSize</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> secondsPerPoint, points <span class="keyword">in</span> archiveList:</span><br><span class="line">    archiveInfo = struct.pack(archiveInfoFormat, archiveOffsetPointer, secondsPerPoint, points)</span><br><span class="line">    fh.write(archiveInfo)</span><br><span class="line">    archiveOffsetPointer += (points * pointSize)</span><br></pre></td></tr></table></figure>
+<h4 id="Data区域填充-x00"><a href="#Data区域填充-x00" class="headerlink" title="Data区域填充 \x00"></a>Data区域填充 <code>\x00</code></h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> CAN_FALLOCATE <span class="keyword">and</span> useFallocate:</span><br><span class="line">    remaining = archiveOffsetPointer - headerSize</span><br><span class="line">    fallocate(fh, headerSize, remaining)</span><br><span class="line"><span class="keyword">elif</span> sparse:</span><br><span class="line">    fh.seek(archiveOffsetPointer - <span class="number">1</span>)</span><br><span class="line">    fh.write(<span class="string">b'\x00'</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    remaining = archiveOffsetPointer - headerSize</span><br><span class="line">    chunksize = <span class="number">16384</span></span><br><span class="line">    zeroes = <span class="string">b'\x00'</span> * chunksize</span><br><span class="line">    <span class="keyword">while</span> remaining &gt; chunksize:</span><br><span class="line">        fh.write(zeroes)</span><br><span class="line">        remaining -= chunksize</span><br><span class="line">    fh.write(zeroes[:remaining])</span><br></pre></td></tr></table></figure>
+<h5 id="这里的存在几种优化的-IO方法"><a href="#这里的存在几种优化的-IO方法" class="headerlink" title="这里的存在几种优化的 IO方法"></a>这里的存在几种优化的 IO方法</h5><h6 id="fallocate"><a href="#fallocate" class="headerlink" title="fallocate"></a>fallocate</h6><p>这个一个Linux独有的系统调用，函数原型是<code>int fallocate(int fd, int mode, off_t offset, off_t len);</code>。该函数允许调用者直接分配文件中范围在<code>offset</code>到<code>len</code>的区段的磁盘空间，速度比写入文件分配的更快。</p>
+<p>更多信息，请参见 <a href="http://man7.org/linux/man-pages/man2/fallocate.2.html" target="_blank" rel="noopener">fallocate手册</a></p>
+<h6 id="sparse-file"><a href="#sparse-file" class="headerlink" title="sparse file"></a>sparse file</h6><p>文件并没有真正分配在磁盘上，而是记录该文件有这个尺寸，等到真正写入时，才会分配磁盘空间，因此这个文件时稀疏的。优点是创建时非常快，但真正写入时存在磁盘碎片的可能，导致写入和读取比普通方式更慢。</p>
+<p>更多信息，请参见 <a href="https://en.wikipedia.org/wiki/Sparse_file" target="_blank" rel="noopener">稀疏文件的维基百科</a></p>
+<h6 id="write-by-chunk"><a href="#write-by-chunk" class="headerlink" title="write by chunk"></a>write by chunk</h6><p>系统底层的磁盘时按照扇区工作的，如果写入数据和扇区大小一致，那么就会减少不必要的调整时间。现代磁盘的扇区大小通常为4K，因此按照4K或者4K的整数倍写入都可以获得性能提升。</p>
+<p>更多信息，请参见 <a href="https://en.wikipedia.org/wiki/Disk_sector" target="_blank" rel="noopener">磁盘扇区的维基百科</a></p>
+<h4 id="实现方面的陷阱"><a href="#实现方面的陷阱" class="headerlink" title="实现方面的陷阱"></a>实现方面的陷阱</h4><p>代码的实现部分有一个陷阱：</p>
+<p><code>validateArchiveList(archiveList)</code></p>
+<p>在函数内对 <code>archiveList</code> 做了排序 <code>archiveList.sort(key=lambda a: a[0])</code> , 如果不阅读内部代码，容易让人丢失重要的细节</p>
+<h2 id="查询数据库"><a href="#查询数据库" class="headerlink" title="查询数据库"></a>查询数据库</h2><h3 id="根据最大Retention-修正查询时间范围"><a href="#根据最大Retention-修正查询时间范围" class="headerlink" title="根据最大Retention,修正查询时间范围"></a>根据最大Retention,修正查询时间范围</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> now <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">    now = int(time.time())</span><br><span class="line"><span class="keyword">if</span> untilTime <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">    untilTime = now</span><br><span class="line">fromTime = int(fromTime)</span><br><span class="line">untilTime = int(untilTime)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Here we try and be flexible and return as much data as we can.</span></span><br><span class="line"><span class="comment"># If the range of data is from too far in the past or fully in the future, we</span></span><br><span class="line"><span class="comment"># return nothing</span></span><br><span class="line"><span class="keyword">if</span> fromTime &gt; untilTime:</span><br><span class="line">    <span class="keyword">raise</span> InvalidTimeInterval(<span class="string">"Invalid time interval: from time '%s' is after until time '%s'"</span> % (fromTime, untilTime))</span><br><span class="line"></span><br><span class="line">oldestTime = now - header[<span class="string">'maxRetention'</span>]</span><br><span class="line"><span class="comment"># Range is in the future</span></span><br><span class="line"><span class="keyword">if</span> fromTime &gt; now:</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"><span class="comment"># Range is beyond retention</span></span><br><span class="line"><span class="keyword">if</span> untilTime &lt; oldestTime:</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">None</span></span><br><span class="line"><span class="comment"># Range requested is partially beyond retention, adjust</span></span><br><span class="line"><span class="keyword">if</span> fromTime &lt; oldestTime:</span><br><span class="line">    fromTime = oldestTime</span><br><span class="line"><span class="comment"># Range is partially in the future, adjust</span></span><br><span class="line"><span class="keyword">if</span> untilTime &gt; now:</span><br><span class="line">    untilTime = now</span><br></pre></td></tr></table></figure>
+<h3 id="查找能够覆盖查询范围的最高精度的archive"><a href="#查找能够覆盖查询范围的最高精度的archive" class="headerlink" title="查找能够覆盖查询范围的最高精度的archive"></a>查找能够覆盖查询范围的最高精度的archive</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">diff = now - fromTime</span><br><span class="line"><span class="keyword">for</span> archive <span class="keyword">in</span> header[<span class="string">'archives'</span>]:</span><br><span class="line">    <span class="keyword">if</span> archive[<span class="string">'retention'</span>] &gt;= diff:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<h3 id="时间范围对齐到Interval"><a href="#时间范围对齐到Interval" class="headerlink" title="时间范围对齐到Interval"></a>时间范围对齐到Interval</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fromInterval = int(fromTime - (fromTime % archive[&apos;secondsPerPoint&apos;])) + archive[&apos;secondsPerPoint&apos;]</span><br><span class="line">untilInterval = int(untilTime - (untilTime % archive[&apos;secondsPerPoint&apos;])) + archive[&apos;secondsPerPoint&apos;]</span><br></pre></td></tr></table></figure>
+<p>概括说来，总是寻找和时间点最接近的下一个Interval</p>
+<p>特别的，相同时间的开始和结束的查询范围被调整成为总是包含下一个step：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> fromInterval == untilInterval:</span><br><span class="line">    <span class="comment"># Zero-length time range: always include the next point</span></span><br><span class="line">    untilInterval += archive[<span class="string">'secondsPerPoint'</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="计算offset"><a href="#计算offset" class="headerlink" title="计算offset"></a>计算offset</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Determine fromOffset</span></span><br><span class="line">timeDistance = fromInterval - baseInterval</span><br><span class="line">pointDistance = timeDistance // archive[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line">byteDistance = pointDistance * pointSize</span><br><span class="line">fromOffset = archive[<span class="string">'offset'</span>] + (byteDistance % archive[<span class="string">'size'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># Determine untilOffset</span></span><br><span class="line">timeDistance = untilInterval - baseInterval</span><br><span class="line">pointDistance = timeDistance // archive[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line">byteDistance = pointDistance * pointSize</span><br><span class="line">untilOffset = archive[<span class="string">'offset'</span>] + (byteDistance % archive[<span class="string">'size'</span>])</span><br></pre></td></tr></table></figure>
+<h4 id="python-运算-的一个trick"><a href="#python-运算-的一个trick" class="headerlink" title="python % 运算 的一个trick"></a>python <code>%</code> 运算 的一个trick</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">byteDistance % archive[<span class="string">'size'</span>]</span><br></pre></td></tr></table></figure>
+<p>能够达到wrap的效果，等价于</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> byteDistance &gt;= <span class="number">0</span>:</span><br><span class="line">    <span class="keyword">return</span> byteDistance</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">return</span> archive[<span class="string">'size'</span>] + byteDistance</span><br></pre></td></tr></table></figure>
+<p>原因是python的求余运算 <code>%</code> 的特性</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="number">-3</span> % <span class="number">5</span>)</span><br><span class="line"><span class="comment"># 输出 2</span></span><br><span class="line">print(<span class="number">3</span> % <span class="number">5</span>)</span><br><span class="line"><span class="comment"># 输出 3</span></span><br></pre></td></tr></table></figure>
+<h3 id="读取数据"><a href="#读取数据" class="headerlink" title="读取数据"></a>读取数据</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Now we unpack the series data we just read (anything faster than unpack?)</span></span><br><span class="line">byteOrder, pointTypes = pointFormat[<span class="number">0</span>], pointFormat[<span class="number">1</span>:]</span><br><span class="line">points = len(seriesString) // pointSize</span><br><span class="line">seriesFormat = byteOrder + (pointTypes * points)</span><br><span class="line">unpackedSeries = struct.unpack(seriesFormat, seriesString)</span><br><span class="line"></span><br><span class="line"><span class="comment"># And finally we construct a list of values (optimize this!)</span></span><br><span class="line">valueList = [<span class="keyword">None</span>] * points  <span class="comment"># Pre-allocate entire list for speed</span></span><br><span class="line">currentInterval = fromInterval</span><br><span class="line">step = archive[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, len(unpackedSeries), <span class="number">2</span>):</span><br><span class="line">    pointTime = unpackedSeries[i]</span><br><span class="line">    <span class="keyword">if</span> pointTime == currentInterval:</span><br><span class="line">        pointValue = unpackedSeries[i + <span class="number">1</span>]</span><br><span class="line">        valueList[i // <span class="number">2</span>] = pointValue  <span class="comment"># In-place reassignment is faster than append()</span></span><br><span class="line">    currentInterval += step</span><br><span class="line"></span><br><span class="line">timeInfo = (fromInterval, untilInterval, step)</span><br><span class="line"><span class="keyword">return</span> (timeInfo, valueList)</span><br></pre></td></tr></table></figure>
+<p>其中比较重要的信息是，读取数据时会判断时间戳（Interval）是否等于期望的时间戳，如果不相同就认为没有值，设为<code>None</code>, 这是一种重要的行为，这样写的时候就可以离散写，不用连续写数据，结果的正确性得到保障。</p>
+<h2 id="数据库更新"><a href="#数据库更新" class="headerlink" title="数据库更新"></a>数据库更新</h2><p>Whisper数据库本身虽然支持单个数据点更新API <code>update()</code>也支持多个数据点更新API <code>update_many()</code>，但是在carbon的使用中，是使用多数据点更新的API,两者实现上类似，只是后者批量更新，IO效率更高，本文将讨论 <code>update_many()</code></p>
+<h3 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h3><ul>
+<li>path 代表文件路径</li>
+<li>points is a list of (timestamp,value) points</li>
+</ul>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>将列表中的点按照时间戳从大到小降序排列，完成后较新的数据点在前面</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">points = [(int(t), float(v)) <span class="keyword">for</span> (t, v) <span class="keyword">in</span> points]</span><br><span class="line">points.sort(key=<span class="keyword">lambda</span> p: p[<span class="number">0</span>], reverse=<span class="keyword">True</span>)  <span class="comment"># Order points by timestamp, newest first</span></span><br></pre></td></tr></table></figure>
+<h4 id="读取文件头"><a href="#读取文件头" class="headerlink" title="读取文件头"></a>读取文件头</h4><p>读取文件头返回数据结构</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">info = &#123;</span><br><span class="line">    <span class="string">'aggregationMethod'</span>: aggregationTypeToMethod.get(aggregationType, <span class="string">'average'</span>),</span><br><span class="line">    <span class="string">'maxRetention'</span>: maxRetention,</span><br><span class="line">    <span class="string">'xFilesFactor'</span>: xff,</span><br><span class="line">    <span class="string">'archives'</span>: archives,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="将数据点按照Archive’s-Retention分组进行写入"><a href="#将数据点按照Archive’s-Retention分组进行写入" class="headerlink" title="将数据点按照Archive’s Retention分组进行写入"></a>将数据点按照Archive’s Retention分组进行写入</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> point <span class="keyword">in</span> points:</span><br><span class="line">    age = now - point[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> currentArchive[<span class="string">'retention'</span>] &lt; age:  <span class="comment"># We can't fit any more points in this archive</span></span><br><span class="line">        <span class="keyword">if</span> currentPoints:  <span class="comment"># Commit all the points we've found that it can fit</span></span><br><span class="line">            currentPoints.reverse()  <span class="comment"># Put points in chronological order</span></span><br><span class="line">            __archive_update_many(fh, header, currentArchive, currentPoints)</span><br><span class="line">            currentPoints = []</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            currentArchive = next(archives)</span><br><span class="line">        <span class="keyword">except</span> StopIteration:</span><br><span class="line">            currentArchive = <span class="keyword">None</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> currentArchive:</span><br><span class="line">        <span class="keyword">break</span>  <span class="comment"># Drop remaining points that don't fit in the database</span></span><br><span class="line"></span><br><span class="line">    currentPoints.append(point)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> currentArchive <span class="keyword">and</span> currentPoints:  <span class="comment"># Don't forget to commit after we've checked all the archives</span></span><br><span class="line">    currentPoints.reverse()</span><br><span class="line">    __archive_update_many(fh, header, currentArchive, currentPoints)</span><br></pre></td></tr></table></figure>
+<p>值得注意的是数据在传入具体函数写入时，Points都做了order reverse，变成了oldest数据在最前面</p>
+<p>PS：这块代码不容易理解</p>
+<h4 id="分组写入操作"><a href="#分组写入操作" class="headerlink" title="分组写入操作"></a>分组写入操作</h4><p>具体实现函数 <code>__archive_update_many(fh, header, archive, points)</code></p>
+<h5 id="数据点对齐"><a href="#数据点对齐" class="headerlink" title="数据点对齐"></a>数据点对齐</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">step = archive[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line">alignedPoints = [(timestamp - (timestamp % step), value)</span><br><span class="line">                 <span class="keyword">for</span> (timestamp, value) <span class="keyword">in</span> points]</span><br></pre></td></tr></table></figure>
+<h5 id="数据点按照连续性分组"><a href="#数据点按照连续性分组" class="headerlink" title="数据点按照连续性分组"></a>数据点按照连续性分组</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Create a packed string for each contiguous sequence of points</span></span><br><span class="line">packedStrings = []</span><br><span class="line">previousInterval = <span class="keyword">None</span></span><br><span class="line">currentString = <span class="string">b""</span></span><br><span class="line">lenAlignedPoints = len(alignedPoints)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, lenAlignedPoints):</span><br><span class="line">    <span class="comment"># Take last point in run of points with duplicate intervals</span></span><br><span class="line">    <span class="keyword">if</span> i + <span class="number">1</span> &lt; lenAlignedPoints <span class="keyword">and</span> alignedPoints[i][<span class="number">0</span>] == alignedPoints[i + <span class="number">1</span>][<span class="number">0</span>]:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    (interval, value) = alignedPoints[i]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果是开头或者时间点是连续的</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">not</span> previousInterval) <span class="keyword">or</span> (interval == previousInterval + step):</span><br><span class="line">        currentString += struct.pack(pointFormat, interval, value)</span><br><span class="line">        previousInterval = interval</span><br><span class="line">    <span class="keyword">else</span>:  <span class="comment"># 如果时间点断开了</span></span><br><span class="line">        numberOfPoints = len(currentString) // pointSize</span><br><span class="line">        startInterval = previousInterval - (step * (numberOfPoints - <span class="number">1</span>))</span><br><span class="line">        packedStrings.append((startInterval, currentString))</span><br><span class="line">        currentString = struct.pack(pointFormat, interval, value)</span><br><span class="line">        previousInterval = interval</span><br><span class="line"><span class="keyword">if</span> currentString:</span><br><span class="line">    numberOfPoints = len(currentString) // pointSize</span><br><span class="line">    startInterval = previousInterval - (step * (numberOfPoints - <span class="number">1</span>))</span><br><span class="line">    packedStrings.append((startInterval, currentString))</span><br></pre></td></tr></table></figure>
+<p>其中需要注意的点：</p>
+<p><strong>对齐后的时间点做了去重复操作，只保留时间上最后一个点，这是很重要的特性</strong></p>
+<h5 id="数据写入"><a href="#数据写入" class="headerlink" title="数据写入"></a>数据写入</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Read base point and determine where our writes will start</span></span><br><span class="line">fh.seek(archive[<span class="string">'offset'</span>])</span><br><span class="line">packedBasePoint = fh.read(pointSize)</span><br><span class="line">(baseInterval, baseValue) = struct.unpack(pointFormat, packedBasePoint)</span><br><span class="line"><span class="keyword">if</span> baseInterval == <span class="number">0</span>:  <span class="comment"># This file's first update</span></span><br><span class="line">    baseInterval = packedStrings[<span class="number">0</span>][<span class="number">0</span>]  <span class="comment"># Use our first string as the base, so we start at the start</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Write all of our packed strings in locations determined by the baseInterval</span></span><br><span class="line"><span class="keyword">for</span> (interval, packedString) <span class="keyword">in</span> packedStrings:</span><br><span class="line">    timeDistance = interval - baseInterval</span><br><span class="line">    pointDistance = timeDistance // step</span><br><span class="line">    byteDistance = pointDistance * pointSize</span><br><span class="line">    myOffset = archive[<span class="string">'offset'</span>] + (byteDistance % archive[<span class="string">'size'</span>])</span><br><span class="line">    fh.seek(myOffset)</span><br><span class="line">    archiveEnd = archive[<span class="string">'offset'</span>] + archive[<span class="string">'size'</span>]</span><br><span class="line">    bytesBeyond = (myOffset + len(packedString)) - archiveEnd</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> bytesBeyond &gt; <span class="number">0</span>:</span><br><span class="line">        fh.write(packedString[:-bytesBeyond])</span><br><span class="line">        <span class="keyword">assert</span> fh.tell() == archiveEnd, <span class="string">"archiveEnd=%d fh.tell=%d bytesBeyond=%d len(packedString)=%d"</span> % (</span><br><span class="line">        archiveEnd, fh.tell(), bytesBeyond, len(packedString))</span><br><span class="line">        fh.seek(archive[<span class="string">'offset'</span>])</span><br><span class="line">        fh.write(</span><br><span class="line">            packedString[-bytesBeyond:])  <span class="comment"># Safe because it can't exceed the archive (retention checking logic above)</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        fh.write(packedString)</span><br></pre></td></tr></table></figure>
+<p>注意：这里的文件写入有warp的现象</p>
+<h5 id="聚合到下一级Archive"><a href="#聚合到下一级Archive" class="headerlink" title="聚合到下一级Archive"></a>聚合到下一级Archive</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Now we propagate the updates to lower-precision archives</span></span><br><span class="line">higher = archive</span><br><span class="line">lowerArchives = [arc <span class="keyword">for</span> arc <span class="keyword">in</span> header[<span class="string">'archives'</span>] <span class="keyword">if</span> arc[<span class="string">'secondsPerPoint'</span>] &gt; archive[<span class="string">'secondsPerPoint'</span>]]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> lower <span class="keyword">in</span> lowerArchives:</span><br><span class="line">    fit = <span class="keyword">lambda</span> i: i - (i % lower[<span class="string">'secondsPerPoint'</span>])</span><br><span class="line">    lowerIntervals = [fit(p[<span class="number">0</span>]) <span class="keyword">for</span> p <span class="keyword">in</span> alignedPoints]</span><br><span class="line">    uniqueLowerIntervals = set(lowerIntervals)</span><br><span class="line">    propagateFurther = <span class="keyword">False</span></span><br><span class="line">    <span class="keyword">for</span> interval <span class="keyword">in</span> uniqueLowerIntervals:</span><br><span class="line">        <span class="keyword">if</span> __propagate(fh, header, interval, higher, lower):</span><br><span class="line">            propagateFurther = <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> propagateFurther:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    higher = lower</span><br></pre></td></tr></table></figure>
+<h6 id="单点聚合"><a href="#单点聚合" class="headerlink" title="单点聚合"></a>单点聚合</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__propagate</span><span class="params">(fh, header, timestamp, higher, lower)</span>:</span></span><br><span class="line">    aggregationMethod = header[<span class="string">'aggregationMethod'</span>]</span><br><span class="line">    xff = header[<span class="string">'xFilesFactor'</span>]</span><br><span class="line"></span><br><span class="line">    lowerIntervalStart = timestamp - (timestamp % lower[<span class="string">'secondsPerPoint'</span>])</span><br><span class="line">    lowerIntervalEnd = lowerIntervalStart + lower[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line"></span><br><span class="line">    fh.seek(higher[<span class="string">'offset'</span>])</span><br><span class="line">    packedPoint = fh.read(pointSize)</span><br><span class="line">    (higherBaseInterval, higherBaseValue) = struct.unpack(pointFormat, packedPoint)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> higherBaseInterval == <span class="number">0</span>:</span><br><span class="line">        higherFirstOffset = higher[<span class="string">'offset'</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        timeDistance = lowerIntervalStart - higherBaseInterval</span><br><span class="line">        pointDistance = timeDistance // higher[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line">        byteDistance = pointDistance * pointSize</span><br><span class="line">        higherFirstOffset = higher[<span class="string">'offset'</span>] + (byteDistance % higher[<span class="string">'size'</span>])</span><br><span class="line"></span><br><span class="line">    higherPoints = lower[<span class="string">'secondsPerPoint'</span>] // higher[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line">    higherSize = higherPoints * pointSize</span><br><span class="line">    relativeFirstOffset = higherFirstOffset - higher[<span class="string">'offset'</span>]</span><br><span class="line">    relativeLastOffset = (relativeFirstOffset + higherSize) % higher[<span class="string">'size'</span>]</span><br><span class="line">    higherLastOffset = relativeLastOffset + higher[<span class="string">'offset'</span>]</span><br><span class="line">    fh.seek(higherFirstOffset)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> higherFirstOffset &lt; higherLastOffset:  <span class="comment"># We don't wrap the archive</span></span><br><span class="line">        seriesString = fh.read(higherLastOffset - higherFirstOffset)</span><br><span class="line">    <span class="keyword">else</span>:  <span class="comment"># We do wrap the archive</span></span><br><span class="line">        higherEnd = higher[<span class="string">'offset'</span>] + higher[<span class="string">'size'</span>]</span><br><span class="line">        seriesString = fh.read(higherEnd - higherFirstOffset)</span><br><span class="line">        fh.seek(higher[<span class="string">'offset'</span>])</span><br><span class="line">        seriesString += fh.read(higherLastOffset - higher[<span class="string">'offset'</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Now we unpack the series data we just read</span></span><br><span class="line">    byteOrder, pointTypes = pointFormat[<span class="number">0</span>], pointFormat[<span class="number">1</span>:]</span><br><span class="line">    points = len(seriesString) // pointSize</span><br><span class="line">    seriesFormat = byteOrder + (pointTypes * points)</span><br><span class="line">    unpackedSeries = struct.unpack(seriesFormat, seriesString)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># And finally we construct a list of values</span></span><br><span class="line">    neighborValues = [<span class="keyword">None</span>] * points</span><br><span class="line">    currentInterval = lowerIntervalStart</span><br><span class="line">    step = higher[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>, len(unpackedSeries), <span class="number">2</span>):</span><br><span class="line">        pointTime = unpackedSeries[i]</span><br><span class="line">        <span class="keyword">if</span> pointTime == currentInterval:</span><br><span class="line">            neighborValues[i // <span class="number">2</span>] = unpackedSeries[i + <span class="number">1</span>]</span><br><span class="line">        currentInterval += step</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Propagate aggregateValue to propagate from neighborValues if we have enough known points</span></span><br><span class="line">    knownValues = [v <span class="keyword">for</span> v <span class="keyword">in</span> neighborValues <span class="keyword">if</span> v <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>]</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> knownValues:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">    knownPercent = float(len(knownValues)) / float(len(neighborValues))</span><br><span class="line">    <span class="keyword">if</span> knownPercent &gt;= xff:  <span class="comment"># We have enough data to propagate a value!</span></span><br><span class="line">        aggregateValue = aggregate(aggregationMethod, knownValues, neighborValues)</span><br><span class="line">        myPackedPoint = struct.pack(pointFormat, lowerIntervalStart, aggregateValue)</span><br><span class="line">        fh.seek(lower[<span class="string">'offset'</span>])</span><br><span class="line">        packedPoint = fh.read(pointSize)</span><br><span class="line">        (lowerBaseInterval, lowerBaseValue) = struct.unpack(pointFormat, packedPoint)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> lowerBaseInterval == <span class="number">0</span>:  <span class="comment"># First propagated update to this lower archive</span></span><br><span class="line">            fh.seek(lower[<span class="string">'offset'</span>])</span><br><span class="line">            fh.write(myPackedPoint)</span><br><span class="line">        <span class="keyword">else</span>:  <span class="comment"># Not our first propagated update to this lower archive</span></span><br><span class="line">            timeDistance = lowerIntervalStart - lowerBaseInterval</span><br><span class="line">            pointDistance = timeDistance // lower[<span class="string">'secondsPerPoint'</span>]</span><br><span class="line">            byteDistance = pointDistance * pointSize</span><br><span class="line">            lowerOffset = lower[<span class="string">'offset'</span>] + (byteDistance % lower[<span class="string">'size'</span>])</span><br><span class="line">            fh.seek(lowerOffset)</span><br><span class="line">            fh.write(myPackedPoint)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">False</span></span><br></pre></td></tr></table></figure>
+<p>如果上一个精度的aggrigation的xff过低导致聚合失败，那么后续级别的aggrigation就会取消</p>
+<h3 id="Trick"><a href="#Trick" class="headerlink" title="Trick"></a>Trick</h3><p>在打开文件时，Whisper 使用了  Linux 上的 <code>fadvise</code> 来建议操作系统对文件访问进行某个策略的优化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> CAN_FADVISE <span class="keyword">and</span> FADVISE_RANDOM:</span><br><span class="line">    posix_fadvise(fh.fileno(), <span class="number">0</span>, <span class="number">0</span>, POSIX_FADV_RANDOM)</span><br></pre></td></tr></table></figure>
+<p><code>fadvise</code> 在其手册中的介绍翻译成中文大意是：</p>
+<blockquote>
+<p>允许应用程序告知操作系统它会如何使用文件描述符，这样操作系统就能选用最合适的读取和缓存策略来访问相应的文件</p>
+</blockquote>
+<p>fadvise 有多个选项：</p>
+<ul>
+<li><code>FADV_NORMAL</code> ：不需要特殊对待</li>
+<li><code>FADV_RANDOM</code> : 期望页面以随机访问进行</li>
+<li><code>FADV_SEQUENTIAL</code> : 期望页面访问以顺序访问进行</li>
+<li><code>FADV_WILLNEED</code> : 期望在近期再次访问</li>
+<li><code>FADV_DONTNEED</code> : 不期望在近期再次访问</li>
+<li><code>FADV_NOREUSE</code> : 只会访问数据一次</li>
+</ul>
+<p>关于<code>fadvise</code>的更多信息，请参见 <a href="https://linux.die.net/man/2/fadvise" target="_blank" rel="noopener">man fadvise</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/时间序列数据库/" rel="tag"># 时间序列数据库</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/introduce-to-the-implement-of-whisper-the-time-serial-database/" rel="next" title="Introduce to the implement of Whisper: the time-serial database">
+                <i class="fa fa-chevron-left"></i> Introduce to the implement of Whisper: the time-serial database
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/Git Flow开发模型/" rel="prev" title="Git Flow开发模型">
+                Git Flow开发模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Whisper"><span class="nav-number">1.</span> <span class="nav-text">什么是Whisper</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库结构总揽"><span class="nav-number">2.</span> <span class="nav-text">数据库结构总揽</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#综述"><span class="nav-number">2.1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Header"><span class="nav-number">2.2.</span> <span class="nav-text">Header</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#aggregationType"><span class="nav-number">2.2.1.</span> <span class="nav-text">aggregationType</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#maxRetention"><span class="nav-number">2.2.2.</span> <span class="nav-text">maxRetention</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xff"><span class="nav-number">2.2.3.</span> <span class="nav-text">xff</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#archiveCount"><span class="nav-number">2.2.4.</span> <span class="nav-text">archiveCount</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Archives"><span class="nav-number">2.3.</span> <span class="nav-text">Archives</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#综述-1"><span class="nav-number">2.3.1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构"><span class="nav-number">2.3.2.</span> <span class="nav-text">结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#offset"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">offset</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#secondsPerPoint"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">secondsPerPoint</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#points"><span class="nav-number">2.3.2.3.</span> <span class="nav-text">points</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#衍生指标"><span class="nav-number">2.3.2.3.1.</span> <span class="nav-text">衍生指标</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data"><span class="nav-number">2.4.</span> <span class="nav-text">Data</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Interval"><span class="nav-number">2.4.1.</span> <span class="nav-text">Interval</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#data"><span class="nav-number">2.4.2.</span> <span class="nav-text">data</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.5.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ASCII-art-图表"><span class="nav-number">2.5.1.</span> <span class="nav-text">ASCII art 图表</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建数据库"><span class="nav-number">3.</span> <span class="nav-text">创建数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数"><span class="nav-number">3.1.</span> <span class="nav-text">参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#archiveList"><span class="nav-number">3.1.1.</span> <span class="nav-text">archiveList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入Header"><span class="nav-number">3.1.2.</span> <span class="nav-text">写入Header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#写入ArchiveList"><span class="nav-number">3.1.3.</span> <span class="nav-text">写入ArchiveList</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data区域填充-x00"><span class="nav-number">3.1.4.</span> <span class="nav-text">Data区域填充 \x00</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#这里的存在几种优化的-IO方法"><span class="nav-number">3.1.4.1.</span> <span class="nav-text">这里的存在几种优化的 IO方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#fallocate"><span class="nav-number">3.1.4.1.1.</span> <span class="nav-text">fallocate</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#sparse-file"><span class="nav-number">3.1.4.1.2.</span> <span class="nav-text">sparse file</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#write-by-chunk"><span class="nav-number">3.1.4.1.3.</span> <span class="nav-text">write by chunk</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实现方面的陷阱"><span class="nav-number">3.1.5.</span> <span class="nav-text">实现方面的陷阱</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查询数据库"><span class="nav-number">4.</span> <span class="nav-text">查询数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#根据最大Retention-修正查询时间范围"><span class="nav-number">4.1.</span> <span class="nav-text">根据最大Retention,修正查询时间范围</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查找能够覆盖查询范围的最高精度的archive"><span class="nav-number">4.2.</span> <span class="nav-text">查找能够覆盖查询范围的最高精度的archive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#时间范围对齐到Interval"><span class="nav-number">4.3.</span> <span class="nav-text">时间范围对齐到Interval</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算offset"><span class="nav-number">4.4.</span> <span class="nav-text">计算offset</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#python-运算-的一个trick"><span class="nav-number">4.4.1.</span> <span class="nav-text">python % 运算 的一个trick</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读取数据"><span class="nav-number">4.5.</span> <span class="nav-text">读取数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据库更新"><span class="nav-number">5.</span> <span class="nav-text">数据库更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数-1"><span class="nav-number">5.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排序"><span class="nav-number">5.2.</span> <span class="nav-text">排序</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#读取文件头"><span class="nav-number">5.2.1.</span> <span class="nav-text">读取文件头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将数据点按照Archive’s-Retention分组进行写入"><span class="nav-number">5.2.2.</span> <span class="nav-text">将数据点按照Archive’s Retention分组进行写入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分组写入操作"><span class="nav-number">5.2.3.</span> <span class="nav-text">分组写入操作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#数据点对齐"><span class="nav-number">5.2.3.1.</span> <span class="nav-text">数据点对齐</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据点按照连续性分组"><span class="nav-number">5.2.3.2.</span> <span class="nav-text">数据点按照连续性分组</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据写入"><span class="nav-number">5.2.3.3.</span> <span class="nav-text">数据写入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#聚合到下一级Archive"><span class="nav-number">5.2.3.4.</span> <span class="nav-text">聚合到下一级Archive</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#单点聚合"><span class="nav-number">5.2.3.4.1.</span> <span class="nav-text">单点聚合</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trick"><span class="nav-number">5.3.</span> <span class="nav-text">Trick</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/时间数据库Whisper的实现简介/';
+        this.page.identifier = '时间数据库Whisper的实现简介/';
+        this.page.title = '时间数据库Whisper的实现简介';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

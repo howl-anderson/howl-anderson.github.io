@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="TL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。">
+<meta name="keywords" content="Reinforcement Learning,OpenAI Gym,Q-Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于 OpenAI Gym 的 Q-Learning 算法演示">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/基于-OpenAI-Gym-的-Q-Learning-算法演示/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="TL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://mybinder.org/badge.svg">
+<meta property="og:updated_time" content="2018-08-13T11:08:02.499Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于 OpenAI Gym 的 Q-Learning 算法演示">
+<meta name="twitter:description" content="TL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。">
+<meta name="twitter:image" content="https://mybinder.org/badge.svg">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/基于-OpenAI-Gym-的-Q-Learning-算法演示/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>基于 OpenAI Gym 的 Q-Learning 算法演示 | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/基于-OpenAI-Gym-的-Q-Learning-算法演示/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于 OpenAI Gym 的 Q-Learning 算法演示
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-08-13 19:08:02" itemprop="dateCreated datePublished" datetime="2018-08-13T19:08:02+08:00">2018-08-13</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/基于-OpenAI-Gym-的-Q-Learning-算法演示/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="基于-OpenAI-Gym-的-Q-Learning-算法演示/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb" target="_blank" rel="noopener"><img src="https://mybinder.org/badge.svg" alt="Binder"></a></p>
+<p><strong>TL;DR</strong> 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。</p>
+<a id="more"></a>
+<p>前面的博文里已经介绍过 Q-learning 的一些基本情况了，如果你没见过前面的博文或者已经忘记的差不多了，那么可以使用这个 <a href="/Reinforcement-Learning-初次交手，多多指教/">Reinforcement Learning: 初次交手，多多指教</a> 访问。</p>
+<p>但是总的来说，如果没有实际代码跑一番，估计你对这个算法的正确性还是有疑虑的。本文将从头构建一个 Q-learning 算法，来解决一个 toy 级别的强化学习场景的学习工作。希望能加深你对 Q-learning 的理解和对强化学习的认知。</p>
+<h3 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h3><ul>
+<li>比较精美的，但是做了一定扩展的实现在 <a href="https://github.com/howl-anderson/q_learning_demo" target="_blank" rel="noopener">q_learning_demo</a></li>
+<li>和本文代码相对应的，稍有改动的 Jupyter Notebook 在  <a href="https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb" target="_blank" rel="noopener">proof-of-concept</a></li>
+</ul>
+<h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><p>我们要用 Q-learning 解决什么问题呢？我们使用 OpenAI Gym 里提供的一个环境：<code>FrozenLake-v0</code>.</p>
+<p><code>FrozenLake-v0</code> 环境的中文描述大概是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">冬天的时候，你和你的朋友们在公园扔飞盘。</span><br><span class="line">你不小心把飞盘扔到了公园的湖中间。</span><br><span class="line">湖面已经结冰，但是有些地方的没有结冰，形成一个冰洞，有人踩上去会掉下去。</span><br><span class="line">这个飞盘对你来说非常宝贵，你觉得非常有必要把飞盘拿回来。</span><br><span class="line">但是冰面很滑，你不能总是想去什么方向就去什么方向，滑滑的冰面可能会带你走向别的方向。</span><br><span class="line">冰面用如下的字符块表示：</span><br><span class="line">    SFFF</span><br><span class="line">    FHFH</span><br><span class="line">    FFFH</span><br><span class="line">    HFFG</span><br><span class="line">S : Safe，开始点，安全</span><br><span class="line">F : frozen surface, 冻结的表面，安全</span><br><span class="line">H : hole, 掉下去就死定了</span><br><span class="line">G : goal, 飞盘所在的地方</span><br><span class="line"></span><br><span class="line">每个轮回，以你拿回飞盘或者掉进洞里而结束。</span><br><span class="line">只有当你拿到飞盘才能获得1个奖励，其他情况都为0</span><br></pre></td></tr></table></figure>
+<h3 id="OpenAI-Gym"><a href="#OpenAI-Gym" class="headerlink" title="OpenAI Gym"></a>OpenAI Gym</h3><p>OpenAI 是 Elon Musk 创建的一家致力于非盈利的通用人工智能的公司。 其开源产品 <code>Gym</code> 是提供了一种增强学习的实现框架，主要用于提供一些模拟器供研究使用。</p>
+<p>之前的博客提到过，增强学习是 Agent 和 Environment 直接的交互构成的。Gym 提供了很多常见的 Environment 对象。利用这些 Environment，研究者可以很快构建增强学习的应用。</p>
+<h3 id="Gym-运行模式"><a href="#Gym-运行模式" class="headerlink" title="Gym 运行模式"></a>Gym 运行模式</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入gym</span></span><br><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建环境</span></span><br><span class="line">env = gym.make(<span class="string">"Taxi-v1"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取第一次的观察结果</span></span><br><span class="line">observation = env.reset()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始探索环境</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> range(<span class="number">1000</span>):</span><br><span class="line">    env.render()  <span class="comment"># 渲染观察结果</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 你的 Agent 应该会根据观察结果，选择最合适的动作，但这里我们使用随机选择的动作</span></span><br><span class="line">    action = env.action_space.sample() <span class="comment"># your agent here (this takes random actions)</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 将动作发送给环境，获取新的观察结果、奖励和是否结束的标志等</span></span><br><span class="line">    observation, reward, done, info = env.step(action)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> done:  <span class="comment"># 游戏结束</span></span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>通过上面的示例，你应该了解OpenAI gym的工作模式。</p>
+<h3 id="训练流程"><a href="#训练流程" class="headerlink" title="训练流程"></a>训练流程</h3><p>导入依赖<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> gym</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> defaultdict</span><br><span class="line"><span class="keyword">import</span> functools</span><br></pre></td></tr></table></figure></p>
+<p>定义两个主要组件<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 构建 Environment</span></span><br><span class="line">env = gym.make(<span class="string">'FrozenLake-v0'</span>)</span><br><span class="line">env.seed(<span class="number">0</span>)  <span class="comment"># 确保结果具有可重现性</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建 Agent</span></span><br><span class="line">tabular_q_agent = TabularQAgent(env.observation_space, env.action_space)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始训练</span></span><br><span class="line">train(tabular_q_agent, env)</span><br><span class="line"></span><br><span class="line">tabular_q_agent.test(env)</span><br></pre></td></tr></table></figure></p>
+<p>训练循环<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(tabular_q_agent, env)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> episode <span class="keyword">in</span> range(<span class="number">100000</span>):  <span class="comment"># 训练 100000 次</span></span><br><span class="line">        all_reward, step_count = tabular_q_agent.learn(env)</span><br></pre></td></tr></table></figure></p>
+<p>TabularQAgent 的实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TabularQAgent</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, observation_space, action_space)</span>:</span></span><br><span class="line">        self.observation_space = observation_space</span><br><span class="line">        self.action_space = action_space</span><br><span class="line">        self.action_n = action_space.n</span><br><span class="line">        self.config = &#123;</span><br><span class="line">            <span class="string">"learning_rate"</span>: <span class="number">0.5</span>,</span><br><span class="line">            <span class="string">"eps"</span>: <span class="number">0.05</span>,            <span class="comment"># Epsilon in epsilon greedy policies</span></span><br><span class="line">            <span class="string">"discount"</span>: <span class="number">0.99</span>,</span><br><span class="line">            <span class="string">"n_iter"</span>: <span class="number">10000</span>&#125;        <span class="comment"># Number of iterations</span></span><br><span class="line"></span><br><span class="line">        self.q = defaultdict(functools.partial(generate_zeros, n=self.action_n))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">act</span><span class="params">(self, observation, eps=None)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> eps <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            eps = self.config[<span class="string">"eps"</span>]      </span><br><span class="line">        <span class="comment"># epsilon greedy.</span></span><br><span class="line">        action = np.argmax(self.q[observation]) <span class="keyword">if</span> np.random.random() &gt; eps <span class="keyword">else</span> self.action_space.sample()</span><br><span class="line">        <span class="keyword">return</span> action</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">learn</span><span class="params">(self, env)</span>:</span></span><br><span class="line">        obs = env.reset()</span><br><span class="line"></span><br><span class="line">        rAll = <span class="number">0</span></span><br><span class="line">        step_count = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> range(self.config[<span class="string">"n_iter"</span>]):</span><br><span class="line">            action = self.act(obs)</span><br><span class="line">            obs2, reward, done, _ = env.step(action)</span><br><span class="line"></span><br><span class="line">            future = <span class="number">0.0</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> done:</span><br><span class="line">                future = np.max(self.q[obs2])</span><br><span class="line">            self.q[obs][action] = (<span class="number">1</span> - self.config[<span class="string">"learning_rate"</span>]) * self.q[obs][action] + self.config[<span class="string">"learning_rate"</span>] * (reward + self.config[<span class="string">"discount"</span>] * future)</span><br><span class="line"></span><br><span class="line">            obs = obs2</span><br><span class="line"></span><br><span class="line">            rAll += reward</span><br><span class="line">            step_count += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> done:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> rAll, step_count</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">(self, env)</span>:</span></span><br><span class="line">        obs = env.reset()</span><br><span class="line">        env.render(mode=<span class="string">'human'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> t <span class="keyword">in</span> range(self.config[<span class="string">"n_iter"</span>]):</span><br><span class="line">            env.render(mode=<span class="string">'human'</span>)</span><br><span class="line"></span><br><span class="line">            action = self.act(obs, eps=<span class="number">0</span>)</span><br><span class="line">            obs2, reward, done, _ = env.step(action)</span><br><span class="line">            env.render(mode=<span class="string">'human'</span>)</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> done:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">            obs = obs2</span><br></pre></td></tr></table></figure>
+<h3 id="核心代码"><a href="#核心代码" class="headerlink" title="核心代码"></a>核心代码</h3><p>我们重点关注核心代码，Q-learning 是如何学习的，相关代码简化后得到：</p>
+<h4 id="如何更新-Q-table"><a href="#如何更新-Q-table" class="headerlink" title="如何更新 Q table"></a>如何更新 Q table</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># 获取第一次观察结果</span><br><span class="line">obs = env.reset()</span><br><span class="line"></span><br><span class="line">while True:  # 一直循环，直到游戏结束</span><br><span class="line">    action = self.act(obs)  # 根据策略，选择 action</span><br><span class="line">    obs2, reward, done, _ = env.step(action)</span><br><span class="line"></span><br><span class="line">    future = 0.0</span><br><span class="line">    if not done:</span><br><span class="line">        future = np.max(self.q[obs2])  # 获取后一步期望的最大奖励</span><br><span class="line"></span><br><span class="line">    # 更新 Q 表格，保留部分当前值 加上 部分当前奖励和未来一步的最大奖励</span><br><span class="line">    self.q[obs][action] = (1 - self.config[&quot;learning_rate&quot;]) * self.q[obs][action] + self.config[&quot;learning_rate&quot;] * (reward + self.config[&quot;discount&quot;] * future)</span><br><span class="line"></span><br><span class="line">    # 更新</span><br><span class="line">    obs = obs2</span><br><span class="line"></span><br><span class="line">    # 游戏结束，退出循环</span><br><span class="line">    if done:</span><br><span class="line">        break</span><br></pre></td></tr></table></figure>
+<h4 id="explore-exploit-问题"><a href="#explore-exploit-问题" class="headerlink" title="explore / exploit 问题"></a>explore / exploit 问题</h4><p>上面的代码我只提到了 <code>self.act</code> 会根据策略选择 action，那么该如何选择呢？这里就涉及到了 explore exploit tradeoff 的问题了。我们理想中的 action 选择策略是既能充分利用现有学习到的知识，每次都去最大化的最终的reward，这就是 exploit。但是同时，我们也希望我们的选择策略能适当的去探索一下其他路径，不能固定在已经知道的最优选择，避免局部最优解，适当时候也去探索其他路径，可能能发现更加优秀的路径，也就是全局最优解，这就是 explore 问题。</p>
+<p>我们采取了一个概率方案，有一定概率去通过随机选择的方式，探索新路径。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># eps 数值在 [0, 1] ，控制探索的力度，越大探索的越多</span></span><br><span class="line"><span class="keyword">if</span> eps <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">    eps = self.config[<span class="string">"eps"</span>]      </span><br><span class="line"><span class="comment"># epsilon greedy.</span></span><br><span class="line">action = np.argmax(self.q[observation]) <span class="keyword">if</span> np.random.random() &gt; eps <span class="keyword">else</span> self.action_space.sample()</span><br><span class="line"><span class="keyword">return</span> action</span><br></pre></td></tr></table></figure>
+<h4 id="其他没有交代的点"><a href="#其他没有交代的点" class="headerlink" title="其他没有交代的点"></a>其他没有交代的点</h4><p>由于本篇是科普性质，所以没有cover很多其他的问题点，比如学习和探索的因子可以是decay的，刚开始训练的时候学习和探索强度比较大，后续慢慢缩小，这样模型就会慢慢收敛。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+          
+            <a href="/tags/OpenAI-Gym/" rel="tag"># OpenAI Gym</a>
+          
+            <a href="/tags/Q-Learning/" rel="tag"># Q-Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/python-mock-遇到的一个坑/" rel="next" title="python mock 遇到的一个坑">
+                <i class="fa fa-chevron-left"></i> python mock 遇到的一个坑
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/构建中文分词器-正向最大匹配法/" rel="prev" title="构建中文分词器 - 正向最大匹配法">
+                构建中文分词器 - 正向最大匹配法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">29</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#源代码"><span class="nav-number">1.</span> <span class="nav-text">源代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#场景"><span class="nav-number">2.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OpenAI-Gym"><span class="nav-number">3.</span> <span class="nav-text">OpenAI Gym</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gym-运行模式"><span class="nav-number">4.</span> <span class="nav-text">Gym 运行模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练流程"><span class="nav-number">5.</span> <span class="nav-text">训练流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心代码"><span class="nav-number">6.</span> <span class="nav-text">核心代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何更新-Q-table"><span class="nav-number">6.1.</span> <span class="nav-text">如何更新 Q table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#explore-exploit-问题"><span class="nav-number">6.2.</span> <span class="nav-text">explore / exploit 问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他没有交代的点"><span class="nav-number">6.3.</span> <span class="nav-text">其他没有交代的点</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/基于-OpenAI-Gym-的-Q-Learning-算法演示/';
+        this.page.identifier = '基于-OpenAI-Gym-的-Q-Learning-算法演示/';
+        this.page.title = '基于 OpenAI Gym 的 Q-Learning 算法演示';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
