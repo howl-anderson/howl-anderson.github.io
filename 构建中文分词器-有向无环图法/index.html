@@ -112,7 +112,7 @@
 <meta property="og:description" content="将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/DAG.png">
-<meta property="og:updated_time" content="2018-08-14T11:46:14.637Z">
+<meta property="og:updated_time" content="2018-08-15T07:38:36.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="构建中文分词器-有向无环图法">
 <meta name="twitter:description" content="将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。">
@@ -358,12 +358,24 @@
                 
               
 
-              <time title="Created: 2018-08-14 12:37:44 / Modified: 19:46:14" itemprop="dateCreated datePublished" datetime="2018-08-14T12:37:44+08:00">2018-08-14</time>
+              <time title="Created: 2018-08-14 12:37:44" itemprop="dateCreated datePublished" datetime="2018-08-14T12:37:44+08:00">2018-08-14</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2018-08-15 15:38:36" itemprop="dateModified" datetime="2018-08-15T15:38:36+08:00">2018-08-15</time>
               
             
           </span>
@@ -489,11 +501,10 @@
 <li><code>我们</code> / <code>在野</code> / <code>生动</code> / <code>物</code> / <code>园</code> / <code>玩</code></li>
 </ol>
 <p>添加开始节点 <code>&lt;start&gt;</code> 和 结束节点 <code>&lt;end&gt;</code> 后，我们可以构建一个 <code>有向无环图</code>, 节点之间的边的权重为上一个节点对应的 <code>log(概率的倒数)</code>。</p>
-<p>则得到如下的有向无环图：</p>
+<p>则得到类似如下的有向无环图：</p>
 <p><img src="./DAG.png" alt="DAG"></p>
 <p>通过求解最小路径的方法可以得到最短路径为 <code>我们</code> / <code>在</code> / <code>野生动物园</code> / <code>玩</code></p>
 <h1 id="局限"><a href="#局限" class="headerlink" title="局限"></a>局限</h1><p>因为基于词典，因此不具备新词发现的能力，同时也很难处理歧义问题。</p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>TODO</p>
 
       
     </div>
@@ -780,7 +791,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解释"><span class="nav-number">1.</span> <span class="nav-text">解释</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-log-函数将求解相乘问题转换成相加问题"><span class="nav-number">1.1.</span> <span class="nav-text">使用 log 函数将求解相乘问题转换成相加问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用倒数函数将求解最大问题变成求解最小问题"><span class="nav-number">1.2.</span> <span class="nav-text">使用倒数函数将求解最大问题变成求解最小问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#局限"><span class="nav-number">3.</span> <span class="nav-text">局限</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解释"><span class="nav-number">1.</span> <span class="nav-text">解释</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-log-函数将求解相乘问题转换成相加问题"><span class="nav-number">1.1.</span> <span class="nav-text">使用 log 函数将求解相乘问题转换成相加问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用倒数函数将求解最大问题变成求解最小问题"><span class="nav-number">1.2.</span> <span class="nav-text">使用倒数函数将求解最大问题变成求解最小问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#局限"><span class="nav-number">3.</span> <span class="nav-text">局限</span></a></li></ol></div>
             
 
           </div>
