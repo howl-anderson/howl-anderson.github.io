@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.xiaoquankong.ai/"/>
-  <updated>2018-08-15T07:38:36.260Z</updated>
+  <updated>2018-08-16T13:50:05.986Z</updated>
   <id>https://blog.xiaoquankong.ai/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>构建中文分词器-有向无环图法</title>
+    <title>构建中文分词器 - 有向无环图法</title>
     <link href="https://blog.xiaoquankong.ai/%E6%9E%84%E5%BB%BA%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8-%E6%9C%89%E5%90%91%E6%97%A0%E7%8E%AF%E5%9B%BE%E6%B3%95/"/>
     <id>https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/</id>
     <published>2018-08-14T04:37:44.000Z</published>
-    <updated>2018-08-15T07:38:36.260Z</updated>
+    <updated>2018-08-16T13:50:05.986Z</updated>
     
     <content type="html"><![CDATA[<p>将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。<br><a id="more"></a></p><h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>所需的语料是一个包含词语频率的字典。查找所有可能的分词结果可以通过查找字典中的词是否在一个字符串的开始位置来完成。</p><p>构建成有向无环图后，我们找出所有路径中联合概率（朴素观点为：各个词语概率相乘）最大的路径。但一般情况下图理论和图相关的库都是用来求解最短路径（所有路径中权重之和最小的路径），因此这里做数学上的变换，能够按照最小路径求解的方式，找到联合概率最大的路径。具体变动如下:</p><h2 id="使用-log-函数将求解相乘问题转换成相加问题"><a href="#使用-log-函数将求解相乘问题转换成相加问题" class="headerlink" title="使用 log 函数将求解相乘问题转换成相加问题"></a>使用 log 函数将求解相乘问题转换成相加问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log(a * b) = log(a) + log(b)</span><br></pre></td></tr></table></figure><h2 id="使用倒数函数将求解最大问题变成求解最小问题"><a href="#使用倒数函数将求解最大问题变成求解最小问题" class="headerlink" title="使用倒数函数将求解最大问题变成求解最小问题"></a>使用倒数函数将求解最大问题变成求解最小问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a &gt; b</span><br><span class="line">then</span><br><span class="line">1/a &lt; 1/b</span><br></pre></td></tr></table></figure><h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>以 <code>我们在野生动物园玩</code> 为例，假设我们的词典里只包含如下词汇</p><table><thead><tr><th>词汇</th><th>频数</th><th>概率</th><th>概率的倒数</th><th>log(概率的倒数)</th></tr></thead><tbody><tr><td>我们</td><td>30</td><td>0.30</td><td>3.3</td><td>1.19</td></tr><tr><td>在</td><td>40</td><td>0.40</td><td>2.5</td><td>3.69</td></tr><tr><td>在野</td><td>2</td><td>0.02</td><td>50</td><td>3.91</td></tr><tr><td>野生动物园</td><td>8</td><td>0.08</td><td>12.5</td><td>2.53</td></tr><tr><td>物</td><td>1</td><td>0.01</td><td>100</td><td>4.61</td></tr><tr><td>园</td><td>1</td><td>0.01</td><td>100</td><td>4.61</td></tr><tr><td>玩</td><td>18</td><td>0.18</td><td>5.6</td><td>1.72</td></tr></tbody></table><p><em>NOTE</em> : <code>log</code> 函数在这里是以自然对数 <code>e</code> 为低的，等同于函数 <code>ln</code></p><p>从 <code>我们在野生动物园玩</code> 开始，扫描词汇表，找到匹配的前缀词汇。</p><ol><li>第一轮找到词汇 <code>我们</code>，剩余未分词字符串为 <code>在野生动物园玩</code></li><li>第二轮找到词汇 <code>在</code> 和 <code>在野</code>，剩余未分词字符串为 <code>野生动物园玩</code> 和 <code>生动物园玩</code></li><li>第三轮则对上面两个未分词字符串，应用相同的规则分词，得到词汇 <code>野生动物园</code> 和 <code>生动</code></li><li>如此重复直到所有的未分词字符串为空。</li></ol><p>经过上述步骤，我们得到两种分词可能</p><ol><li><code>我们</code> / <code>在</code> / <code>野生动物园</code> / <code>玩</code></li><li><code>我们</code> / <code>在野</code> / <code>生动</code> / <code>物</code> / <code>园</code> / <code>玩</code></li></ol><p>添加开始节点 <code>&lt;start&gt;</code> 和 结束节点 <code>&lt;end&gt;</code> 后，我们可以构建一个 <code>有向无环图</code>, 节点之间的边的权重为上一个节点对应的 <code>log(概率的倒数)</code>。</p><p>则得到类似如下的有向无环图：</p><p><img src="./DAG.png" alt="DAG"></p><p>通过求解最小路径的方法可以得到最短路径为 <code>我们</code> / <code>在</code> / <code>野生动物园</code> / <code>玩</code></p><h1 id="局限"><a href="#局限" class="headerlink" title="局限"></a>局限</h1><p>因为基于词典，因此不具备新词发现的能力，同时也很难处理歧义问题。</p>]]></content>
     
@@ -55,11 +55,11 @@
   </entry>
   
   <entry>
-    <title>构建中文分词器-反向最大匹配法</title>
+    <title>构建中文分词器 - 反向最大匹配法</title>
     <link href="https://blog.xiaoquankong.ai/%E6%9E%84%E5%BB%BA%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8-%E5%8F%8D%E5%90%91%E6%9C%80%E5%A4%A7%E5%8C%B9%E9%85%8D%E6%B3%95/"/>
     <id>https://blog.xiaoquankong.ai/构建中文分词器-反向最大匹配法/</id>
     <published>2018-08-13T13:47:42.666Z</published>
-    <updated>2018-08-14T04:18:19.960Z</updated>
+    <updated>2018-08-16T13:50:13.415Z</updated>
     
     <content type="html"><![CDATA[<p>最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的右边到左边（反向）依次寻找最大匹配。<br><a id="more"></a></p><h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>从解释的角度，可以理解为：判断待分词字符串的后 N 个字符构成的字符串是否在字典中，如果在，则匹配结束。如果没有匹配成功，则依次缩减 N 直到匹配成功。</p><h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>以 <code>中国的首都是北京</code> 为例, 假设 N 初始化为 4：</p><ol><li>匹配 <code>都是北京</code>， 字典中无此词语，匹配失败，缩减 N 为 3</li><li>匹配 <code>是北京</code>， 字典中无此词语，匹配失败，缩减 N 为 2</li><li>匹配 <code>北京</code>， 字典中有此词语，匹配成功，结束匹配</li></ol><p>继续匹配剩余未分词字符串 <code>中国的首都是</code>，直至字符串全部被分词。</p><h1 id="局限"><a href="#局限" class="headerlink" title="局限"></a>局限</h1><p>因为只考虑了能否构成词汇，完全没有考虑上下文，所以部分情况下会出现问题。<br>例如 <code>中国的首都是北京</code> 则会被分成 <code>中国</code> / <code>的</code> / <code>首</code> / <code>都是</code> / <code>北京</code></p><h1 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h1><p>本算法耗时最大的部分在于扫描词典，因此可以通过特定的数据结构优化加速字典查找过程：</p><ol><li>按照长度分别构建多个字典，能够一定程度的加速字典扫描的速度</li><li>使用 Trie-Tree 能够极大的加速查找过程</li></ol><h1 id="关联算法"><a href="#关联算法" class="headerlink" title="关联算法"></a>关联算法</h1><p>和 <code>最大正向匹配法</code> 思想完全一样，用于解决 <code>最大正向匹配法</code> 的某些问题。比如：<code>我们在野生动物园玩</code> 在 <code>最大正向匹配法</code> 中无法正确分词，但 <code>反向最大匹配法</code> 能够正确分词。</p><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul><li><a href="https://blog.csdn.net/jusang486/article/details/37561365" target="_blank" rel="noopener">中文分词基础原则及正向最大匹配法、逆向最大匹配法、双向最大匹配法的分析</a></li></ul>]]></content>
     
@@ -79,7 +79,7 @@
     <link href="https://blog.xiaoquankong.ai/%E6%9E%84%E5%BB%BA%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8-%E6%AD%A3%E5%90%91%E6%9C%80%E5%A4%A7%E5%8C%B9%E9%85%8D%E6%B3%95/"/>
     <id>https://blog.xiaoquankong.ai/构建中文分词器-正向最大匹配法/</id>
     <published>2018-08-13T13:00:49.888Z</published>
-    <updated>2018-08-14T04:24:44.245Z</updated>
+    <updated>2018-08-16T13:50:03.573Z</updated>
     
     <content type="html"><![CDATA[<p>最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的左边到右边（正向）依次寻找最大匹配。<br><a id="more"></a></p><h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>从解释的角度，可以理解为：判断待分词字符串的前 N 个字符构成的字符串是否在字典中，如果在，则匹配结束。如果没有匹配成功，则依次缩减 N 直到匹配成功。</p><h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>以 <code>我们在野生动物园玩</code> 为例, 假设 N 初始化为 4：</p><ol><li>匹配 <code>我们在野</code>， 字典中无此词语，匹配失败，缩减 N 为 3</li><li>匹配 <code>我们在</code>， 字典中无此词语，匹配失败，缩减 N 为 2</li><li>匹配 <code>我们</code>， 字典中有此词语，匹配成功，结束匹配</li></ol><p>继续匹配剩余未分词字符串 <code>在野生动物园玩</code>，直至字符串全部被分词。</p><h1 id="局限"><a href="#局限" class="headerlink" title="局限"></a>局限</h1><p>因为只考虑了能否构成词汇，完全没有考虑上下文，所以部分情况下会出现问题。<br>例如 <code>我们在野生动物园玩</code> 则会被分成 <code>我们</code> / <code>在野</code> / <code>生动</code> / <code>物</code> / <code>园</code> / <code>玩</code></p><h1 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h1><p>本算法耗时最大的部分在于扫描词典，因此可以通过特定的数据结构优化加速字典查找过程：</p><ol><li>按照长度分别构建多个字典，能够一定程度的加速字典扫描的速度</li><li>使用 Trie-Tree 能够极大的加速查找过程</li></ol><h1 id="关联算法"><a href="#关联算法" class="headerlink" title="关联算法"></a>关联算法</h1><p><code>反向最大匹配法</code> 和 <code>最大正向匹配法</code> 思想完全一样，用于解决 <code>最大正向匹配法</code> 的某些问题。比如：<code>我们在野生动物园玩</code> 在 <code>最大正向匹配法</code> 中无法正确分词，但 <code>反向最大匹配法</code> 能够正确分词。</p><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul><li><a href="https://blog.csdn.net/jusang486/article/details/37561365" target="_blank" rel="noopener">中文分词基础原则及正向最大匹配法、逆向最大匹配法、双向最大匹配法的分析</a></li></ul>]]></content>
     
@@ -340,9 +340,9 @@
       <category term="神经网络" scheme="https://blog.xiaoquankong.ai/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
     
     
-      <category term="LSTM" scheme="https://blog.xiaoquankong.ai/tags/LSTM/"/>
-    
       <category term="神经网络" scheme="https://blog.xiaoquankong.ai/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
+    
+      <category term="LSTM" scheme="https://blog.xiaoquankong.ai/tags/LSTM/"/>
     
   </entry>
   
