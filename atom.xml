@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.xiaoquankong.ai/"/>
-  <updated>2018-08-16T13:50:05.986Z</updated>
+  <updated>2018-08-20T09:09:55.190Z</updated>
   <id>https://blog.xiaoquankong.ai/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>构建中文分词器 - 隐马尔科夫模型</title>
+    <link href="https://blog.xiaoquankong.ai/%E6%9E%84%E5%BB%BA%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8-%E9%9A%90%E9%A9%AC%E5%B0%94%E7%A7%91%E5%A4%AB%E6%A8%A1%E5%9E%8B/"/>
+    <id>https://blog.xiaoquankong.ai/构建中文分词器-隐马尔科夫模型/</id>
+    <published>2018-08-20T08:19:38.000Z</published>
+    <updated>2018-08-20T09:09:55.190Z</updated>
+    
+    <content type="html"><![CDATA[<p>利用 隐马尔科夫模型（HMM） 的解码能力，能从一个观察序列（字符串序列）解码成另一个隐藏状态序列（分词符号序列）<br><a id="more"></a></p><h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>将训练数据按照 BMES 标记集合转换成隐藏状态序列。一般情况下使用 <code>BMES</code> 标记体系作为隐藏序列的体系。</p><h2 id="BMES-标记体系"><a href="#BMES-标记体系" class="headerlink" title="BMES 标记体系"></a>BMES 标记体系</h2><p>BMES 分别是 <code>Begin</code> / <code>Middle</code> / <code>End</code> / <code>Single</code> 的缩写，分别代表着所标记的字符是一个词语的 <code>开始字符</code> / <code>中间字符</code> / <code>结尾字符</code> / <code>单个字符</code>（也就是说这个词只由一个字符构成）。</p><p>举例来说：</p><ul><li><code>我</code> 这个词对应的 BMES 标记为 <code>S</code></li><li><code>我们</code> 这个词对应的 BMES 标记为 <code>BE</code></li><li><code>老爷爷</code> 这个词对应的 BMES 标记为 <code>BME</code></li><li><code>风调雨顺</code> 这个词对应的 BMES 标记为 <code>BMME</code></li></ul><p>得到训练数据后，可以统计出 HMM 的两个参数表。得到的 HMM 参数后可以利用 Viterbi 算法解码出隐藏状态序列，再按照隐藏状态序列反向将字符串分割成词语</p><h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>以 <code>我们在野生动物园玩</code> 为例, 假设 HMM 解码得到的隐藏状态序列为 <code>BESBMMMES</code></p><p>则会被分成 <code>我们</code>(<code>BE</code>) / <code>在</code>(<code>S</code>) / <code>野生动园</code>(<code>BMMME</code>) / <code>玩</code>(<code>S</code>)</p><h1 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h1><p>为了增加处理 OOV 的能力，对于没有出现在训练数据集的字符，每个隐藏状态都有一个非常小的 Emission Probability, 这样可以增加模型的鲁棒性。</p><h1 id="关联算法"><a href="#关联算法" class="headerlink" title="关联算法"></a>关联算法</h1><p><code>CRF</code> 的基本想法与此算法类似，但性能更加强劲。</p><h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul><li><a href="https://web.stanford.edu/~jurafsky/slp3/8.pdf" target="_blank" rel="noopener">Part-of-Speech Tagging in Speech and Language Processing (Draft of August 12, 2018.)</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;利用 隐马尔科夫模型（HMM） 的解码能力，能从一个观察序列（字符串序列）解码成另一个隐藏状态序列（分词符号序列）&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="中文分词器" scheme="https://blog.xiaoquankong.ai/tags/%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>构建中文分词器 - 有向无环图法</title>
@@ -340,9 +360,9 @@
       <category term="神经网络" scheme="https://blog.xiaoquankong.ai/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
     
     
-      <category term="神经网络" scheme="https://blog.xiaoquankong.ai/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
-    
       <category term="LSTM" scheme="https://blog.xiaoquankong.ai/tags/LSTM/"/>
+    
+      <category term="神经网络" scheme="https://blog.xiaoquankong.ai/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/"/>
     
   </entry>
   
@@ -411,26 +431,6 @@
     
     
       <category term="Python" scheme="https://blog.xiaoquankong.ai/tags/Python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用chatterbot构建自己的中文chat(闲聊)机器人</title>
-    <link href="https://blog.xiaoquankong.ai/%E4%BD%BF%E7%94%A8chatterbot%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E4%B8%AD%E6%96%87chat(%E9%97%B2%E8%81%8A)%E6%9C%BA%E5%99%A8%E4%BA%BA/"/>
-    <id>https://blog.xiaoquankong.ai/使用chatterbot构建自己的中文chat(闲聊)机器人/</id>
-    <published>2017-11-09T07:05:54.000Z</published>
-    <updated>2018-08-13T11:08:02.496Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong>TL;DR</strong> 本文使用开源框架chatterbot从零开始构建你自己的聊天机器人（还带有WEB界面奥～）。<a id="more"></a></p><p>聊天机器人大体上分为三种：闲聊机器人、问答机器人和任务型机器人。闲聊机器人，顾名思义就是和你闲聊插科打诨的机器人，目前比较典型的代表是微软小冰，小黄鸡等。问答机器人有一个标准答案库，当用户来咨询时机器人负责理解用户的语意，给出符合语意的标准答案，目前比较典型的应用是各类咨询机器人，客服机器人等。最后一类：任务型机器人，通过和客户的沟通帮助用户完成特定任务比如定机票、定闹钟等，目前比较典型的应用是各种私人助理，苹果的siri系统也具备此类功能。</p><p>我们这里介绍一个简单易用的闲聊机器人框架chatterbot website: <a href="http://chatterbot.readthedocs.io/" target="_blank" rel="noopener">http://chatterbot.readthedocs.io/</a></p><p>先上一个成品图，这将是我们最后完成时的效果：</p><p><img src="Chat_Instance-1024x736.png" alt="Chat Instance"></p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install chatterbot</span><br></pre></td></tr></table></figure><h2 id="快速入门（toy级别的方案）"><a href="#快速入门（toy级别的方案）" class="headerlink" title="快速入门（toy级别的方案）"></a>快速入门（toy级别的方案）</h2><p>下面的代码实现了一个toy聊天机器人</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># 导入所需的依赖</span><br><span class="line">from chatterbot import ChatBot</span><br><span class="line">from chatterbot.trainers import ListTrainer</span><br><span class="line"></span><br><span class="line">chatbot = ChatBot(&quot;SillyRobot&quot;)  # 这里创建了机器人实例，并设定了机器人的名字：SillyRobot</span><br><span class="line"></span><br><span class="line"># 定义训练数据集</span><br><span class="line">conversation = [</span><br><span class="line">    &quot;Hello&quot;,</span><br><span class="line">    &quot;Hi there!&quot;,</span><br><span class="line">    &quot;How are you doing?&quot;,</span><br><span class="line">    &quot;I&apos;m doing great.&quot;,</span><br><span class="line">    &quot;That is good to hear&quot;,</span><br><span class="line">    &quot;Thank you.&quot;,</span><br><span class="line">    &quot;You&apos;re welcome.&quot;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"># 训练</span><br><span class="line">chatbot.set_trainer(ListTrainer)</span><br><span class="line">chatbot.train(conversation)</span><br><span class="line"></span><br><span class="line"># 响应用户请求</span><br><span class="line">response = chatbot.get_response(&quot;Good morning!&quot;)</span><br><span class="line">print(response)</span><br></pre></td></tr></table></figure><p>上述代码会训练你给定的训练集，并把训练结果保存起来，没有指定的情况下，会使用存储模块<code>chatterbot.storage.SQLStorageAdapter</code>完成模型的存储。在完成训练后就可以将训练代码移除，这样机器人就不会每次都要从头训练了。</p><h2 id="比较正式的方案"><a href="#比较正式的方案" class="headerlink" title="比较正式的方案"></a>比较正式的方案</h2><p>上面的方案使用的语料库是硬编码在文档中的，这在正式项目中是不合适的。下面介绍一个比较正式的使用chatter的方案。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line"></span><br><span class="line">from chatterbot import ChatBot</span><br><span class="line">from chatterbot.trainers import ChatterBotCorpusTrainer</span><br><span class="line"></span><br><span class="line">current_dir = os.path.dirname(os.path.realpath(__file__))</span><br><span class="line"></span><br><span class="line">chat_bot = ChatBot(&quot;SillyRobot&quot;) # 这里创建了机器人实例，并设定了机器人的名字：SillyRobot</span><br><span class="line">chat_bot.set_trainer(ChatterBotCorpusTrainer)</span><br><span class="line"># 使用中文语料库训练它</span><br><span class="line"># chat_bot.train(&quot;chatterbot.corpus.chinese&quot;)  # 语料库</span><br><span class="line"># 开始对话</span><br><span class="line">response = chat_bot.get_response(&quot;我好么&quot;)</span><br><span class="line">print(response)</span><br></pre></td></tr></table></figure><p>官方自带的中文聊天数据集表现比较差，你需要自己实现一个<code>trainer</code>，具体怎么实现见官方文档 <a href="http://chatterbot.readthedocs.io/en/stable/training.html#creating-a-new-training-class" target="_blank" rel="noopener">Creating a new training class</a>.</p><h2 id="Web集成"><a href="#Web集成" class="headerlink" title="Web集成"></a>Web集成</h2><p>chatter自带了Django集成，所以很容易架设一个网站，提供HTTP接口、管理后台以及在线聊天页面等功能。具体代码可以拷贝官方的示例代码<a href="https://github.com/gunthercox/ChatterBot/tree/master/examples/django_app" target="_blank" rel="noopener">https://github.com/gunthercox/ChatterBot/tree/master/examples/django_app</a>, 这里需要注意的是，你需要更改chatterbot的配置在<code>settings.py</code>里面的<code>CHATTERBOT</code>变量处，具体怎么修改，请参考<a href="http://chatterbot.readthedocs.io/en/stable/django/settings.html#chatterbot-django-settings" target="_blank" rel="noopener">文档1</a>和<a href="http://chatterbot.readthedocs.io/en/stable/django/training.html#training-settings" target="_blank" rel="noopener">文档2</a>,但你仍然需要以下步骤：</p><h3 id="安装Django"><a href="#安装Django" class="headerlink" title="安装Django"></a>安装Django</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install django</span><br></pre></td></tr></table></figure><h3 id="同步数据库"><a href="#同步数据库" class="headerlink" title="同步数据库"></a>同步数据库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure><h3 id="创建超级用户"><a href="#创建超级用户" class="headerlink" title="创建超级用户"></a>创建超级用户</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py createsuperuser</span><br></pre></td></tr></table></figure><h3 id="训练chatterbot"><a href="#训练chatterbot" class="headerlink" title="训练chatterbot"></a>训练chatterbot</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py train</span><br></pre></td></tr></table></figure><h3 id="运行server"><a href="#运行server" class="headerlink" title="运行server"></a>运行server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver</span><br></pre></td></tr></table></figure><p>web服务器默认监听5000端口，访问<a href="http://127.0.0.0.1:5000" target="_blank" rel="noopener">http://127.0.0.0.1:5000</a>就能访问页面了，页面效果如下图：</p><p><img src="Django_ChatterBot_Example-1024x561.png" alt="Django ChatterBot Example"></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文使用开源框架chatterbot从零开始构建你自己的聊天机器人（还带有WEB界面奥～）。
-    
-    </summary>
-    
-    
-      <category term="NLU" scheme="https://blog.xiaoquankong.ai/tags/NLU/"/>
     
   </entry>
   

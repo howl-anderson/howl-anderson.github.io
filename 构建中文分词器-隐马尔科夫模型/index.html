@@ -104,19 +104,18 @@
 
 
 
-  <meta name="description" content="将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。">
+  <meta name="description" content="利用 隐马尔科夫模型（HMM） 的解码能力，能从一个观察序列（字符串序列）解码成另一个隐藏状态序列（分词符号序列）">
+<meta name="keywords" content="中文分词器">
 <meta property="og:type" content="article">
-<meta property="og:title" content="构建中文分词器 - 有向无环图法">
-<meta property="og:url" content="https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/index.html">
+<meta property="og:title" content="构建中文分词器 - 隐马尔科夫模型">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/构建中文分词器-隐马尔科夫模型/index.html">
 <meta property="og:site_name" content="Howl&#39;s">
-<meta property="og:description" content="将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。">
+<meta property="og:description" content="利用 隐马尔科夫模型（HMM） 的解码能力，能从一个观察序列（字符串序列）解码成另一个隐藏状态序列（分词符号序列）">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/DAG.png">
-<meta property="og:updated_time" content="2018-08-16T13:50:05.986Z">
+<meta property="og:updated_time" content="2018-08-20T09:09:55.190Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="构建中文分词器 - 有向无环图法">
-<meta name="twitter:description" content="将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。">
-<meta name="twitter:image" content="https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/DAG.png">
+<meta name="twitter:title" content="构建中文分词器 - 隐马尔科夫模型">
+<meta name="twitter:description" content="利用 隐马尔科夫模型（HMM） 的解码能力，能从一个观察序列（字符串序列）解码成另一个隐藏状态序列（分词符号序列）">
 
 
 
@@ -125,7 +124,7 @@
 
 
 
-  <link rel="canonical" href="https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/"/>
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/构建中文分词器-隐马尔科夫模型/"/>
 
 
 
@@ -135,7 +134,7 @@
   };
 </script>
 
-  <title>构建中文分词器 - 有向无环图法 | Howl's</title>
+  <title>构建中文分词器 - 隐马尔科夫模型 | Howl's</title>
   
 
 
@@ -316,7 +315,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/构建中文分词器-隐马尔科夫模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Xiaoquan Kong">
@@ -333,7 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">构建中文分词器 - 有向无环图法
+          <h1 class="post-title" itemprop="name headline">构建中文分词器 - 隐马尔科夫模型
               
             
           </h1>
@@ -358,24 +357,12 @@
                 
               
 
-              <time title="Created: 2018-08-14 12:37:44" itemprop="dateCreated datePublished" datetime="2018-08-14T12:37:44+08:00">2018-08-14</time>
+              <time title="Created: 2018-08-20 16:19:38 / Modified: 17:09:55" itemprop="dateCreated datePublished" datetime="2018-08-20T16:19:38+08:00">2018-08-20</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2018-08-16 21:50:05" itemprop="dateModified" datetime="2018-08-16T21:50:05+08:00">2018-08-16</time>
               
             
           </span>
@@ -389,9 +376,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/构建中文分词器-有向无环图法/#comments" itemprop="discussionUrl">
+                <a href="/构建中文分词器-隐马尔科夫模型/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="构建中文分词器-有向无环图法/" itemprop="commentCount"></span>
+                        data-disqus-identifier="构建中文分词器-隐马尔科夫模型/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -419,92 +406,24 @@
       
 
       
-        <p>将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。<br><a id="more"></a></p>
-<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>所需的语料是一个包含词语频率的字典。查找所有可能的分词结果可以通过查找字典中的词是否在一个字符串的开始位置来完成。</p>
-<p>构建成有向无环图后，我们找出所有路径中联合概率（朴素观点为：各个词语概率相乘）最大的路径。但一般情况下图理论和图相关的库都是用来求解最短路径（所有路径中权重之和最小的路径），因此这里做数学上的变换，能够按照最小路径求解的方式，找到联合概率最大的路径。具体变动如下:</p>
-<h2 id="使用-log-函数将求解相乘问题转换成相加问题"><a href="#使用-log-函数将求解相乘问题转换成相加问题" class="headerlink" title="使用 log 函数将求解相乘问题转换成相加问题"></a>使用 log 函数将求解相乘问题转换成相加问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log(a * b) = log(a) + log(b)</span><br></pre></td></tr></table></figure>
-<h2 id="使用倒数函数将求解最大问题变成求解最小问题"><a href="#使用倒数函数将求解最大问题变成求解最小问题" class="headerlink" title="使用倒数函数将求解最大问题变成求解最小问题"></a>使用倒数函数将求解最大问题变成求解最小问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a &gt; b</span><br><span class="line">then</span><br><span class="line">1/a &lt; 1/b</span><br></pre></td></tr></table></figure>
-<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>以 <code>我们在野生动物园玩</code> 为例，假设我们的词典里只包含如下词汇</p>
-<table>
-<thead>
-<tr>
-<th>词汇</th>
-<th>频数</th>
-<th>概率</th>
-<th>概率的倒数</th>
-<th>log(概率的倒数)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>我们</td>
-<td>30</td>
-<td>0.30</td>
-<td>3.3</td>
-<td>1.19</td>
-</tr>
-<tr>
-<td>在</td>
-<td>40</td>
-<td>0.40</td>
-<td>2.5</td>
-<td>3.69</td>
-</tr>
-<tr>
-<td>在野</td>
-<td>2</td>
-<td>0.02</td>
-<td>50</td>
-<td>3.91</td>
-</tr>
-<tr>
-<td>野生动物园</td>
-<td>8</td>
-<td>0.08</td>
-<td>12.5</td>
-<td>2.53</td>
-</tr>
-<tr>
-<td>物</td>
-<td>1</td>
-<td>0.01</td>
-<td>100</td>
-<td>4.61</td>
-</tr>
-<tr>
-<td>园</td>
-<td>1</td>
-<td>0.01</td>
-<td>100</td>
-<td>4.61</td>
-</tr>
-<tr>
-<td>玩</td>
-<td>18</td>
-<td>0.18</td>
-<td>5.6</td>
-<td>1.72</td>
-</tr>
-</tbody>
-</table>
-<p><em>NOTE</em> : <code>log</code> 函数在这里是以自然对数 <code>e</code> 为低的，等同于函数 <code>ln</code></p>
-<p>从 <code>我们在野生动物园玩</code> 开始，扫描词汇表，找到匹配的前缀词汇。</p>
-<ol>
-<li>第一轮找到词汇 <code>我们</code>，剩余未分词字符串为 <code>在野生动物园玩</code></li>
-<li>第二轮找到词汇 <code>在</code> 和 <code>在野</code>，剩余未分词字符串为 <code>野生动物园玩</code> 和 <code>生动物园玩</code></li>
-<li>第三轮则对上面两个未分词字符串，应用相同的规则分词，得到词汇 <code>野生动物园</code> 和 <code>生动</code></li>
-<li>如此重复直到所有的未分词字符串为空。</li>
-</ol>
-<p>经过上述步骤，我们得到两种分词可能</p>
-<ol>
-<li><code>我们</code> / <code>在</code> / <code>野生动物园</code> / <code>玩</code></li>
-<li><code>我们</code> / <code>在野</code> / <code>生动</code> / <code>物</code> / <code>园</code> / <code>玩</code></li>
-</ol>
-<p>添加开始节点 <code>&lt;start&gt;</code> 和 结束节点 <code>&lt;end&gt;</code> 后，我们可以构建一个 <code>有向无环图</code>, 节点之间的边的权重为上一个节点对应的 <code>log(概率的倒数)</code>。</p>
-<p>则得到类似如下的有向无环图：</p>
-<p><img src="./DAG.png" alt="DAG"></p>
-<p>通过求解最小路径的方法可以得到最短路径为 <code>我们</code> / <code>在</code> / <code>野生动物园</code> / <code>玩</code></p>
-<h1 id="局限"><a href="#局限" class="headerlink" title="局限"></a>局限</h1><p>因为基于词典，因此不具备新词发现的能力，同时也很难处理歧义问题。</p>
+        <p>利用 隐马尔科夫模型（HMM） 的解码能力，能从一个观察序列（字符串序列）解码成另一个隐藏状态序列（分词符号序列）<br><a id="more"></a></p>
+<h1 id="解释"><a href="#解释" class="headerlink" title="解释"></a>解释</h1><p>将训练数据按照 BMES 标记集合转换成隐藏状态序列。一般情况下使用 <code>BMES</code> 标记体系作为隐藏序列的体系。</p>
+<h2 id="BMES-标记体系"><a href="#BMES-标记体系" class="headerlink" title="BMES 标记体系"></a>BMES 标记体系</h2><p>BMES 分别是 <code>Begin</code> / <code>Middle</code> / <code>End</code> / <code>Single</code> 的缩写，分别代表着所标记的字符是一个词语的 <code>开始字符</code> / <code>中间字符</code> / <code>结尾字符</code> / <code>单个字符</code>（也就是说这个词只由一个字符构成）。</p>
+<p>举例来说：</p>
+<ul>
+<li><code>我</code> 这个词对应的 BMES 标记为 <code>S</code></li>
+<li><code>我们</code> 这个词对应的 BMES 标记为 <code>BE</code></li>
+<li><code>老爷爷</code> 这个词对应的 BMES 标记为 <code>BME</code></li>
+<li><code>风调雨顺</code> 这个词对应的 BMES 标记为 <code>BMME</code></li>
+</ul>
+<p>得到训练数据后，可以统计出 HMM 的两个参数表。得到的 HMM 参数后可以利用 Viterbi 算法解码出隐藏状态序列，再按照隐藏状态序列反向将字符串分割成词语</p>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>以 <code>我们在野生动物园玩</code> 为例, 假设 HMM 解码得到的隐藏状态序列为 <code>BESBMMMES</code></p>
+<p>则会被分成 <code>我们</code>(<code>BE</code>) / <code>在</code>(<code>S</code>) / <code>野生动园</code>(<code>BMMME</code>) / <code>玩</code>(<code>S</code>)</p>
+<h1 id="优化方案"><a href="#优化方案" class="headerlink" title="优化方案"></a>优化方案</h1><p>为了增加处理 OOV 的能力，对于没有出现在训练数据集的字符，每个隐藏状态都有一个非常小的 Emission Probability, 这样可以增加模型的鲁棒性。</p>
+<h1 id="关联算法"><a href="#关联算法" class="headerlink" title="关联算法"></a>关联算法</h1><p><code>CRF</code> 的基本想法与此算法类似，但性能更加强劲。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><ul>
+<li><a href="https://web.stanford.edu/~jurafsky/slp3/8.pdf" target="_blank" rel="noopener">Part-of-Speech Tagging in Speech and Language Processing (Draft of August 12, 2018.)</a></li>
+</ul>
 
       
     </div>
@@ -523,6 +442,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/中文分词器/" rel="tag"># 中文分词器</a>
+          
+        </div>
+      
 
       
       
@@ -532,8 +457,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/构建中文分词器-双向最大匹配法/" rel="next" title="构建中文分词器 - 双向最大匹配法">
-                <i class="fa fa-chevron-left"></i> 构建中文分词器 - 双向最大匹配法
+              <a href="/构建中文分词器-有向无环图法/" rel="next" title="构建中文分词器 - 有向无环图法">
+                <i class="fa fa-chevron-left"></i> 构建中文分词器 - 有向无环图法
               </a>
             
           </div>
@@ -541,10 +466,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/构建中文分词器-隐马尔科夫模型/" rel="prev" title="构建中文分词器 - 隐马尔科夫模型">
-                构建中文分词器 - 隐马尔科夫模型 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -795,7 +716,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解释"><span class="nav-number">1.</span> <span class="nav-text">解释</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-log-函数将求解相乘问题转换成相加问题"><span class="nav-number">1.1.</span> <span class="nav-text">使用 log 函数将求解相乘问题转换成相加问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用倒数函数将求解最大问题变成求解最小问题"><span class="nav-number">1.2.</span> <span class="nav-text">使用倒数函数将求解最大问题变成求解最小问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#局限"><span class="nav-number">3.</span> <span class="nav-text">局限</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解释"><span class="nav-number">1.</span> <span class="nav-text">解释</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BMES-标记体系"><span class="nav-number">1.1.</span> <span class="nav-text">BMES 标记体系</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">2.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化方案"><span class="nav-number">3.</span> <span class="nav-text">优化方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关联算法"><span class="nav-number">4.</span> <span class="nav-text">关联算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -945,9 +866,9 @@
   
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = 'https://blog.xiaoquankong.ai/构建中文分词器-有向无环图法/';
-        this.page.identifier = '构建中文分词器-有向无环图法/';
-        this.page.title = '构建中文分词器 - 有向无环图法';
+        this.page.url = 'https://blog.xiaoquankong.ai/构建中文分词器-隐马尔科夫模型/';
+        this.page.identifier = '构建中文分词器-隐马尔科夫模型/';
+        this.page.title = '构建中文分词器 - 隐马尔科夫模型';
       };
       function loadComments () {
         var d = document, s = d.createElement('script');
