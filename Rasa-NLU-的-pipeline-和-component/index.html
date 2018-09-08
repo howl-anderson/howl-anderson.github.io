@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文将详细介绍 Rasa NLU 的 pipeline 和 component，介绍其原理和如何使用。">
+<meta name="keywords" content="Rasa NLU,Rasa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rasa NLU 的 pipeline 和 component">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/Rasa-NLU-的-pipeline-和-component/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="本文将详细介绍 Rasa NLU 的 pipeline 和 component，介绍其原理和如何使用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.xiaoquankong.ai/Rasa-NLU-的-pipeline-和-component/pipeline_abstract.png">
+<meta property="og:updated_time" content="2018-09-08T12:39:43.312Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rasa NLU 的 pipeline 和 component">
+<meta name="twitter:description" content="本文将详细介绍 Rasa NLU 的 pipeline 和 component，介绍其原理和如何使用。">
+<meta name="twitter:image" content="https://blog.xiaoquankong.ai/Rasa-NLU-的-pipeline-和-component/pipeline_abstract.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/Rasa-NLU-的-pipeline-和-component/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Rasa NLU 的 pipeline 和 component | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/Rasa-NLU-的-pipeline-和-component/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Rasa NLU 的 pipeline 和 component
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-08 19:41:52 / Modified: 20:39:43" itemprop="dateCreated datePublished" datetime="2018-09-08T19:41:52+08:00">2018-09-08</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/Rasa-NLU-的-pipeline-和-component/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="Rasa-NLU-的-pipeline-和-component/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将详细介绍 Rasa NLU 的 pipeline 和 component，介绍其原理和如何使用。</p>
+<a id="more"></a>
+<hr>
+<p>兼容性说明：</p>
+<p>本文介绍的 Rasa NLU 知识都是基于 <code>v0.13.2</code>, 不同版本之间可能会有差异，不过不用担心，根据官方消息，Rasa NLU 已经进入比较成熟的阶段，后续出现较大结构变动的可能性不大，因此本文介绍的知识在后续版本，甚至 <code>v1.x</code> 依然有效。</p>
+<hr>
+<p>Rasa NLU 是一个基于 pipeline 的通用框架。这样可以获得最大的灵活性。</p>
+<p>pipeline 定义了各个组件之间数据的前后流动关系，组件之间是存在依赖关系的，任意一个组件的依赖需求没有被满足都将导致 pipeline 出错（Rasa NLU 会在启动的时候检查是否每一个组件的依赖都被满足，如果没有满足，则终止运行并给出相关的提示消息）。具有以下特征：</p>
+<ul>
+<li>组件之间的顺序关系至关重要，比如 NER 组件需要前面的组件提供分词结果才能正常工作，那么前面的组件中有必须有一个分词器。</li>
+<li>组件是可以相互替换的，比如同样是提供分词结果，同时有几个 component 可以选择，比如中文的可以选择清华的分词器、北大的分词器的。</li>
+<li>有些组件是互斥的，比如：分词器是互斥的，分词结果不能同时由两个组件提供，否则会出现混乱。</li>
+<li>有些组件是可以同时使用的，比如：提取文本特征的组件可以同时使用基于规则的和基于文本嵌入向量的。</li>
+</ul>
+<p>一个 NLU 应用通常包括 命名实体识别 和 意图识别 两个任务。为了完成这些任务，一个 <strong>典型</strong> 的 Rasa NLU pipeline 通常具有以下的 pattern:</p>
+<p><img src="./pipeline_abstract.png" alt=""></p>
+<ul>
+<li>初始化类组件：为了加载模型文件，为后续的组件提供框架支持，如初始化 <code>SpaCy</code> 和 <code>MITIE</code></li>
+<li>分词组件：将文本分割成词语序列，为后续的高级 NLP 任务提供基础数据</li>
+<li>提取特征：提取词语序列的文本特征，通常采用 <code>Word Embedding</code> 的方式，提取特征的组件可以同时使用，同时搭配的还可能有基于正则表达式的提取特征的方法。</li>
+<li>NER 组件：根据前面提供的特征对文本进行命名实体的识别</li>
+<li>意图分类：按照语义对文本进行意图的分类，也称<code>意图识别</code></li>
+</ul>
+<h4 id="初始化组件"><a href="#初始化组件" class="headerlink" title="初始化组件"></a>初始化组件</h4><p>初始化组件提供加载模型文件为后续组件所用的组件提供初始化。目前只有两个初始化组件：<code>nlp_spacy</code> 和 <code>nlp_mitie</code>，分别对应 <code>SpaCy</code>（<a href="https://spacy.io/）" target="_blank" rel="noopener">https://spacy.io/）</a> 和 <code>MITIE</code>（<a href="https://github.com/mit-nlp/MITIE）" target="_blank" rel="noopener">https://github.com/mit-nlp/MITIE）</a> 框架。</p>
+<p>基于 <code>MITIE</code> 的组件，如： <code>tokenizer_mitie</code>、<code>intent_featurizer_mitie</code>、<code>ner_mitie</code> 和 <code>intent_classifier_mitie</code> 都将依赖    <code>nlp_mitie</code> 提供的对象。</p>
+<p>基于 <code>SpaCy</code> 的组件，如：<code>tokenizer_spacy</code>、<code>intent_featurizer_spacy</code> 和 <code>ner_spacy</code> 都将依赖 <code>nlp_spacy</code> 提供的对象。</p>
+<h4 id="分词组件"><a href="#分词组件" class="headerlink" title="分词组件"></a>分词组件</h4><h5 id="什么是分词？"><a href="#什么是分词？" class="headerlink" title="什么是分词？"></a>什么是分词？</h5><p>自然语言处理在通常情况下都需要进行进行分词操作，那么什么是词，为什么要分词呢？</p>
+<!--参考文献 @ [深入NLP------看中文分词如何影响你的生活点滴](https://www.leiphone.com/news/201608/gvjbKpXPGf2CsxXo.html) -->
+<p>按照维基百科（<a href="https://zh.wikipedia.org/wiki/词" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/词</a>）的定义：</p>
+<blockquote>
+<p>在语言学中，词（英语：word），又称为单词，是能独立运用并含有语义内容或语用内容（即具有表面含义或实际含义）的最小单位。</p>
+</blockquote>
+<p>很多通用的 NLP 算法、语法语义分析和 End-to-End 应用都是以词作为基本输入单元。在自然语言处理的任务中，把连续的字（英语：character）分隔成更具有语言语义学上意义的词（英语：word）。这个过程就叫做分词（英语：tokenize /segment）。</p>
+<p>举例来说：</p>
+<blockquote>
+<p>王小明在北京的清华大学读书。</p>
+</blockquote>
+<p>可以被分词成</p>
+<blockquote>
+<p><code>王小明</code> <code>在</code> <code>北京</code> <code>的</code> <code>清华大学</code> <code>读书</code> <code>。</code></p>
+</blockquote>
+<h4 id="Rasa-分词组件"><a href="#Rasa-分词组件" class="headerlink" title="Rasa 分词组件"></a>Rasa 分词组件</h4><p>Rasa 分词组件中，目前直接支持中文的组件是 <code>tokenizer_jieba</code> 使用基于 MIT 开源协议的流行中文分词器 <code>jieba</code> (<a href="https://github.com/fxsjy/jieba" target="_blank" rel="noopener">https://github.com/fxsjy/jieba</a>) 作为底层引擎，经过改造可以支持中文分词的组件是 <code>tokenizer_mitie</code>，暂不支持中文分词但未来会支持中文分词的组件是 <code>tokenizer_spacy</code>。想用其他的分词器？当然没问题，因为 Rasa NLU 采用 pipeline 机制，扩展起来非常容易，你只需要自己实现一个分词组件就可以了，后面的章节我将演示如何自定义自己的中文分词器，本章节将不研究如何实现自己的组件。</p>
+<h4 id="提取特征"><a href="#提取特征" class="headerlink" title="提取特征"></a>提取特征</h4><p>无论是命名实体识别还是意图分类，都需要上游的组件提供特征。常见的特征选择为：词向量、Bag-of-words 和 N-grams 等。用户可以选择同时使用任意的上述组件提取特征，这些组件在实现层面上做了合并特性的操作，因此可以任意和和提取特征的组件一起使用。下面逐一介绍各个组件。</p>
+<h5 id="词向量特征"><a href="#词向量特征" class="headerlink" title="词向量特征"></a>词向量特征</h5><p>TODO</p>
+<h5 id="Bag-of-words"><a href="#Bag-of-words" class="headerlink" title="Bag-of-words"></a>Bag-of-words</h5><p>TODO</p>
+<h5 id="N-grams"><a href="#N-grams" class="headerlink" title="N-grams"></a>N-grams</h5><p>TODO</p>
+<h5 id="正则表达式特征"><a href="#正则表达式特征" class="headerlink" title="正则表达式特征"></a>正则表达式特征</h5><p>TODO</p>
+<h4 id="NER"><a href="#NER" class="headerlink" title="NER"></a>NER</h4><p>SpaCy 支持多种 NER 组件：<code>ner_crf</code>、<code>ner_mitie</code>、<code>ner_spacy</code>、<code>ner_duckling</code>、<code>ner_duckling_http</code> 和 <code>ner_synonyms</code>。</p>
+<h5 id="ner-crf"><a href="#ner-crf" class="headerlink" title="ner_crf"></a>ner_crf</h5><p>这个组件如其名，使用 <code>CRF</code> 模型来做 ENR, <code>CRF</code> 模型只依赖 tokens 本身，如果想在 <code>feature function</code> 中使用 POS 特性 那么则需要 <code>nlp_spacy</code> 组件提供 spacy_doc 对象来提供 POS 信息。关于 <code>CRF</code> 模型的原理和使用，请移步章节 <a href="TODO">TODO</a></p>
+<h5 id="ner-mitie"><a href="#ner-mitie" class="headerlink" title="ner_mitie"></a>ner_mitie</h5><p>利用 MITIE 模型提供的 language model，只需要 tokens 就可以进行 NER。TODO: 具体原理待研究</p>
+<h5 id="ner-spacy"><a href="#ner-spacy" class="headerlink" title="ner_spacy"></a>ner_spacy</h5><p>利用 SpaCy 模型自带的 NER 功能，模型的训练需要在 SpaCy 框架下进行，当前 SpaCy 模型不支持用户训练自己的模型，而 SpaCy 官方的模型只支持常见的几种实体，具体情况见官方文档。</p>
+<h5 id="ner-duckling-和-ner-duckling-http"><a href="#ner-duckling-和-ner-duckling-http" class="headerlink" title="ner_duckling 和 ner_duckling_http"></a>ner_duckling 和 ner_duckling_http</h5><p>Duckling 是 Facebook 出品的一款用 Haskell 语言写成的 NER 库，基于规则和模型。Duckling 支持多种实体的提取，如下表（TODO: 标注 Duckling 的版本）：</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Example input</th>
+<th>Example value output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AmountOfMoney</code></td>
+<td>“42€”</td>
+<td><code>{&quot;value&quot;:42,&quot;type&quot;:&quot;value&quot;,&quot;unit&quot;:&quot;EUR&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Distance</code></td>
+<td>“6 miles”</td>
+<td><code>{&quot;value&quot;:6,&quot;type&quot;:&quot;value&quot;,&quot;unit&quot;:&quot;mile&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Duration</code></td>
+<td>“3 mins”</td>
+<td><code>{&quot;value&quot;:3,&quot;minute&quot;:3,&quot;unit&quot;:&quot;minute&quot;,&quot;normalized&quot;:{&quot;value&quot;:180,&quot;unit&quot;:&quot;second&quot;}}</code></td>
+</tr>
+<tr>
+<td><code>Email</code></td>
+<td>“duckling-team@fb.com”</td>
+<td><code>{&quot;value&quot;:&quot;duckling-team@fb.com&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Numeral</code></td>
+<td>“eighty eight”</td>
+<td><code>{&quot;value&quot;:88,&quot;type&quot;:&quot;value&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Ordinal</code></td>
+<td>“33rd”</td>
+<td><code>{&quot;value&quot;:33,&quot;type&quot;:&quot;value&quot;}</code></td>
+</tr>
+<tr>
+<td><code>PhoneNumber</code></td>
+<td>“+1 (650) 123-4567”</td>
+<td><code>{&quot;value&quot;:&quot;(+1) 6501234567&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Quantity</code></td>
+<td>“3 cups of sugar”</td>
+<td><code>{&quot;value&quot;:3,&quot;type&quot;:&quot;value&quot;,&quot;product&quot;:&quot;sugar&quot;,&quot;unit&quot;:&quot;cup&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Temperature</code></td>
+<td>“80F”</td>
+<td><code>{&quot;value&quot;:80,&quot;type&quot;:&quot;value&quot;,&quot;unit&quot;:&quot;fahrenheit&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Time</code></td>
+<td>“today at 9am”</td>
+<td><code>{&quot;values&quot;:[{&quot;value&quot;:&quot;2016-12-14T09:00:00.000-08:00&quot;,&quot;grain&quot;:&quot;hour&quot;,&quot;type&quot;:&quot;value&quot;}],&quot;value&quot;:&quot;2016-12-14T09:00:00.000-08:00&quot;,&quot;grain&quot;:&quot;hour&quot;,&quot;type&quot;:&quot;value&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Url</code></td>
+<td>“<a href="https://api.wit.ai/message?q=hi" target="_blank" rel="noopener">https://api.wit.ai/message?q=hi</a>“</td>
+<td><code>{&quot;value&quot;:&quot;https://api.wit.ai/message?q=hi&quot;,&quot;domain&quot;:&quot;api.wit.ai&quot;}</code></td>
+</tr>
+<tr>
+<td><code>Volume</code></td>
+<td>“4 gallons”</td>
+<td><code>{&quot;value&quot;:4,&quot;type&quot;:&quot;value&quot;,&quot;unit&quot;:&quot;gallon&quot;}</code></td>
+</tr>
+</tbody>
+</table>
+<p>TODO: 考虑翻译上表为中文</p>
+<p>这里需要提醒的是 <code>Duckling</code> 对中文的支持并不是很全面，只支持上面诸多实体类型中的几种。</p>
+<p>在 Rssa 中有两种方式去调用 Duckling ，一种是通过 duckling 这个包使用 wrap 的方式访问，另一种是通过 HTTP 访问。上述两种访问方式分别对应 ner_duckling 和 ner_duckling_http 这两个组件。上述两种组件如何起来并不困难，具体请查阅官方文档。</p>
+<h5 id="ner-synonyms"><a href="#ner-synonyms" class="headerlink" title="ner_synonyms"></a>ner_synonyms</h5><p>正确来说 <code>ner_synonyms</code> 不是一个命名实体的<strong>提取</strong>组件，更像是一个归一化的组件。<code>ner_synonyms</code> 主要是讲各种同义词（synonyms）映射成为标准词汇，比如将实体 <code>KFC</code> 的值改写成 <code>肯德基</code>，这种归一化的操作为后续业务处理提供便利。</p>
+<h4 id="意图分类"><a href="#意图分类" class="headerlink" title="意图分类"></a>意图分类</h4><p>意图识别也称意图分类，Rasa 中的内建组件有 <code>intent_classifier_mitie</code>、<code>intent_classifier_sklearn</code>、<code>intent_classifier_tensorflow_embedding</code> 和 <code>intent_classifier_keyword</code>。</p>
+<h5 id="intent-classifier-mitie"><a href="#intent-classifier-mitie" class="headerlink" title="intent_classifier_mitie"></a>intent_classifier_mitie</h5><p>TODO</p>
+<h5 id="intent-classifier-sklearn"><a href="#intent-classifier-sklearn" class="headerlink" title="intent_classifier_sklearn"></a>intent_classifier_sklearn</h5><p>TODO</p>
+<h5 id="intent-classifier-tensorflow-embedding"><a href="#intent-classifier-tensorflow-embedding" class="headerlink" title="intent_classifier_tensorflow_embedding"></a>intent_classifier_tensorflow_embedding</h5><p>TODO</p>
+<h5 id="intent-classifer-keyword"><a href="#intent-classifer-keyword" class="headerlink" title="intent_classifer_keyword"></a>intent_classifer_keyword</h5><p>TODO</p>
+<h4 id="结构化输出"><a href="#结构化输出" class="headerlink" title="结构化输出"></a>结构化输出</h4><p>Rasa NLU 通过结构化输出组件将结果输出，在Rasa NLU 中结构化输出组件是框架提供的，不属于 Pipeline 的可变动部分，因此也不需要用户去配置（也无法直接配置）。</p>
+<p>TODO：解释输出的结构，包括组件不同的情况下，可能的结果</p>
+<h4 id="配置-Pipeline"><a href="#配置-Pipeline" class="headerlink" title="配置 Pipeline"></a>配置 Pipeline</h4><p>Rasa NLU 的配置文件使用的是 YAML (YAML Ain’t Markup Language) 格式。下面两个是Rasa NLU 配置的文件的样例。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">"en"</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pipeline:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"nlp_mitie"</span></span><br><span class="line"><span class="attr">    model:</span> <span class="string">"data/total_word_feature_extractor.dat"</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"tokenizer_mitie"</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"ner_mitie"</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"ner_synonyms"</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"intent_entity_featurizer_regex"</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">"intent_classifier_mitie"</span></span><br></pre></td></tr></table></figure>
+<p>大体上 Rasa NLU 的配置文件可以分为两个主要的 Key：<code>language</code> 和 <code>pipeline</code></p>
+<p><code>language</code> 用于指定 Rasa NLU 将要处理的语言。因为某些种类的组件，比如分词组件，是对语言敏感的。比如说 jieba 分词就不能正确的处理日文的分词，反之亦然。所有的 Rasa NLU 组件都有一个语言兼容性列表。如果某个组件不支持当前设置的语言，则会在 Pipeline 启动前被框架检测到。另外这种语言信息也可以被其他组件作为配置变量，比如在使用 SpaCy 的时候，默认就会载入和 <code>language</code> 同名的语言模型。如果省略该字段，则默认为 <code>en</code>。</p>
+<p>pipeline 是配置文件的核心，pipeline 由列表构成（表现在 YAML 中 就是使用 - 开头），列表的每一个元素都是一个字典(表现在 YAML 中类似于 name: xxx)，这些字典直接对应着 pipeline 的组件。每个组件具体是什么都由字典的 name 键来指定，出现在字典中的其他的键都是对这个组件的配置，运行时将传递给各个组件，具体有什么键和什么意义都由各个组件自行定义。</p>
+<p>在上例中，共有组件 6 个，分别是 <code>nlp_mitie</code>、 <code>tokenizer_mitie</code>、 <code>ner_mitie</code>、 <code>ner_synonyms</code> 、<code>intent_entity_featurizer_regex</code> 和 <code>intent_classifier_mitie</code>。其中 <code>nlp_mitie</code> 组件拥有一个配置项：键（key）为 <code>model</code>，值（value）为 <code>data/total_word_feature_extractor.dat</code>，这个配置项指定了 MITIE 模型文件所在是位置。</p>
+<p>为了最大化的方便用户，Rasa NLU 的配置还可以采用预定义的 pipeline 的方式，如下</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">pipeline:</span> <span class="string">tensorflow_embedding</span></span><br></pre></td></tr></table></figure>
+<p>直接给 pipeline 赋值一个字符串，这个字符串代表了预定义的 pipeline，在上例中预定义的 pipeline 名为 tensorflow_embedding。</p>
+<h4 id="预定义-Pipeline"><a href="#预定义-Pipeline" class="headerlink" title="预定义 Pipeline"></a>预定义 Pipeline</h4><p>Rasa NLU 预定义了几个常用的 pipeline</p>
+<h5 id="tensorflow-embedding"><a href="#tensorflow-embedding" class="headerlink" title="tensorflow_embedding"></a>tensorflow_embedding</h5><p>TODO</p>
+<h5 id="spacy-sklearn"><a href="#spacy-sklearn" class="headerlink" title="spacy_sklearn"></a>spacy_sklearn</h5><p>TODO</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Rasa-NLU/" rel="tag"># Rasa NLU</a>
+          
+            <a href="/tags/Rasa/" rel="tag"># Rasa</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/构建中文分词器-隐马尔科夫模型/" rel="next" title="构建中文分词器 - 隐马尔科夫模型">
+                <i class="fa fa-chevron-left"></i> 构建中文分词器 - 隐马尔科夫模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#初始化组件"><span class="nav-number">1.</span> <span class="nav-text">初始化组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分词组件"><span class="nav-number">2.</span> <span class="nav-text">分词组件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#什么是分词？"><span class="nav-number">2.1.</span> <span class="nav-text">什么是分词？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Rasa-分词组件"><span class="nav-number">3.</span> <span class="nav-text">Rasa 分词组件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#提取特征"><span class="nav-number">4.</span> <span class="nav-text">提取特征</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#词向量特征"><span class="nav-number">4.1.</span> <span class="nav-text">词向量特征</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Bag-of-words"><span class="nav-number">4.2.</span> <span class="nav-text">Bag-of-words</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#N-grams"><span class="nav-number">4.3.</span> <span class="nav-text">N-grams</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#正则表达式特征"><span class="nav-number">4.4.</span> <span class="nav-text">正则表达式特征</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#NER"><span class="nav-number">5.</span> <span class="nav-text">NER</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ner-crf"><span class="nav-number">5.1.</span> <span class="nav-text">ner_crf</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ner-mitie"><span class="nav-number">5.2.</span> <span class="nav-text">ner_mitie</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ner-spacy"><span class="nav-number">5.3.</span> <span class="nav-text">ner_spacy</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ner-duckling-和-ner-duckling-http"><span class="nav-number">5.4.</span> <span class="nav-text">ner_duckling 和 ner_duckling_http</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ner-synonyms"><span class="nav-number">5.5.</span> <span class="nav-text">ner_synonyms</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#意图分类"><span class="nav-number">6.</span> <span class="nav-text">意图分类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#intent-classifier-mitie"><span class="nav-number">6.1.</span> <span class="nav-text">intent_classifier_mitie</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#intent-classifier-sklearn"><span class="nav-number">6.2.</span> <span class="nav-text">intent_classifier_sklearn</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#intent-classifier-tensorflow-embedding"><span class="nav-number">6.3.</span> <span class="nav-text">intent_classifier_tensorflow_embedding</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#intent-classifer-keyword"><span class="nav-number">6.4.</span> <span class="nav-text">intent_classifer_keyword</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结构化输出"><span class="nav-number">7.</span> <span class="nav-text">结构化输出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置-Pipeline"><span class="nav-number">8.</span> <span class="nav-text">配置 Pipeline</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#预定义-Pipeline"><span class="nav-number">9.</span> <span class="nav-text">预定义 Pipeline</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#tensorflow-embedding"><span class="nav-number">9.1.</span> <span class="nav-text">tensorflow_embedding</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#spacy-sklearn"><span class="nav-number">9.2.</span> <span class="nav-text">spacy_sklearn</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/Rasa-NLU-的-pipeline-和-component/';
+        this.page.identifier = 'Rasa-NLU-的-pipeline-和-component/';
+        this.page.title = 'Rasa NLU 的 pipeline 和 component';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
