@@ -105,6 +105,7 @@
 
 
   <meta name="description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。">
+<meta name="keywords" content="Rasa,Rasa NLU,Rasa Core">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 Rasa 构建天气查询机器人">
 <meta property="og:url" content="https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/index.html">
@@ -112,7 +113,7 @@
 <meta property="og:description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/weather_bot_query_interface.png">
-<meta property="og:updated_time" content="2018-09-09T07:05:02.351Z">
+<meta property="og:updated_time" content="2018-09-09T07:27:46.937Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用 Rasa 构建天气查询机器人">
 <meta name="twitter:description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。">
@@ -358,7 +359,7 @@
                 
               
 
-              <time title="Created: 2018-09-09 11:08:04 / Modified: 15:05:02" itemprop="dateCreated datePublished" datetime="2018-09-09T11:08:04+08:00">2018-09-09</time>
+              <time title="Created: 2018-09-09 11:08:04 / Modified: 15:27:46" itemprop="dateCreated datePublished" datetime="2018-09-09T11:08:04+08:00">2018-09-09</time>
             
 
             
@@ -437,14 +438,6 @@
 <h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>将如下的 <code>xxx</code> 替换成你的 API key，然后执行即可</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SENIVERSE_KEY=xxx python ./webchat.py</span><br></pre></td></tr></table></figure>
 <p>启动成功后，请用浏览器访问 <a href="http://localhost:5500" target="_blank" rel="noopener">http://localhost:5500</a> , 你将得到 web 页面，have fun!</p>
-<h2 id="Docker-容器"><a href="#Docker-容器" class="headerlink" title="Docker 容器"></a>Docker 容器</h2><p>见 <a href="Dockerfile">Dockerfile</a></p>
-<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ul>
-<li>如果在使用机器人中遇到解析失败或者 SSL 错误或者超时错误，请重试几次，数据提供商 <code>心知天气</code> 的 API 很不稳定，后续考虑替换成其他供应商</li>
-</ul>
-<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
-<li>使用更加 Robust 的对话管理方案,目前的方案无法处理意图切换等复杂场景.</li>
-<li>使用 <a href="https://github.com/facebook/duckling" target="_blank" rel="noopener">duckling</a> 做时间和日期的识别,效果将更加 Robust 和准确</li>
-</ul>
 
       
     </div>
@@ -462,6 +455,16 @@
     
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Rasa/" rel="tag"># Rasa</a>
+          
+            <a href="/tags/Rasa-NLU/" rel="tag"># Rasa NLU</a>
+          
+            <a href="/tags/Rasa-Core/" rel="tag"># Rasa Core</a>
+          
+        </div>
       
 
       
@@ -672,7 +675,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">24</span>
+                      
+                    
+                    <span class="site-state-item-count">25</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -735,7 +740,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#源代码地址"><span class="nav-number">1.</span> <span class="nav-text">源代码地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">2.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能截图"><span class="nav-number">3.</span> <span class="nav-text">功能截图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">4.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#能力范围"><span class="nav-number">5.</span> <span class="nav-text">能力范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在线演示"><span class="nav-number">6.</span> <span class="nav-text">在线演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-NLU"><span class="nav-number">7.</span> <span class="nav-text">Rasa NLU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-Core"><span class="nav-number">8.</span> <span class="nav-text">Rasa Core</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖"><span class="nav-number">9.</span> <span class="nav-text">依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python-版本"><span class="nav-number">9.1.</span> <span class="nav-text">python 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-依赖"><span class="nav-number">9.2.</span> <span class="nav-text">python 依赖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载数据和模型"><span class="nav-number">10.</span> <span class="nav-text">下载数据和模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能入口"><span class="nav-number">11.</span> <span class="nav-text">功能入口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#申请-API-key"><span class="nav-number">11.1.</span> <span class="nav-text">申请 API key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动服务"><span class="nav-number">11.2.</span> <span class="nav-text">启动服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-容器"><span class="nav-number">12.</span> <span class="nav-text">Docker 容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-number">13.</span> <span class="nav-text">FAQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO"><span class="nav-number">14.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#源代码地址"><span class="nav-number">1.</span> <span class="nav-text">源代码地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">2.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能截图"><span class="nav-number">3.</span> <span class="nav-text">功能截图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">4.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#能力范围"><span class="nav-number">5.</span> <span class="nav-text">能力范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在线演示"><span class="nav-number">6.</span> <span class="nav-text">在线演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-NLU"><span class="nav-number">7.</span> <span class="nav-text">Rasa NLU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-Core"><span class="nav-number">8.</span> <span class="nav-text">Rasa Core</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖"><span class="nav-number">9.</span> <span class="nav-text">依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python-版本"><span class="nav-number">9.1.</span> <span class="nav-text">python 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-依赖"><span class="nav-number">9.2.</span> <span class="nav-text">python 依赖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载数据和模型"><span class="nav-number">10.</span> <span class="nav-text">下载数据和模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能入口"><span class="nav-number">11.</span> <span class="nav-text">功能入口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#申请-API-key"><span class="nav-number">11.1.</span> <span class="nav-text">申请 API key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动服务"><span class="nav-number">11.2.</span> <span class="nav-text">启动服务</span></a></li></ol></li></ol></div>
             
 
           </div>
