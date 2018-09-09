@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans,en,default">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+  <meta name="google-site-verification" content="lUQzK8OpPUQRTvyQMUIZHvPVeGh5WViymHuZewwc7qs" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Rasa 构建天气查询机器人">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/index.html">
+<meta property="og:site_name" content="Howl&#39;s">
+<meta property="og:description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/weather_bot_query_interface.png">
+<meta property="og:updated_time" content="2018-09-09T07:05:02.351Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 Rasa 构建天气查询机器人">
+<meta name="twitter:description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。">
+<meta name="twitter:image" content="https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/weather_bot_query_interface.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml" />
+
+
+
+
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用 Rasa 构建天气查询机器人 | Howl's</title>
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-105150423-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105150423-2');
+</script>
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howl's</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />About</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />Categories</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用 Rasa 构建天气查询机器人
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-09-09 11:08:04 / Modified: 15:05:02" itemprop="dateCreated datePublished" datetime="2018-09-09T11:08:04+08:00">2018-09-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/使用-Rasa-构建天气查询机器人/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="使用-Rasa-构建天气查询机器人/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。</p>
+<a id="more"></a>
+<h2 id="源代码地址"><a href="#源代码地址" class="headerlink" title="源代码地址"></a>源代码地址</h2><p><a href="https://github.com/howl-anderson/WeatherBot" target="_blank" rel="noopener">https://github.com/howl-anderson/WeatherBot</a></p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>这个机器人可以根据你提供的城市（北京、上海等）和日期（明天、后天等），查询出相应的天气预报。</p>
+<h2 id="功能截图"><a href="#功能截图" class="headerlink" title="功能截图"></a>功能截图</h2><p><img src="./weather_bot_query_interface.png" width="50%"></p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>使用 Frame-based 对话管理方案，如果上述两个 Slot (既城市和天气)，有任意一个用户未提供，对话管理系统会负责让你澄清相关 Slot 的值。</p>
+<h2 id="能力范围"><a href="#能力范围" class="headerlink" title="能力范围"></a>能力范围</h2><ul>
+<li>受限于天气数据提供方的能力，这个机器人只能查询 <strong>中国大陆地区市级城市</strong> 三天以内 <strong>（今天，明天，后天）</strong> 的气象数据，<strong>不能查询过去</strong>（昨天，前天）等历史数据。</li>
+<li>受限于开发时间，这个机器人 <strong>不提供</strong> 诸如 <strong>这个星期五、下个星期一</strong> 这种需要计算才能得到日期给定方式。也 <strong>不能提供</strong> 诸如 <strong>绝对日期：三月一号、六一儿童节日</strong> 这种日期的查询能力。</li>
+<li>因为使用的是免费的天气查询接口，所以 <strong>会有配额限制</strong>，可能会因为 <strong>超出调用次数</strong> ，而在一个小时内不能用。同时网络查询接口可能存在不稳定因素，导致 <strong>没有结果返回或者出现异常</strong>，<strong>尝试多次重新发送请求可解决问题</strong>。</li>
+</ul>
+<h2 id="在线演示"><a href="#在线演示" class="headerlink" title="在线演示"></a>在线演示</h2><p><a href="http://weather_bot.xiaoquankong.ai/" target="_blank" rel="noopener">Demo for 天气预报查询机器人</a></p>
+<h2 id="Rasa-NLU"><a href="#Rasa-NLU" class="headerlink" title="Rasa NLU"></a>Rasa NLU</h2><p>Rasa NLU 提供了提取用户意图和词槽的功能。具体原理和使用等不在这里详述，请访问文章 <a href="#">TODO</a>。<br>这里我们使用的 Rasa NLU 的 pipeline 配置（在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/nlu_model_config.yaml" target="_blank" rel="noopener">nlu_model_config.yaml</a> 中）如下:<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">language:</span> <span class="string">"zh"</span></span><br><span class="line"></span><br><span class="line"><span class="attr">pipeline:</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">"nlp_mitie"</span></span><br><span class="line"><span class="attr">  model:</span> <span class="string">"data/total_word_feature_extractor.dat"</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">"tokenizer_jieba"</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">"ner_mitie"</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">"ner_synonyms"</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">"intent_featurizer_mitie"</span></span><br><span class="line"><span class="attr">- name:</span> <span class="string">"intent_classifier_sklearn"</span></span><br></pre></td></tr></table></figure></p>
+<p>所用的训练数据 （在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/nlu.json" target="_blank" rel="noopener">nlu.json</a> 中）如下（内容过长，已做截断）：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#123;</span></span><br><span class="line"><span class="attr">  "rasa_nlu_data":</span> <span class="string">&#123;</span></span><br><span class="line"><span class="attr">    "common_examples":</span> <span class="string">[</span></span><br><span class="line">      <span class="string">&#123;</span></span><br><span class="line"><span class="attr">        "intent":</span> <span class="string">"weather_address_date-time"</span><span class="string">,</span></span><br><span class="line"><span class="attr">        "entities":</span> <span class="string">[</span></span><br><span class="line">          <span class="string">&#123;</span></span><br><span class="line"><span class="attr">            "start":</span> <span class="number">2</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "end":</span> <span class="number">4</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "value":</span> <span class="string">"上海"</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "entity":</span> <span class="string">"address"</span></span><br><span class="line">          <span class="string">&#125;,</span></span><br><span class="line">          <span class="string">&#123;</span></span><br><span class="line"><span class="attr">            "start":</span> <span class="number">4</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "end":</span> <span class="number">6</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "value":</span> <span class="string">"明天"</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "entity":</span> <span class="string">"date-time"</span></span><br><span class="line">          <span class="string">&#125;</span></span><br><span class="line">        <span class="string">],</span></span><br><span class="line"><span class="attr">        "text":</span> <span class="string">"我要上海明天的天气"</span></span><br><span class="line">      <span class="string">&#125;,</span></span><br><span class="line">      <span class="string">&#123;</span></span><br><span class="line"><span class="attr">        "intent":</span> <span class="string">"weather_address_date-time"</span><span class="string">,</span></span><br><span class="line"><span class="attr">        "entities":</span> <span class="string">[</span></span><br><span class="line">          <span class="string">&#123;</span></span><br><span class="line"><span class="attr">            "start":</span> <span class="number">0</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "end":</span> <span class="number">2</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "value":</span> <span class="string">"上海"</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "entity":</span> <span class="string">"address"</span></span><br><span class="line">          <span class="string">&#125;,</span></span><br><span class="line">          <span class="string">&#123;</span></span><br><span class="line"><span class="attr">            "start":</span> <span class="number">2</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "end":</span> <span class="number">4</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "value":</span> <span class="string">"明天"</span><span class="string">,</span></span><br><span class="line"><span class="attr">            "entity":</span> <span class="string">"date-time"</span></span><br><span class="line">          <span class="string">&#125;</span></span><br><span class="line">        <span class="string">],</span></span><br><span class="line"><span class="attr">        "text":</span> <span class="string">"上海明天的天气"</span></span><br><span class="line">      <span class="string">&#125;,</span></span><br><span class="line">      <span class="string">...</span></span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>训练所用的命令为 (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/train_NLU.bash" target="_blank" rel="noopener">train_NLU.bash</a> 中):<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m rasa_nlu.train -c nlu_model_config.yaml -d nlu.json --fixed_model_name current -o models</span><br></pre></td></tr></table></figure></p>
+<h2 id="Rasa-Core"><a href="#Rasa-Core" class="headerlink" title="Rasa Core"></a>Rasa Core</h2><p>Rasa Core 负责对话管理。具体原理和使用等不在这里详述，请访问文章 <a href="#">TODO</a>。<br>Rasa core 需要提供一个 domain 文件，里面设定了整个对话机器人的小宇宙，它能知道的所有的意图、词槽和动作。</p>
+<p>本项目所用的 domain (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/domain.yml" target="_blank" rel="noopener">domain.yml</a> 中)，其内容为：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">intents:</span><br><span class="line">  - greet</span><br><span class="line">  - goodbye</span><br><span class="line">  - weather_address_date-time</span><br><span class="line">  - weather_address</span><br><span class="line">  - weather_date-time</span><br><span class="line"></span><br><span class="line">slots:</span><br><span class="line">  address:</span><br><span class="line">    type: text</span><br><span class="line">  date-time:</span><br><span class="line">    type: text</span><br><span class="line">  matches:</span><br><span class="line">    type: unfeaturized</span><br><span class="line"></span><br><span class="line">entities:</span><br><span class="line">  - address</span><br><span class="line">  - date-time</span><br><span class="line"></span><br><span class="line">actions:</span><br><span class="line">  - utter_greet</span><br><span class="line">  - utter_ask_address</span><br><span class="line">  - utter_ask_date-time</span><br><span class="line">  - utter_working_on_it</span><br><span class="line">  - bot.ActionReportWeather</span><br><span class="line">  - utter_report_weather</span><br><span class="line">  - utter_goodbye</span><br><span class="line"></span><br><span class="line">templates:</span><br><span class="line">  utter_greet:</span><br><span class="line">    - text: "你好，请说出需要提供天气预测服务的地点和时间"</span><br><span class="line"></span><br><span class="line">  utter_working_on_it:</span><br><span class="line">    - text: "正在查询中，请稍后 ..."</span><br><span class="line"></span><br><span class="line">  utter_goodbye:</span><br><span class="line">    - text: "再见！"</span><br><span class="line"></span><br><span class="line">  utter_ask_address:</span><br><span class="line">    - text: "哪里呢？"</span><br><span class="line"></span><br><span class="line">  utter_ask_date-time:</span><br><span class="line">    - text: "什么时候？"</span><br><span class="line"></span><br><span class="line">  utter_report_weather:</span><br><span class="line">    - text: "&#123;matches&#125;"</span><br><span class="line"></span><br><span class="line">  utter_other:</span><br><span class="line">    - text: "系统不明白您说的话"</span><br></pre></td></tr></table></figure></p>
+<p>Rasa Core 还需要通过 <code>故事(story)</code> 的形式让框架学习正确的对话管理样本，格式为 Markdown 格式。本项目中的 Story  （在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/stories.md" target="_blank" rel="noopener">stories.md</a> 中）定义如下（内容过长，已做截断）：<br><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">## simple path with greet</span></span><br><span class="line"><span class="bullet">* </span>greet</span><br><span class="line">  - utter_greet</span><br><span class="line"><span class="bullet">* </span>weather<span class="emphasis">_address_</span>date-time&#123;"address": "上海", "date-time": "明天"&#125;</span><br><span class="line">  - utter<span class="emphasis">_working_</span>on_it</span><br><span class="line">  - action<span class="emphasis">_report_</span>weather</span><br><span class="line">  - utter<span class="emphasis">_report_</span>weather</span><br><span class="line"></span><br><span class="line"><span class="section">## simple path</span></span><br><span class="line"><span class="bullet">* </span>weather<span class="emphasis">_address_</span>date-time&#123;"address": "上海", "date-time": "明天"&#125;</span><br><span class="line">  - utter<span class="emphasis">_working_</span>on_it</span><br><span class="line">  - action<span class="emphasis">_report_</span>weather</span><br><span class="line">  - utter<span class="emphasis">_report_</span>weather</span><br><span class="line"></span><br><span class="line"><span class="section">## address + date-time path with greet</span></span><br><span class="line"><span class="bullet">* </span>greet</span><br><span class="line">  - utter_greet</span><br><span class="line"><span class="bullet">* </span>weather_address&#123;"address": "上海"&#125;</span><br><span class="line">  - utter<span class="emphasis">_ask_</span>date-time</span><br><span class="line"><span class="bullet">* </span>weather_date-time&#123;"date-time": "明天"&#125;</span><br><span class="line">  - utter<span class="emphasis">_working_</span>on_it</span><br><span class="line">  - action<span class="emphasis">_report_</span>weather</span><br><span class="line">  - utter<span class="emphasis">_report_</span>weather</span><br><span class="line"></span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>训练所用的命令为 (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/train_CORE.bash" target="_blank" rel="noopener">train_CORE.bash</a> 中):<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m rasa_core.train -s stories.md -d domain.yml -o models/dialogue --epochs 500</span><br></pre></td></tr></table></figure></p>
+<h2 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h2><h3 id="python-版本"><a href="#python-版本" class="headerlink" title="python 版本"></a>python 版本</h3><p>python 3</p>
+<h3 id="python-依赖"><a href="#python-依赖" class="headerlink" title="python 依赖"></a>python 依赖</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+<h2 id="下载数据和模型"><a href="#下载数据和模型" class="headerlink" title="下载数据和模型"></a>下载数据和模型</h2><ul>
+<li><code>data/total_word_feature_extractor.dat</code>: 从 <a href="https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus/releases" target="_blank" rel="noopener">https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus</a> 下载，解压缩后放置到对应位置</li>
+<li><code>models/default/current</code>：通过运行 <code>train_NLU.bash</code> 生成</li>
+<li><code>models/dialogue</code>：通过运行 <code>train_CORE.bash</code> 生成</li>
+</ul>
+<h2 id="功能入口"><a href="#功能入口" class="headerlink" title="功能入口"></a>功能入口</h2><h3 id="申请-API-key"><a href="#申请-API-key" class="headerlink" title="申请 API key"></a>申请 API key</h3><p>本项目目前使用 <a href="https://www.seniverse.com/" target="_blank" rel="noopener">心知天气</a> 提供天气数据，该平台为个人提供免费的 API，但任然需要用户注册并申请 API key 才能使用。用户注册后可以自行找到 <code>我的API密钥</code>。</p>
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><p>将如下的 <code>xxx</code> 替换成你的 API key，然后执行即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SENIVERSE_KEY=xxx python ./webchat.py</span><br></pre></td></tr></table></figure>
+<p>启动成功后，请用浏览器访问 <a href="http://localhost:5500" target="_blank" rel="noopener">http://localhost:5500</a> , 你将得到 web 页面，have fun!</p>
+<h2 id="Docker-容器"><a href="#Docker-容器" class="headerlink" title="Docker 容器"></a>Docker 容器</h2><p>见 <a href="Dockerfile">Dockerfile</a></p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ul>
+<li>如果在使用机器人中遇到解析失败或者 SSL 错误或者超时错误，请重试几次，数据提供商 <code>心知天气</code> 的 API 很不稳定，后续考虑替换成其他供应商</li>
+</ul>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
+<li>使用更加 Robust 的对话管理方案,目前的方案无法处理意图切换等复杂场景.</li>
+<li>使用 <a href="https://github.com/facebook/duckling" target="_blank" rel="noopener">duckling</a> 做时间和日期的识别,效果将更加 Robust 和准确</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/Rasa-NLU-的-pipeline-和-component/" rel="next" title="Rasa NLU 的 pipeline 和 component">
+                <i class="fa fa-chevron-left"></i> Rasa NLU 的 pipeline 和 component
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpg"
+                alt="Xiaoquan Kong" />
+            
+              <p class="site-author-name" itemprop="name">Xiaoquan Kong</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">34</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">categories</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/howl-anderson" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.linkedin.com/in/xiaoquankong/" target="_blank" title="Linkedin"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+            <div class="cc-license motion-element" itemprop="license">
+              <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" target="_blank">
+                <img src="/images/cc-by-nc-sa.svg" alt="Creative Commons" />
+              </a>
+            </div>
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#源代码地址"><span class="nav-number">1.</span> <span class="nav-text">源代码地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能"><span class="nav-number">2.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能截图"><span class="nav-number">3.</span> <span class="nav-text">功能截图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特性"><span class="nav-number">4.</span> <span class="nav-text">特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#能力范围"><span class="nav-number">5.</span> <span class="nav-text">能力范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在线演示"><span class="nav-number">6.</span> <span class="nav-text">在线演示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-NLU"><span class="nav-number">7.</span> <span class="nav-text">Rasa NLU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Rasa-Core"><span class="nav-number">8.</span> <span class="nav-text">Rasa Core</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#依赖"><span class="nav-number">9.</span> <span class="nav-text">依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#python-版本"><span class="nav-number">9.1.</span> <span class="nav-text">python 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#python-依赖"><span class="nav-number">9.2.</span> <span class="nav-text">python 依赖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载数据和模型"><span class="nav-number">10.</span> <span class="nav-text">下载数据和模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#功能入口"><span class="nav-number">11.</span> <span class="nav-text">功能入口</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#申请-API-key"><span class="nav-number">11.1.</span> <span class="nav-text">申请 API key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动服务"><span class="nav-number">11.2.</span> <span class="nav-text">启动服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-容器"><span class="nav-number">12.</span> <span class="nav-text">Docker 容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-number">13.</span> <span class="nav-text">FAQ</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO"><span class="nav-number">14.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xiaoquan Kong</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://blog-xiaoquankong-ai.disqus.com/count.js" async></script>
+  
+
+  
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'https://blog.xiaoquankong.ai/使用-Rasa-构建天气查询机器人/';
+        this.page.identifier = '使用-Rasa-构建天气查询机器人/';
+        this.page.title = '使用 Rasa 构建天气查询机器人';
+      };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
