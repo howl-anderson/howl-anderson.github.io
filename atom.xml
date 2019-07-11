@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.xiaoquankong.ai/"/>
-  <updated>2019-07-10T18:08:15.250Z</updated>
+  <updated>2019-07-11T12:34:01.873Z</updated>
   <id>https://blog.xiaoquankong.ai/</id>
   
   <author>
@@ -15,6 +15,28 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>python set 迭代返回元素顺序随机变化问题</title>
+    <link href="https://blog.xiaoquankong.ai/python-set-%E8%BF%AD%E4%BB%A3%E8%BF%94%E5%9B%9E%E5%85%83%E7%B4%A0%E9%A1%BA%E5%BA%8F%E9%9A%8F%E6%9C%BA%E5%8F%98%E5%8C%96%E9%97%AE%E9%A2%98/"/>
+    <id>https://blog.xiaoquankong.ai/python-set-迭代返回元素顺序随机变化问题/</id>
+    <published>2019-07-11T09:20:11.000Z</published>
+    <updated>2019-07-11T12:34:01.873Z</updated>
+    
+    <content type="html"><![CDATA[<p>记录一个由 python set 转 list 导致的一个元素顺序问题。</p><a id="more"></a><p>NLP 中经常需要把字符串列表(List[str])数据转换成数字列表(List[int])。这中间需要用到一个词汇表（List）把字符转换成相应的数字，然后还能将数字反向转换成字符串。</p><p>思路就是把所有出现的字符串放入一个 set 对象中，然后将 set 对象转换成 list 对象。</p><p>这里出现了一个意想不到的 python 特性，让我花费了很多时间来调试。</p><h3 id="bug-复现"><a href="#bug-复现" class="headerlink" title="bug 复现"></a>bug 复现</h3><p>在不同的 python 会话中，运行以下代码，你会发现你得到不同输出</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">data = [<span class="string">'人之初'</span>, <span class="string">'性本善'</span>, <span class="string">'性相近'</span>, <span class="string">'习相远'</span>, <span class="string">'苟不教'</span>, <span class="string">'性乃迁'</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_a_set</span><span class="params">(data)</span>:</span></span><br><span class="line">    a_set = set()</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">      a_set.add(i)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> a_set</span><br><span class="line"></span><br><span class="line">a_set = generate_a_set(data)</span><br><span class="line">print(list(a_set))</span><br></pre></td></tr></table></figure><p>比如</p><p>第一次输出可能是：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&apos;人之初&apos;, &apos;性本善&apos;, &apos;苟不教&apos;, &apos;性乃迁&apos;, &apos;习相远&apos;, &apos;性相近&apos;]</span><br></pre></td></tr></table></figure><p>第二次输出可能就是：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[&apos;苟不教&apos;, &apos;习相远&apos;, &apos;性相近&apos;, &apos;性本善&apos;, &apos;人之初&apos;, &apos;性乃迁&apos;]</span><br></pre></td></tr></table></figure><h3 id="bug-产生的原理"><a href="#bug-产生的原理" class="headerlink" title="bug 产生的原理"></a>bug 产生的原理</h3><p>这些问题在同一个 python 会话中，不会有问题，但是不同回话中，就会出现随机顺序的问题。</p><p>这是因为 set 背后的原理是 hash 结构，hash 结构需要一个 hash 函数计算 hash 值, python 中 string 的 hash 值和这个 string 对象的内存地址有关 (暂未找到具体证据佐证)。因此即使是同一个字符，在不同的 python 会话中，也会有不同的值。</p><p>在不同的 python 会话中，运行以下代码，你会发现你得到不同输出</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">data = [<span class="string">'人之初'</span>, <span class="string">'性本善'</span>, <span class="string">'性相近'</span>, <span class="string">'习相远'</span>, <span class="string">'苟不教'</span>, <span class="string">'性乃迁'</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">print_hash</span><span class="params">(data)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> data:</span><br><span class="line">      print(hash(i))</span><br><span class="line"></span><br><span class="line">print_hash(data)</span><br></pre></td></tr></table></figure><p>比如：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-6354588181131181920</span><br><span class="line">-3997371538074392634</span><br><span class="line">-8077654492430038721</span><br><span class="line">221811633827032250</span><br><span class="line">-1695708399184889172</span><br><span class="line">4668413180609257176</span><br></pre></td></tr></table></figure><p>或者</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">3947240920277889685</span><br><span class="line">3483355661880167026</span><br><span class="line">8030610130069388583</span><br><span class="line">-6821753054023619803</span><br><span class="line">6445967894542493986</span><br><span class="line">3223312263836510133</span><br></pre></td></tr></table></figure><h3 id="如何避免-bug"><a href="#如何避免-bug" class="headerlink" title="如何避免 bug"></a>如何避免 bug</h3><p>为了避免这种情况，可以通过对 set 对象中的元素排序，排序后的结果，按照元素排序，自然就没有随机顺序的问题了。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;记录一个由 python set 转 list 导致的一个元素顺序问题。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="python" scheme="https://blog.xiaoquankong.ai/tags/python/"/>
+    
+      <category term="bug" scheme="https://blog.xiaoquankong.ai/tags/bug/"/>
+    
+  </entry>
   
   <entry>
     <title>Rasa NLU pipeline的扩展性</title>
@@ -410,24 +432,6 @@
     <summary type="html">
     
       &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Netgear WNDR4300 (v1) 是最经典的能刷openwrt及其分支的路由器，属于性价比比较好的那种。本文将介绍如何使用TFTP刷固件：特别适合于刷机失败了，连不上路由器，想要重新刷的情况。当然也可以用于第一次刷机。&lt;br&gt;
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>浏览器中立计划</title>
-    <link href="https://blog.xiaoquankong.ai/%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%AB%8B%E8%AE%A1%E5%88%92/"/>
-    <id>https://blog.xiaoquankong.ai/浏览器中立计划/</id>
-    <published>2017-11-18T12:39:00.000Z</published>
-    <updated>2018-08-13T11:08:02.500Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong>TL;DR</strong> 作为Firefox曾经的老用户，很早就使用了Firefox。后来因为Google Chrome浏览器的崛起，切换到了Chrome平台(没错，Chrome不仅仅是一个浏览器，还是一个平台)。但最近Firefox 57发布，做了诸多改进，速度比Chrome更快，作为Firefox的曾经的拥趸，我想切换成Firefox + Chrome的模式，但是很快我发现这个切换成本比想象中的大，因为Chrome浏览器上面的书签、浏览记录和网站密码很难同步到Firefox，反之亦然。于是我开始了浏览器中立计划: 如何做到自己独立于浏览器，不受被特定浏览器的特性捆绑。<br><a id="more"></a></p><h1 id="Firefox-57"><a href="#Firefox-57" class="headerlink" title="Firefox 57"></a>Firefox 57</h1><p><img src="firefox_57.png" alt="Firefox 57"></p><h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>2017年11月14日，Firefox 57正式对外发布，官方的介绍(地址在<a href="https://blog.mozilla.org/blog/2017/11/14/introducing-firefox-quantum/" target="_blank" rel="noopener">这里</a>)是这样说的：</p><blockquote><p>It’s fast. Really fast. Firefox Quantum is over twice as fast as Firefox from 6 months ago, built on a completely overhauled core engine with brand new technology stolen from our advanced research group, and graced with a beautiful new look designed to get out of the way and let you do what you do best: surf a ton of pages, open a zillion tabs, all guilt free because Firefox Quantum uses less memory than the competition. computer will thank you.  🙂</p></blockquote><p>纵览Firefox 57的发布说明，可以总结成：Firefox 57使用了全新技术的CSS渲染引擎，使用了现代CPU的多核和低功耗的特性，速度更快。更改了UI，让界面更好看。同时更改了扩展的机制，废弃了除 WebExtensions 以外的所有扩展机制。</p><h2 id="使用评价"><a href="#使用评价" class="headerlink" title="使用评价"></a>使用评价</h2><p>总的来说，Firefox感官上确实非常快。据官方自己的说法：开非常多的tab也不会卡，这个在Chrome里面很明显，使用过Chrome的小伙伴都知道，Chrome的tab开太多后，浏览器和系统都非常卡。但是Firefox的扩展机制缩小后，很多插件都不能用了，这个比较麻烦。</p><h1 id="浏览器中立计划"><a href="#浏览器中立计划" class="headerlink" title="浏览器中立计划"></a>浏览器中立计划</h1><p>这里我想切换成Firefox + Chrome的模式，但我发现切换成本很大：Chrome的书签、浏览记录和网站密码很难同步到Firefox，反之亦然。于是我开始了浏览器中立计划: 让这些信息脱离浏览器的绑定。</p><h2 id="书签同步"><a href="#书签同步" class="headerlink" title="书签同步"></a>书签同步</h2><p>本来以为Firefox下会有谷歌书签的插件的，后来发现完全没有，我想这应该是因为Google没有开放API的问题吧（Google没有以前那么开放了，sad）。经过调研以后，发现有个Xmarks的服务可以提供跨浏览器的第三方书签服务。Xmarks现在已经是Lastpass旗下的产品了。唯一要注意的是Chrome浏览器版的Xmarks在自动同步上面和Chrome自带的自动同步有些冲突，可能会导致账号不停的退出然后要求登陆，解决方案就是按照Xmarks的提示：先关掉Xmarks的自动同步，再登陆账号。</p><p><img src="xmarks.png" alt="xmarks"></p><h2 id="密码同步"><a href="#密码同步" class="headerlink" title="密码同步"></a>密码同步</h2><p>浏览器给我带来的最大的便利就是可以记住各种各样网站的密码，现在的网站那么多，密码管理起来很麻烦。幸运的是有不少不错的密码类管理服务：<a href="https://lastpass.com/" target="_blank" rel="noopener">Lastpass</a>, <a href="https://1password.com/" target="_blank" rel="noopener">1Password</a>, or <a href="https://keepersecurity.com/" target="_blank" rel="noopener">Keeper</a> （这个名单是Github在保存Two-factor recovery codes时推荐的列表）。最终我选择了比较常见的Lastpass，当然也是因为Xmarks也是Lastpass旗下的产品，本来以为可以使用一个账号登陆呢，结果不行，很失望。使用这类密码类管理服务的好处就是它不仅能够保存网站密码，还能保存SSH key等纯文本的密钥，还能用来保存二进制的文件。</p><p><img src="LastPass-Logo-Color.png" alt="LastPass"></p><h2 id="浏览记录同步"><a href="#浏览记录同步" class="headerlink" title="浏览记录同步"></a>浏览记录同步</h2><p>暂时无解，只能使用各自的账号体系同步：Chrome使用谷歌账号，Firefox使用Firefox的账号体系。幸运的是浏览记录同步不是那么重要的功能，当然也许以后有大神或者公司可以开发类似的服务，那么整个浏览器中立计划也就完备了。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 作为Firefox曾经的老用户，很早就使用了Firefox。后来因为Google Chrome浏览器的崛起，切换到了Chrome平台(没错，Chrome不仅仅是一个浏览器，还是一个平台)。但最近Firefox 57发布，做了诸多改进，速度比Chrome更快，作为Firefox的曾经的拥趸，我想切换成Firefox + Chrome的模式，但是很快我发现这个切换成本比想象中的大，因为Chrome浏览器上面的书签、浏览记录和网站密码很难同步到Firefox，反之亦然。于是我开始了浏览器中立计划: 如何做到自己独立于浏览器，不受被特定浏览器的特性捆绑。&lt;br&gt;
     
     </summary>
     
