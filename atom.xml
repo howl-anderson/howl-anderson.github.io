@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.xiaoquankong.ai/"/>
-  <updated>2019-07-11T12:34:01.873Z</updated>
+  <updated>2019-08-09T01:57:12.596Z</updated>
   <id>https://blog.xiaoquankong.ai/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>rasa 新特性 supervised response selector</title>
+    <link href="https://blog.xiaoquankong.ai/rasa-%E6%96%B0%E7%89%B9%E6%80%A7-supervised-response-selector/"/>
+    <id>https://blog.xiaoquankong.ai/rasa-新特性-supervised-response-selector/</id>
+    <published>2019-08-09T01:46:09.000Z</published>
+    <updated>2019-08-09T01:57:12.596Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>TLDR</strong> 为了轻量化的满足开放领域（open domain）或者说闲聊类（chitchat）对话的需求，Rasa 引入了 <em>受监督的应答选择器（Supervised Response Selector）</em> 组件。本篇将介绍如何使用这一组件。</p><a id="more"></a><h1 id="开放领域（open-domain）-闲聊类（chitchat）对话"><a href="#开放领域（open-domain）-闲聊类（chitchat）对话" class="headerlink" title="开放领域（open domain）/闲聊类（chitchat）对话"></a>开放领域（open domain）/闲聊类（chitchat）对话</h1><p>对于一个面向消费者群体的对话机器人（儿童故事机），</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;strong&gt;TLDR&lt;/strong&gt; 为了轻量化的满足开放领域（open domain）或者说闲聊类（chitchat）对话的需求，Rasa 引入了 &lt;em&gt;受监督的应答选择器（Supervised Response Selector）&lt;/em&gt; 组件。本篇将介绍如何使用这一组件。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="rasa" scheme="https://blog.xiaoquankong.ai/tags/rasa/"/>
+    
+  </entry>
   
   <entry>
     <title>python set 迭代返回元素顺序随机变化问题</title>
@@ -417,24 +437,6 @@
       <category term="Reinforcement_Learning" scheme="https://blog.xiaoquankong.ai/tags/Reinforcement-Learning/"/>
     
       <category term="坦克大战" scheme="https://blog.xiaoquankong.ai/tags/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Netgear WNDR4300固件刷openwrt/LEDE</title>
-    <link href="https://blog.xiaoquankong.ai/Netgear-WNDR4300%E5%9B%BA%E4%BB%B6%E5%88%B7openwrt-LEDE/"/>
-    <id>https://blog.xiaoquankong.ai/Netgear-WNDR4300固件刷openwrt-LEDE/</id>
-    <published>2017-11-19T16:22:48.000Z</published>
-    <updated>2018-08-13T11:08:02.483Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong>TL;DR</strong> Netgear WNDR4300 (v1) 是最经典的能刷openwrt及其分支的路由器，属于性价比比较好的那种。本文将介绍如何使用TFTP刷固件：特别适合于刷机失败了，连不上路由器，想要重新刷的情况。当然也可以用于第一次刷机。<br><a id="more"></a></p><p>之所以选择使用TFTP刷机方式，是因为这种刷机方式非常靠谱，无论你怎么把你的路由器折腾挂的：网连不上/ping不通都是可以使用的，你可以认为这个是刷机方案中的终极武器也是最后方案。</p><h1 id="准备材料"><a href="#准备材料" class="headerlink" title="准备材料"></a>准备材料</h1><p>首先你得需要一个openwrt/LEDE的启动镜像，这里推荐你使用官方的镜像，不要使用各种修改版本或者个人制作的镜像：不安全。官方镜像下载的地址如下：<a href="https://wiki.openwrt.org/toh/start" target="_blank" rel="noopener">openwrt</a>,<a href="https://lede-project.org/toh/views/toh_fwdownload" target="_blank" rel="noopener">LEDE</a>,进去之后寻找你自己的设备，并下载相关的factory镜像和sysupgrade镜像）。个人推荐LEDE，有大量正统的openwrt开发者参与。</p><h1 id="Recovery-mode"><a href="#Recovery-mode" class="headerlink" title="Recovery mode"></a>Recovery mode</h1><p>无论你的路由器挂成什么样了，都能恢复到工厂设置（Factory settings）。</p><ul><li>关闭路由器电源</li><li>用牙签等按住”Reset”键不放</li><li>接通电源，等待指示灯从黄灯-&gt;黄灯闪烁-&gt;绿灯-&gt;绿灯闪烁</li><li>松开”Reset”键</li></ul><h1 id="安装TFTP"><a href="#安装TFTP" class="headerlink" title="安装TFTP"></a>安装TFTP</h1><p>这个根据各个发行版自行安装就可以了。</p><h1 id="设置客户端"><a href="#设置客户端" class="headerlink" title="设置客户端"></a>设置客户端</h1><p>这时的路由器并没有开始DHCP服务，所以需要用户手动设置客户端的IP配置。</p><ul><li>IP地址：192.168.1.2 - 192.168.1.244 任选一个，一般选择192.168.1.2</li><li>网络掩码Mask：255.255.255.0</li><li>Gateway：192.168.1.1</li></ul><h1 id="使用FTP"><a href="#使用FTP" class="headerlink" title="使用FTP"></a>使用FTP</h1><p>我使用的是Linux TFTP，使用过程中遇到一个坑：你直接使用默认的TFTP设置上传镜像是会提示<code>Transfer timeouted</code>错误。我以为我的路由器彻底成砖头了，或者是我的网络设置有问题。后来发现Linux的TFTP需要改成<code>binary</code>模式才能正常上传。</p><h2 id="连接TFTP"><a href="#连接TFTP" class="headerlink" title="连接TFTP"></a>连接TFTP</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tftp 192.168.1.1</span><br></pre></td></tr></table></figure><p>这样就会进入TFTP模式，你会看到命令提示行变成了<code>tftp&gt;</code></p><h2 id="设置binary"><a href="#设置binary" class="headerlink" title="设置binary"></a>设置binary</h2><p>设定传输模式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tftp&gt; binary</span><br></pre></td></tr></table></figure></p><h2 id="设置详细模式（可选）"><a href="#设置详细模式（可选）" class="headerlink" title="设置详细模式（可选）"></a>设置详细模式（可选）</h2><p>设定详细模式，这样你能看到更多详细的输出<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tftp&gt; verbose</span><br></pre></td></tr></table></figure></p><h2 id="上传image"><a href="#上传image" class="headerlink" title="上传image"></a>上传image</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tftp&gt; put &lt;openwrt_or_lede_factory_image&gt;</span><br></pre></td></tr></table></figure><p>注意这里使用的是factory镜像，不是sysupgrade镜像。另外最好不要修改image的名字，请使用官方下载时的名字，否则可能会造成无法识别的情况</p><h1 id="重启路由"><a href="#重启路由" class="headerlink" title="重启路由"></a>重启路由</h1><p>上传成功后（保险起见，稍等一分钟左右），重启服务器，即可用有线网络连接路由器。注意这个时候路由器的无线网络可能是没有打开的（因为我记不得这个细节了），无线可能找不到网络（如果能找到，那么无线网络的名字很有可能是LEDE），保险起见还是使用有线来连接服务器。连接后，注意你需要修改路由器密码和配置无线网络设置。<strong>最重要的是：默认情况下，即使你需改了无线网络的配置，但路由器的无线网络是没有打开的，你需要按下路由器的硬件上的一个有WI-FI标识的按钮，就可以访问无线路由器了。如果你不知道这个事情，你可能会认为你的路由器坏了，因为你搜索不到无线信号！</strong></p><h1 id="升级系统"><a href="#升级系统" class="headerlink" title="升级系统"></a>升级系统</h1><p>进入管理网页界面后，选择系统，然后选择上传镜像升级。注意这里使用的是sysupgrade镜像（不是factory镜像），最好不要修改镜像的文件名。等待系统重启，大功告成！</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Netgear WNDR4300 (v1) 是最经典的能刷openwrt及其分支的路由器，属于性价比比较好的那种。本文将介绍如何使用TFTP刷固件：特别适合于刷机失败了，连不上路由器，想要重新刷的情况。当然也可以用于第一次刷机。&lt;br&gt;
-    
-    </summary>
-    
     
   </entry>
   
