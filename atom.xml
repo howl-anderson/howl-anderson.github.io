@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.xiaoquankong.ai/"/>
-  <updated>2019-12-20T03:29:43.243Z</updated>
+  <updated>2019-12-20T09:26:56.795Z</updated>
   <id>https://blog.xiaoquankong.ai/</id>
   
   <author>
@@ -20,17 +20,14 @@
     <title>如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法</title>
     <link href="https://blog.xiaoquankong.ai/%E5%A6%82%E4%BD%95%E8%87%AA%E5%8A%A8%E5%9C%A8-Spacemacs-evil-%E8%BF%9B%E5%85%A5%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E6%97%B6%E5%88%87%E6%8D%A2%E8%87%B3%E8%8B%B1%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95/"/>
     <id>https://blog.xiaoquankong.ai/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法/</id>
-    <published>2019-12-20T02:17:58.435Z</published>
-    <updated>2019-12-20T03:29:43.243Z</updated>
+    <published>2019-12-20T09:26:56.795Z</published>
+    <updated>2019-12-20T09:26:56.795Z</updated>
     
-    <content type="html"><![CDATA[<p><strong>TLDR</strong> 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。</p><!--  --><h2 id="安装输入法控制程序"><a href="#安装输入法控制程序" class="headerlink" title="安装输入法控制程序"></a>安装输入法控制程序</h2><p>不同的系统，需要用到不同的输入法控制程序，这里不同系统又不同的输入法控制系统。这里我以 Mac OS 作为示例。你需要安装 <code>issw</code>，具体如何安装，可以参考文献「Command line input source switcher for Mac.」。Linux 用户则不需要安装，系统自带控制程序。</p><h2 id="设定-Spacemacs-hook"><a href="#设定-Spacemacs-hook" class="headerlink" title="设定 Spacemacs hook"></a>设定 Spacemacs hook</h2><p>Spacemace Hook 具有强大的功能，参见「Vim/Evil mode command and Russian language auto select」。不同的系统具有不同的设定，具体如下：</p><h3 id="针对-Mac"><a href="#针对-Mac" class="headerlink" title="针对 Mac"></a>针对 Mac</h3><p>参见 「How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)」</p><h3 id="针对-Linux"><a href="#针对-Linux" class="headerlink" title="针对 Linux"></a>针对 Linux</h3><p>参见 「Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state」</p><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol><li><a href="https://xxleyi.github.io/blog/2018/10/08/auto-switch-input-method-in-MacOS" target="_blank" rel="noopener">auto switch input method in MacOS</a></li><li><a href="https://github.com/vovkasm/input-source-switcher" target="_blank" rel="noopener">Command line input source switcher for Mac.</a></li><li><a href="https://github.com/daipeihust/im-select" target="_blank" rel="noopener">im-select</a></li><li><a href="https://github.com/syl20bnr/spacemacs/issues/3225" target="_blank" rel="noopener">Vim/Evil mode command and Russian language auto select</a></li><li><a href="https://gist.github.com/ghost355/a967417bb7e826e833d4" target="_blank" rel="noopener">How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)</a></li><li><a href="https://gist.github.com/kai11/bb5c2fa03cb21884bfcb76c01d1632c9" target="_blank" rel="noopener">Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state</a></li></ol>]]></content>
+    <content type="html"><![CDATA[<p><strong>TL;DR</strong> 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。</p><a id="more"></a><h2 id="安装输入法控制程序"><a href="#安装输入法控制程序" class="headerlink" title="安装输入法控制程序"></a>安装输入法控制程序</h2><p>不同的系统，需要用到不同的输入法控制程序，这里不同系统又不同的输入法控制系统。这里我以 Mac OS 作为示例。你需要安装 <code>issw</code>，具体如何安装，可以参考文献「Command line input source switcher for Mac.」。Linux 用户则不需要安装，系统自带控制程序。</p><h2 id="设定-Spacemacs-hook"><a href="#设定-Spacemacs-hook" class="headerlink" title="设定 Spacemacs hook"></a>设定 Spacemacs hook</h2><p>Spacemace Hook 具有强大的功能，参见「Vim/Evil mode command and Russian language auto select」。不同的系统具有不同的设定，具体如下：</p><h3 id="针对-Mac"><a href="#针对-Mac" class="headerlink" title="针对 Mac"></a>针对 Mac</h3><p>参见 「How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)」</p><h3 id="针对-Linux"><a href="#针对-Linux" class="headerlink" title="针对 Linux"></a>针对 Linux</h3><p>参见 「Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state」</p><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol><li><a href="https://xxleyi.github.io/blog/2018/10/08/auto-switch-input-method-in-MacOS" target="_blank" rel="noopener">auto switch input method in MacOS</a></li><li><a href="https://github.com/vovkasm/input-source-switcher" target="_blank" rel="noopener">Command line input source switcher for Mac.</a></li><li><a href="https://github.com/daipeihust/im-select" target="_blank" rel="noopener">im-select</a></li><li><a href="https://github.com/syl20bnr/spacemacs/issues/3225" target="_blank" rel="noopener">Vim/Evil mode command and Russian language auto select</a></li><li><a href="https://gist.github.com/ghost355/a967417bb7e826e833d4" target="_blank" rel="noopener">How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)</a></li><li><a href="https://gist.github.com/kai11/bb5c2fa03cb21884bfcb76c01d1632c9" target="_blank" rel="noopener">Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state</a></li></ol>]]></content>
     
     <summary type="html">
     
-      
-      
-        &lt;p&gt;&lt;strong&gt;TLDR&lt;/strong&gt; 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大
-      
+      &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。&lt;/p&gt;
     
     </summary>
     
