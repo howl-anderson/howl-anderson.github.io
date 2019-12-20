@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://blog.xiaoquankong.ai/"/>
-  <updated>2019-08-09T01:57:12.596Z</updated>
+  <updated>2019-12-20T03:29:43.243Z</updated>
   <id>https://blog.xiaoquankong.ai/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法</title>
+    <link href="https://blog.xiaoquankong.ai/%E5%A6%82%E4%BD%95%E8%87%AA%E5%8A%A8%E5%9C%A8-Spacemacs-evil-%E8%BF%9B%E5%85%A5%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E6%97%B6%E5%88%87%E6%8D%A2%E8%87%B3%E8%8B%B1%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95/"/>
+    <id>https://blog.xiaoquankong.ai/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法/</id>
+    <published>2019-12-20T02:17:58.435Z</published>
+    <updated>2019-12-20T03:29:43.243Z</updated>
+    
+    <content type="html"><![CDATA[<p><strong>TLDR</strong> 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。</p><!--  --><h2 id="安装输入法控制程序"><a href="#安装输入法控制程序" class="headerlink" title="安装输入法控制程序"></a>安装输入法控制程序</h2><p>不同的系统，需要用到不同的输入法控制程序，这里不同系统又不同的输入法控制系统。这里我以 Mac OS 作为示例。你需要安装 <code>issw</code>，具体如何安装，可以参考文献「Command line input source switcher for Mac.」。Linux 用户则不需要安装，系统自带控制程序。</p><h2 id="设定-Spacemacs-hook"><a href="#设定-Spacemacs-hook" class="headerlink" title="设定 Spacemacs hook"></a>设定 Spacemacs hook</h2><p>Spacemace Hook 具有强大的功能，参见「Vim/Evil mode command and Russian language auto select」。不同的系统具有不同的设定，具体如下：</p><h3 id="针对-Mac"><a href="#针对-Mac" class="headerlink" title="针对 Mac"></a>针对 Mac</h3><p>参见 「How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)」</p><h3 id="针对-Linux"><a href="#针对-Linux" class="headerlink" title="针对 Linux"></a>针对 Linux</h3><p>参见 「Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state」</p><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol><li><a href="https://xxleyi.github.io/blog/2018/10/08/auto-switch-input-method-in-MacOS" target="_blank" rel="noopener">auto switch input method in MacOS</a></li><li><a href="https://github.com/vovkasm/input-source-switcher" target="_blank" rel="noopener">Command line input source switcher for Mac.</a></li><li><a href="https://github.com/daipeihust/im-select" target="_blank" rel="noopener">im-select</a></li><li><a href="https://github.com/syl20bnr/spacemacs/issues/3225" target="_blank" rel="noopener">Vim/Evil mode command and Russian language auto select</a></li><li><a href="https://gist.github.com/ghost355/a967417bb7e826e833d4" target="_blank" rel="noopener">How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)</a></li><li><a href="https://gist.github.com/kai11/bb5c2fa03cb21884bfcb76c01d1632c9" target="_blank" rel="noopener">Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;strong&gt;TLDR&lt;/strong&gt; 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>rasa 新特性 supervised response selector</title>
@@ -413,30 +434,6 @@
       <category term="路由切换技术" scheme="https://blog.xiaoquankong.ai/tags/%E8%B7%AF%E7%94%B1%E5%88%87%E6%8D%A2%E6%8A%80%E6%9C%AF/"/>
     
       <category term="OPENWRT/LEDE" scheme="https://blog.xiaoquankong.ai/tags/OPENWRT-LEDE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Reinforcement Learning: 初次交手，多多指教</title>
-    <link href="https://blog.xiaoquankong.ai/Reinforcement-Learning-%E5%88%9D%E6%AC%A1%E4%BA%A4%E6%89%8B%EF%BC%8C%E5%A4%9A%E5%A4%9A%E6%8C%87%E6%95%99/"/>
-    <id>https://blog.xiaoquankong.ai/Reinforcement-Learning-初次交手，多多指教/</id>
-    <published>2017-11-24T06:46:15.000Z</published>
-    <updated>2018-08-13T11:08:02.489Z</updated>
-    
-    <content type="html"><![CDATA[<p><strong>TL;DR</strong> 图形游戏（比如坦克大战）如果要实现智能Agent（AKA 电脑玩家）的话，目前最佳的方案就是Reinforcement Learning (简称 RL ;中文：增强学习)。 本文记录了我和Reinforcement Learning的第一次交手，将带你了解这位名扬四海却又神秘莫测的对手。:)<br><a id="more"></a></p><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>公司举办Hackthon（中国：黑客松 &lt;- 来自维基百科的翻译），其中有一道题是实现坦克大战的玩家程序。在别人普遍使用人工策略的情况下，考虑到我们团队人少（精确的讲只有我一人会写程序，其他团队起码三个程序员），所以在人工策略这条路上肯定是非常的吃亏，所以不如另辟蹊径，拼搏一把（反正也基本出不了初赛了)。于是我们选择了让机器学习的方案。于是 就成了目标。在此之前，我也只是听过RL的大名，现在要使用RL，内心是既兴奋又紧张。</p><h1 id="Reinforcement-Learning"><a href="#Reinforcement-Learning" class="headerlink" title="Reinforcement Learning"></a>Reinforcement Learning</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>为了更加容易理解，我们将引入坦克大战的例子来辅助讲解。总的来说RL模型将现实世界的问题抽象成两类对象的交互：<code>Enviroment</code>和<code>Agent</code>，对坦克大战而言，游戏就是<code>Enviroment</code>，而游戏玩家就是<code>Agent</code>。</p><p><code>Enviroment</code>提供<code>observation</code>：这是<code>Agent</code>对外界环境的观察，坦克大战中，游戏的图形界面就是<code>Agent</code>(游戏玩家)对<code>Enviroment</code>（游戏）的<code>observation</code>。<code>Agent</code>使用自己的逻辑，根据对<code>observation</code>的理解，给出一个<code>action</code>：这表示对外界环境的一个操作或者反馈，坦克大战中游戏玩家的操作就是<code>action</code>。<code>action</code>在每个step中会被发送给<code>Enviroment</code>,<code>Environment</code>则会返回新的<code>observation</code>和<code>reward</code>。<code>reward</code>表示的是当前情况下<code>Environment</code>对<code>aciton</code>的反馈：数值可能正数也可能负数也可能是零，坦克大战中坦克被击毁、击毁敌方坦克、获取装备或者旗帜等直接得分或者失分都算是<code>reward</code>。然后<code>Agent</code>根据新的<code>observation</code>给出新的<code>action</code>,如此循环往复。聪明的算法能在<code>observation</code>、<code>action</code>和<code>reward</code>中发现关系，使得每一次给出的<code>action</code>都能得到最大期望的<code>reward</code>。</p><p><img src="RL_loop.svg" alt="Reinforcement Learning Loop"></p><h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p>与Supervised Learning不同的是，Reinforcement Learning要解决的问题是存在<code>reward delay</code>现象的，也就是说Reinforcement Learning会考虑全局最优，而不是当前这一步是最优的，避免“赢了战役，输了战争”这种现象。坦克大战中的例子就是高级玩家可能会选择一种策略：即使不停的被攻击，他的坦克不选择躲避炮弹而是选择承受炮火的同时持续不断的攻击你的基地的外墙。只看一步操作而言，这样的行动是失败的，因为己方的某一辆坦克被击毁，但从长远的角度来看，你能在最后一辆己方坦克被击毁前成功的击毁对方的基地。</p><h2 id="Q-learning-算法"><a href="#Q-learning-算法" class="headerlink" title="Q-learning 算法"></a>Q-learning 算法</h2><p>我们将介绍Reinforcement Learning中比较容易理解的算法：Q-learning</p><h3 id="Q-learning-简介"><a href="#Q-learning-简介" class="headerlink" title="Q-learning 简介"></a>Q-learning 简介</h3><p><strong>TODO</strong></p><h3 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h3><p>我们将引入一个简单的环境：一个房子。这个房子由5个房间构成（编号：0 - 4），连上房子外的空间（编号：5），共六个状态。房间之间与房间和户外空间之间可能存在门，也就是相互联通。如下图所示：</p><p><img src="house_environment.gif" alt="House environment"></p><p>我们根据房间的联通状态，将上述的物理房间图抽象，将每个房间抽象成一个节点(Node)或者状态（state),房子之间存在联通关系的则用一个有向边表示（因为房门是双向联通，所以每个房门对应两个相向的有向边），如下图所示：</p><p><img src="node_environment.gif" alt="Node environment"></p><p>在这个例子中，我们的目标是将 agent （抽象概念） 从房间里移动到户外空间。Q-learning 的目标是到达 reward 最高的状态，而在本例中，状态 5 就是我们想要的目标状态（也称最终状态），Q-learning 到达目标状态后就会永久留在目标状态，因此我们给状态 5 增加一个指向自己的有向边（如上图示）。这种目标或者状态称之为 absorbing goal 或者 absorbing state。</p><p>为了让状态 5 成为目标状态，我们将所有指向状态 5 的有向边全部赋值 reward=100 ，除此之外的边全部赋值 reward=0 。如下图所示：</p><p><img src="node_environment_with_reward.gif" alt="Node environment with reward"></p><p>假设本例子中的 agent 是一个笨笨的虚拟机器人，它会从以前的经验中学习知识，它能够从一个房间到另一个房间，但它不知道房间的情况也不知道从房间到外面空间的路径。</p><p>假设本例子的目标是建立一个模型帮助 agent 从房子中的 <strong>任意一个房间</strong> 出发到达户外空间。现在我们假设 agent 在房间 2 ，我们想要让它学习如何到达户外空间。如下图所示：</p><p><img src="agent_at_room_2.gif" alt="Agent at room 2"></p><p>为了和 Reinforcement Learning 保持一支，我们特别将每个房间 Node 称之状态（state）或者叫做 observation ，而将 agent 的每一次移动称之为 action。observation 在这里有点难以理解，所以这里使用 状态（state）这个 Q-learning 术语。在本例子中，action 使用有向边来表示。如下图所示：</p><p><img src="agent_at_state_2.gif" alt="agent at state 2"></p><p>从状态 2 agent 可以到达状态 3，这是因为状态 2 存在到状态 3 的有向边，也就是存在联通的门。状态 2 不能直接到达状态 1，这是因为状态 2 不存在到达状态 1 的有向边，也就是这两个房间之间不存在门。状态 3 可以到达状态 1 、状态 4 和回到状态 2。agent 在状态 1 和状态 0 的可能到达状态，读者可以自行观察，不再赘述。我们将上述所有可能状态、 action 和 reward 编制成一张表：得到 matrix R。如下图所示。</p><p> <img src="matrix_r_init.gif" alt="matrix r init"></p><p> <strong>NOTE</strong> 表中的 -1 表示无效值，也就是这个 action 不存在，比如不存在从状态 0 到状态 1 的 action 或者说门。</p><p> 我们将增加一个相似的矩阵 matrix Q ，用于表示 agent 从中学习的知识。matrix Q 的每一个行代表一个前一个状态，每一列表示下一个状态。刚开始时，agent 并没有学习到任何知识，所以 matrix Q 中的值初始化为 0. 在本例子中，我们已经知道所有的状态数为 6， 在现实例子中，这个数可能是未知的，所以初始化的时候可能只有一行一列，当发现新的状态时，Matrix Q 可以增加新的行和列。</p><p> Q-learning 的状态转移规则如下：</p><p> $$ Q(state, action) = R(state, action) + \gamma * Max[Q(next state, all actions)] $$</p><p> 按照这个公式，赋值Q中一个元素的值等于 Matrix R 中的相应的值和 $\gamma$ (学习参数) 乘以 下一个状态中所有的action的最大的 Q reward。</p><p> 我们的 agent 不需要老师就能从经验中学习，因此这个是 非监督学习。每一次 agent 从一个状态转到另一个状态，最终达到目标状态。这样的一次探索过程我们称之为 episode。每一个 episode 包含了 agent 从初始状态到目标状态的所有的 action。每当 agent 到达目标状态时，我们就开始下一个 episode。</p><p>Q-Learning 算法大体运行如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Set the gamma parameter, and environment rewards in matrix R.</span><br><span class="line">Initialize matrix Q to zero.</span><br><span class="line">For each episode &#123;</span><br><span class="line">  Select a random initial state.</span><br><span class="line">  Do While the goal state hasn&apos;t been reached. &#123;</span><br><span class="line">      Select one among all possible actions for the current state.</span><br><span class="line">      Using this possible action, consider going to the next state.</span><br><span class="line">      Get maximum Q value for this next state based on all possible actions.</span><br><span class="line">      Compute: Q(state, action) = R(state, action) + Gamma * Max[Q(next state, all actions)]</span><br><span class="line">      Set the next state as the current state.</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 图形游戏（比如坦克大战）如果要实现智能Agent（AKA 电脑玩家）的话，目前最佳的方案就是Reinforcement Learning (简称 RL ;中文：增强学习)。 本文记录了我和Reinforcement Learning的第一次交手，将带你了解这位名扬四海却又神秘莫测的对手。:)&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="机器学习" scheme="https://blog.xiaoquankong.ai/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
-    
-      <category term="Reinforcement_Learning" scheme="https://blog.xiaoquankong.ai/tags/Reinforcement-Learning/"/>
-    
-      <category term="坦克大战" scheme="https://blog.xiaoquankong.ai/tags/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98/"/>
     
   </entry>
   

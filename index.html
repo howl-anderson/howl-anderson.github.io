@@ -343,6 +343,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Xiaoquan Kong">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howl's">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法/" class="post-title-link" itemprop="url">如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-12-20 10:17:58 / Modified: 11:29:43" itemprop="dateCreated datePublished" datetime="2019-12-20T10:17:58+08:00">2019-12-20</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+              
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">Comments: </span>
+                <a href="/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>TLDR</strong> 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。</p>
+<!--  -->
+<h2 id="安装输入法控制程序"><a href="#安装输入法控制程序" class="headerlink" title="安装输入法控制程序"></a>安装输入法控制程序</h2><p>不同的系统，需要用到不同的输入法控制程序，这里不同系统又不同的输入法控制系统。这里我以 Mac OS 作为示例。你需要安装 <code>issw</code>，具体如何安装，可以参考文献「Command line input source switcher for Mac.」。Linux 用户则不需要安装，系统自带控制程序。</p>
+<h2 id="设定-Spacemacs-hook"><a href="#设定-Spacemacs-hook" class="headerlink" title="设定 Spacemacs hook"></a>设定 Spacemacs hook</h2><p>Spacemace Hook 具有强大的功能，参见「Vim/Evil mode command and Russian language auto select」。不同的系统具有不同的设定，具体如下：</p>
+<h3 id="针对-Mac"><a href="#针对-Mac" class="headerlink" title="针对 Mac"></a>针对 Mac</h3><p>参见 「How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)」</p>
+<h3 id="针对-Linux"><a href="#针对-Linux" class="headerlink" title="针对 Linux"></a>针对 Linux</h3><p>参见 「Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state」</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
+<li><a href="https://xxleyi.github.io/blog/2018/10/08/auto-switch-input-method-in-MacOS" target="_blank" rel="noopener">auto switch input method in MacOS</a></li>
+<li><a href="https://github.com/vovkasm/input-source-switcher" target="_blank" rel="noopener">Command line input source switcher for Mac.</a></li>
+<li><a href="https://github.com/daipeihust/im-select" target="_blank" rel="noopener">im-select</a></li>
+<li><a href="https://github.com/syl20bnr/spacemacs/issues/3225" target="_blank" rel="noopener">Vim/Evil mode command and Russian language auto select</a></li>
+<li><a href="https://gist.github.com/ghost355/a967417bb7e826e833d4" target="_blank" rel="noopener">How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)</a></li>
+<li><a href="https://gist.github.com/kai11/bb5c2fa03cb21884bfcb76c01d1632c9" target="_blank" rel="noopener">Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/rasa-新特性-supervised-response-selector/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1824,170 +1995,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://blog.xiaoquankong.ai/构建中文分词器-双向最大匹配法/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Xiaoquan Kong">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Howl's">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/构建中文分词器-双向最大匹配法/" class="post-title-link" itemprop="url">构建中文分词器 - 双向最大匹配法</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2018-08-14 11:41:17 / Modified: 12:16:13" itemprop="dateCreated datePublished" datetime="2018-08-14T11:41:17+08:00">2018-08-14</time>
-            </span>
-          
-
-          
-            
-
-            
-          
-
-          
-
-          
-            
-            
-              
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-            
-                <span class="post-meta-item-text">Comments: </span>
-                <a href="/构建中文分词器-双向最大匹配法/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="构建中文分词器-双向最大匹配法/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>结合 <code>正向最大匹配法</code> 和 <code>反向最大匹配法</code> 的优点，按照一定的规则选择其中表现最优秀的结果作为 <code>双向最大匹配法</code> 的结果。<br>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/构建中文分词器-双向最大匹配法/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          
-          <!--/noindex-->
-        
-      
-    </p></div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2034,7 +2041,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-count">40</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

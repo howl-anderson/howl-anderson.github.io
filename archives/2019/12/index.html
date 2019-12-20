@@ -94,20 +94,14 @@
 
 
 
-  <meta name="description" content="TLDR 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。  安装输入法控制程序不同">
-<meta property="og:type" content="website">
-<meta property="og:title" content="如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法">
-<meta property="og:url" content="https://blog.xiaoquankong.ai/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Howl&#39;s">
+<meta property="og:url" content="https://blog.xiaoquankong.ai/archives/2019/12/index.html">
 <meta property="og:site_name" content="Howl&#39;s">
-<meta property="og:description" content="TLDR 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。  安装输入法控制程序不同">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-20T03:29:43.243Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法">
-<meta name="twitter:description" content="TLDR 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。  安装输入法控制程序不同">
+<meta name="twitter:title" content="Howl&#39;s">
 
-
-  
 
 
   <link rel="alternate" href="/atom.xml" title="Howl's" type="application/atom+xml">
@@ -116,7 +110,7 @@
 
   
   
-  <link rel="canonical" href="https://blog.xiaoquankong.ai/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法">
+  <link rel="canonical" href="https://blog.xiaoquankong.ai/archives/2019/12/">
 
 
 
@@ -126,7 +120,7 @@
   };
 </script>
 
-  <title>如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法 | Howl's</title>
+  <title>Archive | Howl's</title>
   
 
 
@@ -185,7 +179,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left page-archive">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -287,7 +281,7 @@
         
         
           
-          <li class="menu-item menu-item-archives">
+          <li class="menu-item menu-item-archives menu-item-active">
 
     
     
@@ -354,77 +348,77 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-expand">
-    
-    
-    
-    <div class="post-block page">
-      <header class="post-header">
-
-<h1 class="post-title" itemprop="name headline">如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法
-
-</h1>
-
-<div class="post-meta">
   
   
-
-
-
-</div>
-
-</header>
+  
+  <div class="post-block archive">
+    <div id="posts" class="posts-collapse">
+      <span class="archive-move-on"></span>
 
       
-      
-      
-      <div class="post-body">
+      <span class="archive-page-counter">
         
         
-          <p><strong>TLDR</strong> 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。</p>
-<!--  -->
-<h2 id="安装输入法控制程序"><a href="#安装输入法控制程序" class="headerlink" title="安装输入法控制程序"></a>安装输入法控制程序</h2><p>不同的系统，需要用到不同的输入法控制程序，这里不同系统又不同的输入法控制系统。这里我以 Mac OS 作为示例。你需要安装 <code>issw</code>，具体如何安装，可以参考文献「Command line input source switcher for Mac.」。Linux 用户则不需要安装，系统自带控制程序。</p>
-<h2 id="设定-Spacemacs-hook"><a href="#设定-Spacemacs-hook" class="headerlink" title="设定 Spacemacs hook"></a>设定 Spacemacs hook</h2><p>Spacemace Hook 具有强大的功能，参见「Vim/Evil mode command and Russian language auto select」。不同的系统具有不同的设定，具体如下：</p>
-<h3 id="针对-Mac"><a href="#针对-Mac" class="headerlink" title="针对 Mac"></a>针对 Mac</h3><p>参见 「How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)」</p>
-<h3 id="针对-Linux"><a href="#针对-Linux" class="headerlink" title="针对 Linux"></a>针对 Linux</h3><p>参见 「Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state」</p>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
-<li><a href="https://xxleyi.github.io/blog/2018/10/08/auto-switch-input-method-in-MacOS" target="_blank" rel="noopener">auto switch input method in MacOS</a></li>
-<li><a href="https://github.com/vovkasm/input-source-switcher" target="_blank" rel="noopener">Command line input source switcher for Mac.</a></li>
-<li><a href="https://github.com/daipeihust/im-select" target="_blank" rel="noopener">im-select</a></li>
-<li><a href="https://github.com/syl20bnr/spacemacs/issues/3225" target="_blank" rel="noopener">Vim/Evil mode command and Russian language auto select</a></li>
-<li><a href="https://gist.github.com/ghost355/a967417bb7e826e833d4" target="_blank" rel="noopener">How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)</a></li>
-<li><a href="https://gist.github.com/kai11/bb5c2fa03cb21884bfcb76c01d1632c9" target="_blank" rel="noopener">Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state</a></li>
-</ol>
+         
+        
+        OK! 40 posts in total. Keep on posting.
+      </span>
+      
+
+      
 
         
+        
+        
+
+        
+          
+          <div class="collection-title">
+            <h1 class="archive-year" id="archive-year-2019">2019</h1>
+          </div>
+        
+        
+
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+          <a class="post-title-link" href="/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法/" itemprop="url">
+            
+              <span itemprop="name">如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法</span>
+            
+          </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2019-12-20T10:17:58+08:00" content="2019-12-20">
+          12-20
+        </time>
       </div>
+
+    </header>
+  </article>
+
+
+
       
-      
-      
+
     </div>
-    
-
-
-
-    
-    
-    
   </div>
+  
+  
+  
+
+  
+
 
 
           </div>
           
-
-  
-    <div class="comments" id="comments">
-      <div id="disqus_thread">
-        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
-      </div>
-    </div>
-
-  
-
-
 
         </div>
         
@@ -444,17 +438,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -469,7 +454,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-count">40</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -648,23 +633,6 @@
       </div>
 
       
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装输入法控制程序"><span class="nav-number">1.</span> <span class="nav-text">安装输入法控制程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设定-Spacemacs-hook"><span class="nav-number">2.</span> <span class="nav-text">设定 Spacemacs hook</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#针对-Mac"><span class="nav-number">2.1.</span> <span class="nav-text">针对 Mac</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#针对-Linux"><span class="nav-number">2.2.</span> <span class="nav-text">针对 Linux</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">3.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
-      
 
       
 
@@ -787,10 +755,6 @@
 
 
   
-  <script src="/js/scrollspy.js?v=7.2.0"></script>
-<script src="/js/post-details.js?v=7.2.0"></script>
-
-
 
   
 
@@ -818,28 +782,9 @@
 </script>
 
 
-<script>
-  var disqus_config = function() {
-    this.page.url = "https://blog.xiaoquankong.ai/如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法.html";
-    this.page.identifier = "如何自动在-Spacemacs-evil-进入命令模式时切换至英文输入法.html";
-    this.page.title = '如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法';
-    };
-  function loadComments() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://blog-xiaoquankong-ai.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', '' + +new Date());
-    (d.head || d.body).appendChild(s);
-  }
-  
-    window.addEventListener('load', loadComments, false);
-  
-</script>
 
 
 
-
-
-  
 
 
   
