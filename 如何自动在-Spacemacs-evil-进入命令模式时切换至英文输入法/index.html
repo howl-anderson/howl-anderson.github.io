@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Howl&#39;s">
 <meta property="og:description" content="TL;DR 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-01-02T06:48:30.668Z">
+<meta property="og:updated_time" content="2020-01-02T06:52:10.296Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何自动在 Spacemacs evil 进入命令模式时切换至英文输入法">
 <meta name="twitter:description" content="TL;DR 作为 Vim 或者 Spacemacs evil 的中文（或非英文）使用者，经常遇到的一个麻烦，就是在插入模式中时使用中文（或非英文）后，需要进入命令模式时，会出现因为输入法的缘故，无法直接操作，需要先切换输入法至英文状态。这极大的降低来效率。本文将介绍如何在 Spacemacs evil 模式中，实现退出编辑模式时（AKA进入命令模式时）自动切换至英文输入法。">
@@ -404,7 +404,7 @@
                 
                   <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Modified: 2020-01-02 14:48:30" itemprop="dateModified" datetime="2020-01-02T14:48:30+08:00">2020-01-02</time>
+                <time title="Modified: 2020-01-02 14:52:10" itemprop="dateModified" datetime="2020-01-02T14:52:10+08:00">2020-01-02</time>
               </span>
             
           
@@ -459,7 +459,7 @@
 <h2 id="设定-Spacemacs-hook"><a href="#设定-Spacemacs-hook" class="headerlink" title="设定 Spacemacs hook"></a>设定 Spacemacs hook</h2><p>Spacemace Hook 具有强大的功能，参见「Vim/Evil mode command and Russian language auto select」。不同的系统具有不同的设定，具体如下：</p>
 <h3 id="针对-Mac"><a href="#针对-Mac" class="headerlink" title="针对 Mac"></a>针对 Mac</h3><p>参见 「How to smart switch Rus/Eng mode when use Emacs and Evil mode (or Spasemacs)」</p>
 <h3 id="针对-Linux"><a href="#针对-Linux" class="headerlink" title="针对 Linux"></a>针对 Linux</h3><p>参见 「Spacemacs on Ubuntu 16.04 - automatically switch between English and Russian layouts on entering and exiting insert state」</p>
-<p>==== Update (2020-01-02) ====<br>似乎 gsettings 不能很好的处理 Rime 输入法，输出的状态和英文的完全一致，导致无法使用。在 「How to change keyboard layout in gnome 3 from command line」的指引下，正好我的 Rime 是使用 ibus 框架的，我使用 ibus 命令来完成切换。我将改动后经过测试的代码发送到了 GitHub Gist 「<a href="https://gist.github.com/howl-anderson/16e1424809393f98df05295d7ebf94ee」。" target="_blank" rel="noopener">https://gist.github.com/howl-anderson/16e1424809393f98df05295d7ebf94ee」。</a></p>
+<p>==== Update (2020-01-02) ====<br>似乎 gsettings 不能很好的处理 Rime 输入法，输出的状态和英文的完全一致，导致无法使用。在 「How to change keyboard layout in gnome 3 from command line」的指引下，正好我的 Rime 是使用 ibus 框架的，我使用 ibus 命令来完成切换。我将改动后经过测试的代码发送到了 GitHub Gist 「 <a href="https://gist.github.com/howl-anderson/16e1424809393f98df05295d7ebf94ee" target="_blank" rel="noopener">https://gist.github.com/howl-anderson/16e1424809393f98df05295d7ebf94ee</a> 」。</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol>
 <li><a href="https://xxleyi.github.io/blog/2018/10/08/auto-switch-input-method-in-MacOS" target="_blank" rel="noopener">auto switch input method in MacOS</a></li>
 <li><a href="https://github.com/vovkasm/input-source-switcher" target="_blank" rel="noopener">Command line input source switcher for Mac.</a></li>
