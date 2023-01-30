@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/</loc>
+    <lastmod>2018-09-09T11:08:04+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/posts/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/posts/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/rasa/</loc>
+    <lastmod>2018-09-09T11:08:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/rasa-core/</loc>
+    <lastmod>2018-09-09T11:08:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/rasa-nlu/</loc>
+    <lastmod>2018-09-09T11:08:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/</loc>
+    <lastmod>2018-09-09T11:08:04+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/tags/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/</loc>
+    <lastmod>2018-09-09T11:08:04+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</loc>
+    <lastmod>2018-09-09T11:08:04+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</loc>
+    <lastmod>2018-09-08T19:41:52+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8/</loc>
+    <lastmod>2018-08-20T16:19:38+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/implementing-a-hmm-based-chinese-tokenizer/</loc>
+    <lastmod>2018-08-20T16:19:38+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-bidirectional-matching-method/</loc>
+    <lastmod>2018-08-14T11:41:17+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/chinese-document-typesetting-specification-spacing-of-pangu/</loc>
+    <lastmod>2018-01-24T02:56:26+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/chinese-spelling-check-task-related-materials/</loc>
+    <lastmod>2018-01-16T18:24:24+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/</loc>
+    <lastmod>2017-12-23T21:16:51+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/</loc>
+    <lastmod>2017-11-24T14:46:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/reinforcement_learning/</loc>
+    <lastmod>2017-11-24T14:46:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98/</loc>
+    <lastmod>2017-11-24T14:46:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2017-11-24T14:46:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/python/</loc>
+    <lastmod>2017-11-17T18:57:39+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</loc>
+    <lastmod>2017-11-17T18:57:39+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/categories/</loc>
+    <lastmod>2017-11-16T21:45:58+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/lstm/</loc>
+    <lastmod>2017-11-16T21:45:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/quickly-understand-lstm/</loc>
+    <lastmod>2017-11-16T21:45:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2017-11-16T21:45:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2017-11-16T21:45:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2017-11-13T11:53:40+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/machine-learning-related-materials/</loc>
+    <lastmod>2017-11-13T11:53:40+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/</loc>
+    <lastmod>2017-11-13T11:53:40+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/</loc>
+    <lastmod>2017-11-09T23:31:52+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/activiation-functions-in-neural-networks/</loc>
+    <lastmod>2017-11-09T23:31:52+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</loc>
+    <lastmod>2017-11-09T17:10:26+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/nlu/</loc>
+    <lastmod>2017-11-09T15:05:54+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</loc>
+    <lastmod>2017-11-09T15:05:54+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/bye-wordpress-and-hello-hexo/</loc>
+    <lastmod>2017-11-08T20:40:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/the-difference-of-map-function-in-python-2-and-python-3/</loc>
+    <lastmod>2017-09-09T06:53:03+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/categories/python/</loc>
+    <lastmod>2017-09-09T06:53:03+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</loc>
+    <lastmod>2017-08-17T14:22:15+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/tensorflow/</loc>
+    <lastmod>2017-08-17T14:22:15+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/categories/tensorflow/</loc>
+    <lastmod>2017-08-17T14:22:15+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/categories/tensorflow/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/categories/tensorflow/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-descriptor/</loc>
+    <lastmod>2017-08-13T13:26:42+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/default-arguments-in-python-function/</loc>
+    <lastmod>2017-08-13T13:22:12+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</loc>
+    <lastmod>2017-08-13T13:18:22+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/git/</loc>
+    <lastmod>2017-08-13T12:38:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/introduce-to-git-flow/</loc>
+    <lastmod>2017-08-13T12:38:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</loc>
+    <lastmod>2017-08-13T12:38:08+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2016-12-05T11:56:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/categories/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2016-12-05T11:56:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</loc>
+    <lastmod>2016-12-05T11:56:37+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/iterable/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/iterator/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/mock/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/openai-gym/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/q-learning/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/tags/reinforcement-learning/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/series/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/series/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/series/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/archives/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/archives/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/archives/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-reverse-matching-method/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/implementing-a-dag-based-chinese-tokenizer/</loc>
+  </url>
+  
+  <url>
+    <loc>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-forward-matching-method/</loc>
+  </url>
+  
+</urlset>

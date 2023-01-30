@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Python on Xiaoquan Kong&#39;s Blog</title>
+    <link>https://blog.xiaoquankong.ai/zh/categories/python/</link>
+    <description>Recent content in Python on Xiaoquan Kong&#39;s Blog</description>
+    <image>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 09 Sep 2017 06:53:03 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/categories/python/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>map函数与相似函数在python2和python3中的不同</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/the-difference-of-map-function-in-python-2-and-python-3/</link>
+      <pubDate>Sat, 09 Sep 2017 06:53:03 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/the-difference-of-map-function-in-python-2-and-python-3/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; map函数及其类似函数在python2和python3下表现差异很大，py2下返回list，而py3下返回迭代器。解决办法是使用list函数显式求值。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python描述器</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-descriptor/</link>
+      <pubDate>Sun, 13 Aug 2017 13:26:42 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-descriptor/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Descriptor是Python实现streagy模式的一种变形，它将属性的访问／修改／删除委托给了Descriptor。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python函数默认参数的问题</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/default-arguments-in-python-function/</link>
+      <pubDate>Sun, 13 Aug 2017 13:22:12 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/default-arguments-in-python-function/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Python的默认参数实现机制很容易导致难以调试的bug。正确的使用方法是避免使用可变类型作为默认参数。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Python context manager 上下文管理器</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</link>
+      <pubDate>Sun, 13 Aug 2017 13:18:22 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

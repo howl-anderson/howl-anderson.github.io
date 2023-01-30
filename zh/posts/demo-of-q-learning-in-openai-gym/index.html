@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>基于 OpenAI Gym 的 Q-Learning 算法演示 | Xiaoquan Kong&#39;s Blog</title>
+<meta name="keywords" content="Reinforcement Learning, OpenAI Gym, Q-Learning">
+<meta name="description" content="
+
+TL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。">
+<meta name="author" content="Xiaoquan Kong">
+<link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.xiaoquankong.ai/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.xiaoquankong.ai/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+</script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'G-ED44PRBHE8', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<meta property="og:title" content="基于 OpenAI Gym 的 Q-Learning 算法演示" />
+<meta property="og:description" content="
+
+TL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
+
+
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/>
+
+<meta name="twitter:title" content="基于 OpenAI Gym 的 Q-Learning 算法演示"/>
+<meta name="twitter:description" content="
+
+TL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。"/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "基于 OpenAI Gym 的 Q-Learning 算法演示",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "基于 OpenAI Gym 的 Q-Learning 算法演示",
+  "name": "基于 OpenAI Gym 的 Q-Learning 算法演示",
+  "description": "\nTL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。\n",
+  "keywords": [
+    "Reinforcement Learning", "OpenAI Gym", "Q-Learning"
+  ],
+  "articleBody": "\nTL;DR 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。\n前面的博文里已经介绍过 Q-learning 的一些基本情况了，如果你没见过前面的博文或者已经忘记的差不多了，那么可以使用这个 Reinforcement Learning: 初次交手，多多指教 访问。\n但是总的来说，如果没有实际代码跑一番，估计你对这个算法的正确性还是有疑虑的。本文将从头构建一个 Q-learning 算法，来解决一个 toy 级别的强化学习场景的学习工作。希望能加深你对 Q-learning 的理解和对强化学习的认知。\n源代码  比较精美的，但是做了一定扩展的实现在 q_learning_demo 和本文代码相对应的，稍有改动的 Jupyter Notebook 在 proof-of-concept  场景 我们要用 Q-learning 解决什么问题呢？我们使用 OpenAI Gym 里提供的一个环境：FrozenLake-v0.\nFrozenLake-v0 环境的中文描述大概是这样的：\n冬天的时候，你和你的朋友们在公园扔飞盘。 你不小心把飞盘扔到了公园的湖中间。 湖面已经结冰，但是有些地方的没有结冰，形成一个冰洞，有人踩上去会掉下去。 这个飞盘对你来说非常宝贵，你觉得非常有必要把飞盘拿回来。 但是冰面很滑，你不能总是想去什么方向就去什么方向，滑滑的冰面可能会带你走向别的方向。 冰面用如下的字符块表示： SFFF FHFH FFFH HFFG S : Safe，开始点，安全 F : frozen surface, 冻结的表面，安全 H : hole, 掉下去就死定了 G : goal, 飞盘所在的地方 每个轮回，以你拿回飞盘或者掉进洞里而结束。 只有当你拿到飞盘才能获得1个奖励，其他情况都为0 OpenAI Gym OpenAI 是 Elon Musk 创建的一家致力于非盈利的通用人工智能的公司。 其开源产品 Gym 是提供了一种增强学习的实现框架，主要用于提供一些模拟器供研究使用。\n之前的博客提到过，增强学习是 Agent 和 Environment 直接的交互构成的。Gym 提供了很多常见的 Environment 对象。利用这些 Environment，研究者可以很快构建增强学习的应用。\nGym 运行模式 # 导入gym import gym # 构建环境 env = gym.make(\"Taxi-v1\") # 获取第一次的观察结果 observation = env.reset() # 开始探索环境 for _ in range(1000): env.render() # 渲染观察结果 # 你的 Agent 应该会根据观察结果，选择最合适的动作，但这里我们使用随机选择的动作 action = env.action_space.sample() # your agent here (this takes random actions) # 将动作发送给环境，获取新的观察结果、奖励和是否结束的标志等 observation, reward, done, info = env.step(action) if done: # 游戏结束 break 通过上面的示例，你应该了解OpenAI gym的工作模式。\n训练流程 导入依赖\nimport gym import numpy as np from collections import defaultdict import functools 定义两个主要组件\n# 构建 Environment env = gym.make('FrozenLake-v0') env.seed(0) # 确保结果具有可重现性 # 构建 Agent tabular_q_agent = TabularQAgent(env.observation_space, env.action_space) # 开始训练 train(tabular_q_agent, env) tabular_q_agent.test(env) 训练循环\ndef train(tabular_q_agent, env): for episode in range(100000): # 训练 100000 次 all_reward, step_count = tabular_q_agent.learn(env) TabularQAgent 的实现\nclass TabularQAgent(object): def __init__(self, observation_space, action_space): self.observation_space = observation_space self.action_space = action_space self.action_n = action_space.n self.config = { \"learning_rate\": 0.5, \"eps\": 0.05, # Epsilon in epsilon greedy policies \"discount\": 0.99, \"n_iter\": 10000} # Number of iterations self.q = defaultdict(functools.partial(generate_zeros, n=self.action_n)) def act(self, observation, eps=None): if eps is None: eps = self.config[\"eps\"] # epsilon greedy. action = np.argmax(self.q[observation]) if np.random.random()  eps else self.action_space.sample() return action def learn(self, env): obs = env.reset() rAll = 0 step_count = 0 for t in range(self.config[\"n_iter\"]): action = self.act(obs) obs2, reward, done, _ = env.step(action) future = 0.0 if not done: future = np.max(self.q[obs2]) self.q[obs][action] = (1 - self.config[\"learning_rate\"]) * self.q[obs][action] + self.config[\"learning_rate\"] * (reward + self.config[\"discount\"] * future) obs = obs2 rAll += reward step_count += 1 if done: break return rAll, step_count def test(self, env): obs = env.reset() env.render(mode='human') for t in range(self.config[\"n_iter\"]): env.render(mode='human') action = self.act(obs, eps=0) obs2, reward, done, _ = env.step(action) env.render(mode='human') if done: break obs = obs2 核心代码 我们重点关注核心代码，Q-learning 是如何学习的，相关代码简化后得到：\n如何更新 Q table # 获取第一次观察结果 obs = env.reset() while True: # 一直循环，直到游戏结束 action = self.act(obs) # 根据策略，选择 action obs2, reward, done, _ = env.step(action) future = 0.0 if not done: future = np.max(self.q[obs2]) # 获取后一步期望的最大奖励 # 更新 Q 表格，保留部分当前值 加上 部分当前奖励和未来一步的最大奖励 self.q[obs][action] = (1 - self.config[\"learning_rate\"]) * self.q[obs][action] + self.config[\"learning_rate\"] * (reward + self.config[\"discount\"] * future) # 更新 obs = obs2 # 游戏结束，退出循环 if done: break explore / exploit 问题 上面的代码我只提到了 self.act 会根据策略选择 action，那么该如何选择呢？这里就涉及到了 explore exploit tradeoff 的问题了。我们理想中的 action 选择策略是既能充分利用现有学习到的知识，每次都去最大化的最终的reward，这就是 exploit。但是同时，我们也希望我们的选择策略能适当的去探索一下其他路径，不能固定在已经知道的最优选择，避免局部最优解，适当时候也去探索其他路径，可能能发现更加优秀的路径，也就是全局最优解，这就是 explore 问题。\n我们采取了一个概率方案，有一定概率去通过随机选择的方式，探索新路径。\n# eps 数值在 [0, 1] ，控制探索的力度，越大探索的越多 if eps is None: eps = self.config[\"eps\"] # epsilon greedy. action = np.argmax(self.q[observation]) if np.random.random()  eps else self.action_space.sample() return action 其他没有交代的点 由于本篇是科普性质，所以没有cover很多其他的问题点，比如学习和探索的因子可以是decay的，刚开始训练的时候学习和探索强度比较大，后续慢慢缩小，这样模型就会慢慢收敛。\n",
+  "wordCount" : "468",
+  "inLanguage": "zh",
+  "datePublished": "0001-01-01T00:00:00Z",
+  "dateModified": "0001-01-01T00:00:00Z",
+  "author":{
+    "@type": "Person",
+    "name": "Xiaoquan Kong"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xiaoquan Kong's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.xiaoquankong.ai/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.xiaoquankong.ai/zh/" accesskey="h" title="Xiaoquan Kong&#39;s Blog (Alt + H)">Xiaoquan Kong&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://blog.xiaoquankong.ai/" title="English"
+                            aria-label="English">English</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.xiaoquankong.ai/zh/archives/" title="时间线">
+                    <span>时间线</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xiaoquankong.ai/zh/categories" title="分类">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xiaoquankong.ai/zh/tags/" title="标签">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.xiaoquankong.ai" title="关于我">
+                    <span>关于我</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <h1 class="post-title">
+      基于 OpenAI Gym 的 Q-Learning 算法演示
+    </h1>
+    <div class="post-meta">3 分钟&nbsp;·&nbsp;Xiaoquan Kong
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e6%ba%90%e4%bb%a3%e7%a0%81" aria-label="源代码">源代码</a></li>
+                <li>
+                    <a href="#%e5%9c%ba%e6%99%af" aria-label="场景">场景</a></li>
+                <li>
+                    <a href="#openai-gym" aria-label="OpenAI Gym">OpenAI Gym</a></li>
+                <li>
+                    <a href="#gym-%e8%bf%90%e8%a1%8c%e6%a8%a1%e5%bc%8f" aria-label="Gym 运行模式">Gym 运行模式</a></li>
+                <li>
+                    <a href="#%e8%ae%ad%e7%bb%83%e6%b5%81%e7%a8%8b" aria-label="训练流程">训练流程</a></li>
+                <li>
+                    <a href="#%e6%a0%b8%e5%bf%83%e4%bb%a3%e7%a0%81" aria-label="核心代码">核心代码</a><ul>
+                        
+                <li>
+                    <a href="#%e5%a6%82%e4%bd%95%e6%9b%b4%e6%96%b0-q-table" aria-label="如何更新 Q table">如何更新 Q table</a></li>
+                <li>
+                    <a href="#explore-exploit-%e9%97%ae%e9%a2%98" aria-label="explore / exploit 问题">explore / exploit 问题</a></li>
+                <li>
+                    <a href="#%e5%85%b6%e4%bb%96%e6%b2%a1%e6%9c%89%e4%ba%a4%e4%bb%a3%e7%9a%84%e7%82%b9" aria-label="其他没有交代的点">其他没有交代的点</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><a href="https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb" target="_blank"><img src="https://mybinder.org/badge.svg" alt="Binder" /></a></p>
+
+<p><strong>TL;DR</strong> 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。</p>
+
+<p>前面的博文里已经介绍过 Q-learning 的一些基本情况了，如果你没见过前面的博文或者已经忘记的差不多了，那么可以使用这个 <a href="/Reinforcement-Learning-初次交手，多多指教/">Reinforcement Learning: 初次交手，多多指教</a> 访问。</p>
+
+<p>但是总的来说，如果没有实际代码跑一番，估计你对这个算法的正确性还是有疑虑的。本文将从头构建一个 Q-learning 算法，来解决一个 toy 级别的强化学习场景的学习工作。希望能加深你对 Q-learning 的理解和对强化学习的认知。</p>
+
+<h3 id="源代码">源代码<a hidden class="anchor" aria-hidden="true" href="#源代码">#</a></h3>
+
+<ul>
+<li>比较精美的，但是做了一定扩展的实现在 <a href="https://github.com/howl-anderson/q_learning_demo" target="_blank">q_learning_demo</a></li>
+<li>和本文代码相对应的，稍有改动的 Jupyter Notebook 在  <a href="https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb" target="_blank">proof-of-concept</a></li>
+</ul>
+
+<h3 id="场景">场景<a hidden class="anchor" aria-hidden="true" href="#场景">#</a></h3>
+
+<p>我们要用 Q-learning 解决什么问题呢？我们使用 OpenAI Gym 里提供的一个环境：<code>FrozenLake-v0</code>.</p>
+
+<p><code>FrozenLake-v0</code> 环境的中文描述大概是这样的：</p>
+<pre><code>冬天的时候，你和你的朋友们在公园扔飞盘。
+你不小心把飞盘扔到了公园的湖中间。
+湖面已经结冰，但是有些地方的没有结冰，形成一个冰洞，有人踩上去会掉下去。
+这个飞盘对你来说非常宝贵，你觉得非常有必要把飞盘拿回来。
+但是冰面很滑，你不能总是想去什么方向就去什么方向，滑滑的冰面可能会带你走向别的方向。
+冰面用如下的字符块表示：
+    SFFF
+    FHFH
+    FFFH
+    HFFG
+S : Safe，开始点，安全
+F : frozen surface, 冻结的表面，安全
+H : hole, 掉下去就死定了
+G : goal, 飞盘所在的地方
+
+每个轮回，以你拿回飞盘或者掉进洞里而结束。
+只有当你拿到飞盘才能获得1个奖励，其他情况都为0</code></pre>
+<h3 id="openai-gym">OpenAI Gym<a hidden class="anchor" aria-hidden="true" href="#openai-gym">#</a></h3>
+
+<p>OpenAI 是 Elon Musk 创建的一家致力于非盈利的通用人工智能的公司。 其开源产品 <code>Gym</code> 是提供了一种增强学习的实现框架，主要用于提供一些模拟器供研究使用。</p>
+
+<p>之前的博客提到过，增强学习是 Agent 和 Environment 直接的交互构成的。Gym 提供了很多常见的 Environment 对象。利用这些 Environment，研究者可以很快构建增强学习的应用。</p>
+
+<h3 id="gym-运行模式">Gym 运行模式<a hidden class="anchor" aria-hidden="true" href="#gym-运行模式">#</a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 导入gym</span>
+<span class="kn">import</span> <span class="nn">gym</span>
+
+<span class="c1"># 构建环境</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s2">&#34;Taxi-v1&#34;</span><span class="p">)</span>
+
+<span class="c1"># 获取第一次的观察结果</span>
+<span class="n">observation</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="c1"># 开始探索环境</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>  <span class="c1"># 渲染观察结果</span>
+
+    <span class="c1"># 你的 Agent 应该会根据观察结果，选择最合适的动作，但这里我们使用随机选择的动作</span>
+    <span class="n">action</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="c1"># your agent here (this takes random actions)</span>
+
+    <span class="c1"># 将动作发送给环境，获取新的观察结果、奖励和是否结束的标志等</span>
+    <span class="n">observation</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">done</span><span class="p">:</span>  <span class="c1"># 游戏结束</span>
+        <span class="k">break</span></code></pre></div>
+<p>通过上面的示例，你应该了解OpenAI gym的工作模式。</p>
+
+<h3 id="训练流程">训练流程<a hidden class="anchor" aria-hidden="true" href="#训练流程">#</a></h3>
+
+<p>导入依赖</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">gym</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">functools</span></code></pre></div>
+<p>定义两个主要组件</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 构建 Environment</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">gym</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="s1">&#39;FrozenLake-v0&#39;</span><span class="p">)</span>
+<span class="n">env</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># 确保结果具有可重现性</span>
+
+<span class="c1"># 构建 Agent</span>
+<span class="n">tabular_q_agent</span> <span class="o">=</span> <span class="n">TabularQAgent</span><span class="p">(</span><span class="n">env</span><span class="o">.</span><span class="n">observation_space</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="p">)</span>
+
+<span class="c1"># 开始训练</span>
+<span class="n">train</span><span class="p">(</span><span class="n">tabular_q_agent</span><span class="p">,</span> <span class="n">env</span><span class="p">)</span>
+
+<span class="n">tabular_q_agent</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">env</span><span class="p">)</span></code></pre></div>
+<p>训练循环</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">tabular_q_agent</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">episode</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100000</span><span class="p">):</span>  <span class="c1"># 训练 100000 次</span>
+        <span class="n">all_reward</span><span class="p">,</span> <span class="n">step_count</span> <span class="o">=</span> <span class="n">tabular_q_agent</span><span class="o">.</span><span class="n">learn</span><span class="p">(</span><span class="n">env</span><span class="p">)</span></code></pre></div>
+<p>TabularQAgent 的实现</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">TabularQAgent</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation_space</span><span class="p">,</span> <span class="n">action_space</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observation_space</span> <span class="o">=</span> <span class="n">observation_space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span> <span class="o">=</span> <span class="n">action_space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">action_n</span> <span class="o">=</span> <span class="n">action_space</span><span class="o">.</span><span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&#34;learning_rate&#34;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="s2">&#34;eps&#34;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>            <span class="c1"># Epsilon in epsilon greedy policies</span>
+            <span class="s2">&#34;discount&#34;</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span>
+            <span class="s2">&#34;n_iter&#34;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">}</span>        <span class="c1"># Number of iterations</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">q</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">generate_zeros</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">action_n</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">act</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&#34;eps&#34;</span><span class="p">]</span>      
+        <span class="c1"># epsilon greedy.</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">observation</span><span class="p">])</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">eps</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">action</span>
+
+    <span class="k">def</span> <span class="nf">learn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="n">rAll</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">step_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&#34;n_iter&#34;</span><span class="p">]):</span>
+            <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+            <span class="n">obs2</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+            <span class="n">future</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+                <span class="n">future</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">obs2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">obs</span><span class="p">][</span><span class="n">action</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&#34;learning_rate&#34;</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">obs</span><span class="p">][</span><span class="n">action</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&#34;learning_rate&#34;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">reward</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&#34;discount&#34;</span><span class="p">]</span> <span class="o">*</span> <span class="n">future</span><span class="p">)</span>
+
+            <span class="n">obs</span> <span class="o">=</span> <span class="n">obs2</span>
+
+            <span class="n">rAll</span> <span class="o">+=</span> <span class="n">reward</span>
+            <span class="n">step_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">rAll</span><span class="p">,</span> <span class="n">step_count</span>
+
+    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&#34;n_iter&#34;</span><span class="p">]):</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+
+            <span class="n">action</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">obs</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">obs2</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">done</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+            <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;human&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">done</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">obs</span> <span class="o">=</span> <span class="n">obs2</span></code></pre></div>
+<h3 id="核心代码">核心代码<a hidden class="anchor" aria-hidden="true" href="#核心代码">#</a></h3>
+
+<p>我们重点关注核心代码，Q-learning 是如何学习的，相关代码简化后得到：</p>
+
+<h4 id="如何更新-q-table">如何更新 Q table<a hidden class="anchor" aria-hidden="true" href="#如何更新-q-table">#</a></h4>
+<pre><code># 获取第一次观察结果
+obs = env.reset()
+
+while True:  # 一直循环，直到游戏结束
+    action = self.act(obs)  # 根据策略，选择 action
+    obs2, reward, done, _ = env.step(action)
+
+    future = 0.0
+    if not done:
+        future = np.max(self.q[obs2])  # 获取后一步期望的最大奖励
+
+    # 更新 Q 表格，保留部分当前值 加上 部分当前奖励和未来一步的最大奖励
+    self.q[obs][action] = (1 - self.config[&#34;learning_rate&#34;]) * self.q[obs][action] + self.config[&#34;learning_rate&#34;] * (reward + self.config[&#34;discount&#34;] * future)
+
+    # 更新
+    obs = obs2
+
+    # 游戏结束，退出循环
+    if done:
+        break</code></pre>
+<h4 id="explore-exploit-问题">explore / exploit 问题<a hidden class="anchor" aria-hidden="true" href="#explore-exploit-问题">#</a></h4>
+
+<p>上面的代码我只提到了 <code>self.act</code> 会根据策略选择 action，那么该如何选择呢？这里就涉及到了 explore exploit tradeoff 的问题了。我们理想中的 action 选择策略是既能充分利用现有学习到的知识，每次都去最大化的最终的reward，这就是 exploit。但是同时，我们也希望我们的选择策略能适当的去探索一下其他路径，不能固定在已经知道的最优选择，避免局部最优解，适当时候也去探索其他路径，可能能发现更加优秀的路径，也就是全局最优解，这就是 explore 问题。</p>
+
+<p>我们采取了一个概率方案，有一定概率去通过随机选择的方式，探索新路径。</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># eps 数值在 [0, 1] ，控制探索的力度，越大探索的越多</span>
+<span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&#34;eps&#34;</span><span class="p">]</span>      
+<span class="c1"># epsilon greedy.</span>
+<span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">observation</span><span class="p">])</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">eps</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_space</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+<span class="k">return</span> <span class="n">action</span></code></pre></div>
+<h4 id="其他没有交代的点">其他没有交代的点<a hidden class="anchor" aria-hidden="true" href="#其他没有交代的点">#</a></h4>
+
+<p>由于本篇是科普性质，所以没有cover很多其他的问题点，比如学习和探索的因子可以是decay的，刚开始训练的时候学习和探索强度比较大，后续慢慢缩小，这样模型就会慢慢收敛。</p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://blog.xiaoquankong.ai/zh/tags/openai-gym/">OpenAI Gym</a></li>
+      <li><a href="https://blog.xiaoquankong.ai/zh/tags/q-learning/">Q-Learning</a></li>
+      <li><a href="https://blog.xiaoquankong.ai/zh/tags/reinforcement-learning/">Reinforcement Learning</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>python mock 遇到的一个坑</span>
+  </a>
+  <a class="next" href="https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-reverse-matching-method/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>构建中文分词器 - 反向最大匹配法</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 基于 OpenAI Gym 的 Q-Learning 算法演示 on twitter"
+        href="https://twitter.com/intent/tweet/?text=%e5%9f%ba%e4%ba%8e%20OpenAI%20Gym%20%e7%9a%84%20Q-Learning%20%e7%ae%97%e6%b3%95%e6%bc%94%e7%a4%ba&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fzh%2fposts%2fdemo-of-q-learning-in-openai-gym%2f&amp;hashtags=ReinforcementLearning%2cOpenAIGym%2cQ-Learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 基于 OpenAI Gym 的 Q-Learning 算法演示 on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fzh%2fposts%2fdemo-of-q-learning-in-openai-gym%2f&amp;title=%e5%9f%ba%e4%ba%8e%20OpenAI%20Gym%20%e7%9a%84%20Q-Learning%20%e7%ae%97%e6%b3%95%e6%bc%94%e7%a4%ba&amp;summary=%e5%9f%ba%e4%ba%8e%20OpenAI%20Gym%20%e7%9a%84%20Q-Learning%20%e7%ae%97%e6%b3%95%e6%bc%94%e7%a4%ba&amp;source=https%3a%2f%2fblog.xiaoquankong.ai%2fzh%2fposts%2fdemo-of-q-learning-in-openai-gym%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 基于 OpenAI Gym 的 Q-Learning 算法演示 on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fblog.xiaoquankong.ai%2fzh%2fposts%2fdemo-of-q-learning-in-openai-gym%2f&title=%e5%9f%ba%e4%ba%8e%20OpenAI%20Gym%20%e7%9a%84%20Q-Learning%20%e7%ae%97%e6%b3%95%e6%bc%94%e7%a4%ba">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 基于 OpenAI Gym 的 Q-Learning 算法演示 on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fblog.xiaoquankong.ai%2fzh%2fposts%2fdemo-of-q-learning-in-openai-gym%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 基于 OpenAI Gym 的 Q-Learning 算法演示 on whatsapp"
+        href="https://api.whatsapp.com/send?text=%e5%9f%ba%e4%ba%8e%20OpenAI%20Gym%20%e7%9a%84%20Q-Learning%20%e7%ae%97%e6%b3%95%e6%bc%94%e7%a4%ba%20-%20https%3a%2f%2fblog.xiaoquankong.ai%2fzh%2fposts%2fdemo-of-q-learning-in-openai-gym%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share 基于 OpenAI Gym 的 Q-Learning 算法演示 on telegram"
+        href="https://telegram.me/share/url?text=%e5%9f%ba%e4%ba%8e%20OpenAI%20Gym%20%e7%9a%84%20Q-Learning%20%e7%ae%97%e6%b3%95%e6%bc%94%e7%a4%ba&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fzh%2fposts%2fdemo-of-q-learning-in-openai-gym%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://blog.xiaoquankong.ai/zh/">Xiaoquan Kong&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

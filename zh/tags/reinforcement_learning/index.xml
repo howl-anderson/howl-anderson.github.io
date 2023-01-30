@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Reinforcement_Learning on Xiaoquan Kong&#39;s Blog</title>
+    <link>https://blog.xiaoquankong.ai/zh/tags/reinforcement_learning/</link>
+    <description>Recent content in Reinforcement_Learning on Xiaoquan Kong&#39;s Blog</description>
+    <image>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 24 Nov 2017 14:46:15 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/reinforcement_learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reinforcement Learning: 初次交手，多多指教</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/</link>
+      <pubDate>Fri, 24 Nov 2017 14:46:15 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 图形游戏（比如坦克大战）如果要实现智能Agent（AKA 电脑玩家）的话，目前最佳的方案就是Reinforcement Learning (简称 RL ;中文：增强学习)。 本文记录了我和Reinforcement Learning的第一次交手，将带你了解这位名扬四海却又神秘莫测的对手。:)&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

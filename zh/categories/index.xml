@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Categories on Xiaoquan Kong&#39;s Blog</title>
+    <link>https://blog.xiaoquankong.ai/zh/categories/</link>
+    <description>Recent content in Categories on Xiaoquan Kong&#39;s Blog</description>
+    <image>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+    </image>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 16 Nov 2017 21:45:58 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>神经网络</title>
+      <link>https://blog.xiaoquankong.ai/zh/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</link>
+      <pubDate>Thu, 16 Nov 2017 21:45:58 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/categories/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>机器学习</title>
+      <link>https://blog.xiaoquankong.ai/zh/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Mon, 13 Nov 2017 11:53:40 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Python</title>
+      <link>https://blog.xiaoquankong.ai/zh/categories/python/</link>
+      <pubDate>Sat, 09 Sep 2017 06:53:03 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/categories/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TensorFlow</title>
+      <link>https://blog.xiaoquankong.ai/zh/categories/tensorflow/</link>
+      <pubDate>Thu, 17 Aug 2017 14:22:15 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/categories/tensorflow/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>软件工程</title>
+      <link>https://blog.xiaoquankong.ai/zh/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</link>
+      <pubDate>Sun, 13 Aug 2017 12:38:08 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E7%A8%8B/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>时间序列数据库</title>
+      <link>https://blog.xiaoquankong.ai/zh/categories/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+      <pubDate>Mon, 05 Dec 2016 11:56:37 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/categories/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

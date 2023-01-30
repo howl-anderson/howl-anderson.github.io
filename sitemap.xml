@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	
+	<sitemap>
+	   	<loc>https://blog.xiaoquankong.ai/en/sitemap.xml</loc>
+		
+	   	<lastmod>2017-08-17T14:50:24+00:00</lastmod>
+		
+	</sitemap>
+	
+	<sitemap>
+	   	<loc>https://blog.xiaoquankong.ai/zh/sitemap.xml</loc>
+		
+	   	<lastmod>2018-09-09T11:08:04+00:00</lastmod>
+		
+	</sitemap>
+	
+</sitemapindex>

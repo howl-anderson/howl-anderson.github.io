@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Introduce to the implement of Whisper: the time-serial database | Xiaoquan Kong&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="TL;DR This article show how Whisper work and some Linux programming tricks it used.">
+<meta name="author" content="Xiaoquan Kong">
+<link rel="canonical" href="https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.xiaoquankong.ai/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.xiaoquankong.ai/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/">
+<link rel="alternate" hreflang="zh" href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+</script>
+
+
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'G-ED44PRBHE8', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<meta property="og:title" content="Introduce to the implement of Whisper: the time-serial database" />
+<meta property="og:description" content="TL;DR This article show how Whisper work and some Linux programming tricks it used." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2016-10-05T18:49:49+00:00" />
+<meta property="article:modified_time" content="2016-10-05T18:49:49+00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Introduce to the implement of Whisper: the time-serial database"/>
+<meta name="twitter:description" content="TL;DR This article show how Whisper work and some Linux programming tricks it used."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Introduce to the implement of Whisper: the time-serial database",
+      "item": "https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Introduce to the implement of Whisper: the time-serial database",
+  "name": "Introduce to the implement of Whisper: the time-serial database",
+  "description": "TL;DR This article show how Whisper work and some Linux programming tricks it used.\n",
+  "keywords": [
+    
+  ],
+  "articleBody": "TL;DR This article show how Whisper work and some Linux programming tricks it used.\nWhat’s the Whisper Many people familiar with the famous metric monitor system: graphite\nHere are some introduce from official website of graphite:\n Graphite is an enterprise-scale monitoring tool that runs well on cheap hardware.\nGraphite does two things:\n Store numeric time-series data Render graphs of this data on demand   Whisper is one of the core parts of graphite. There are two components of “Store numeric time-series data”: One for receive the data from network which is the job of Carbon, another for write the data into physical disk (like a database) which is the job of Whisper.\nOfficially, Whisper is a time-serial database or library which design for graphite project, but still very university as a time-serial database.\nImportant:\nFollow code / structure analysis based on whisper==0.9.10, different version may has different result.\nOverview the structure of the Whisper database Summary Whisper is a single binary file database, each file have three parts: Header / Archives / Data. The reference implement (aka Whisper in Graphite) was wrote in Python with manipulate binary file with struct library.\nHeader Header of Whisper used to record meta-information such as aggregationType / maxRetention / xff / archiveCount\naggregationType Data type: long int (aka ‘L’ in struct format). aggregationType control how the higher precision aggregate to lower precision.\naggregationTypeToMethod = dict({ 1: 'average', 2: 'sum', 3: 'last', 4: 'max', 5: 'min', 6: 'avg_zero' }) maxRetention Data type: long int. maxRetention show the max retention this database can hold. The unit of this field is second.\nxff xff is the abbreviation for xFilesFactor. Data type: Float (aka ‘l’ in struct format). When higher precision data aggregate to lower precision, if the proportion of valid data lower than this value, the result of aggregation will set to None.\narchiveCount Data type: long int. archiveCount are used to count the number of archive.\nArchives summary Archives are stored the meta-information of Data or Data is a part of Archives. Different archive means different precision and retention for data store.\nArchives field have several strict limitation:\n At least has one archive Archive’s precision must strictly monotonically after ordered Precision of lower archive must be a multiple of higher’s (not equal) Archive’s retention must strictly monotonically too, the lower precision the longer retention Archive of higher precision must have enough point to consolidate archive of lower precision  Here comes an example for the last limitation: Higher: 1s/20 Lower: 60s/1\nThis example fits first four limitation, but not the last one.\nThose limitations are checked by:\nif not archiveList: raise InvalidConfiguration(\"You must specify at least one archive configuration!\") archiveList.sort(key=lambda a: a[0]) # Sort by precision (secondsPerPoint) for i, archive in enumerate(archiveList): if i == len(archiveList) - 1: break nextArchive = archiveList[i + 1] if not archive[0]  nextArchive[0]: raise InvalidConfiguration(\"A Whisper database may not be configured having \" \"two archives with the same precision (archive%d: %s, archive%d: %s)\" % (i, archive, i + 1, nextArchive)) if nextArchive[0] % archive[0] != 0: raise InvalidConfiguration(\"Higher precision archives' precision \" \"must evenly divide all lower precision archives' precision \" \"(archive%d: %s, archive%d: %s)\" % (i, archive[0], i + 1, nextArchive[0])) retention = archive[0] * archive[1] nextRetention = nextArchive[0] * nextArchive[1] if not nextRetention  retention: raise InvalidConfiguration(\"Lower precision archives must cover \" \"larger time intervals than higher precision archives \" \"(archive%d: %sseconds, archive%d: %sseconds)\" % (i, retention, i + 1, nextRetention)) archivePoints = archive[1] pointsPerConsolidation = nextArchive[0] // archive[0] if not archivePoints = pointsPerConsolidation: raise InvalidConfiguration(\"Each archive must have at least enough points \" \"to consolidate to the next archive (archive%dconsolidates %dof \" \"archive%d's points but it has only %dtotal points)\" % (i + 1, pointsPerConsolidation, i, archivePoints)) structure Archives have three fields: offset / secondsPerPoint / points\noffset Data type: long int. offset indicate the offset from the very begin of file.\nsecondsPerPoint Data type: long int. secondsPerPoint is the precision of archive. Obviously the max precision is one-second per data point.\npoints Data type: long int. points indicate the capacity of this archive.\nderivative Few derivative attribution, not exists in the fields but can be compute form those fields\nretention  retention = points * secondsPerPoint\n size Size of the Data field in physical occupation.\n size = points * pointSize\n pointSize will covered in the Data part, it is a fix size in Whisper.\nData summary Data part are the actual data store part. Those parts are compose by Point which contain time and value information.\nPoint each point have two parts: Interval, data\nInterval Data type: Long int, UNIX timestamp\nData Data type: Double (aka ’d’ in struct format), store the metric value\nConclusion ASCII Art Chart +-------------------------------------------------------------------------+ |AT|MR|xff|AC|offset|SPP|points| ... |Interval|data| ... | +-------------------------------------------------------------------------+ | | Archive One | ... | Point One | ... | +-------------------------------------------------------------------------+ | Header | Archives | Data | +-------------------------------------------------------------------------+ | Whisper file | +-------------------------------------------------------------------------+ AT: aggregationType MR: maxRetention AC: archiveCount SPP: secondsPerPoint Create process pre-requires There are two acquire pre-requires:\n path : the path of the database on disk archiveList : List of all the archive, can not modified after create  Two optional pre-requires:\n xFilesFactor = None aggregationMethod = None  check archiveList # Validate archive configurations... validateArchiveList(archiveList) Trap on the implementation Function validateArchiveList seems only check the validation of archiveList but actually also change the archiveList by execute order operation archiveList.sort(key=lambda a: a[0]). This is not a good design, if people don’t look at the implementation of validateArchiveList, their will never know archiveList already sorted. And because fallow code depend on the order of archiveList, if you don’t know this, you will don’t understand how the code works.\nAlso see summary section of Archives part\nWrite Header aggregationType = struct.pack(longFormat, aggregationMethodToType.get(aggregationMethod, 1)) oldest = max([secondsPerPoint * points for secondsPerPoint, points in archiveList]) maxRetention = struct.pack(longFormat, oldest) xFilesFactor = struct.pack(floatFormat, float(xFilesFactor)) archiveCount = struct.pack(longFormat, len(archiveList)) packedMetadata = aggregationType + maxRetention + xFilesFactor + archiveCount fh.write(packedMetadata) Write ArchiveList The key point of this process is the offset computing.\nheaderSize = metadataSize + (archiveInfoSize * len(archiveList)) archiveOffsetPointer = headerSize for secondsPerPoint, points in archiveList: archiveInfo = struct.pack(archiveInfoFormat, archiveOffsetPointer, secondsPerPoint, points) fh.write(archiveInfo) archiveOffsetPointer += (points * pointSize) Write Data Because the database is just create, so there are no real data, the process will write some fake data: \\x00.\nif CAN_FALLOCATE and useFallocate: remaining = archiveOffsetPointer - headerSize fallocate(fh, headerSize, remaining) elif sparse: fh.seek(archiveOffsetPointer - 1) fh.write(b'\\x00') else: remaining = archiveOffsetPointer - headerSize chunksize = 16384 zeroes = b'\\x00' * chunksize while remaining  chunksize: fh.write(zeroes) remaining -= chunksize fh.write(zeroes[:remaining]) IO optimization As you see, Whisper use several method to optimize the IO operation\nFallocate This is a Linux-specific system call. The function prototype is int fallocate(int fd, int mode, off_t offset, off_t len);. fallocate() allows the caller to directly manipulate the allocated disk space for the file referred to by fd for the byte range starting at offset and continuing for len bytes.\nFor more information, please see man fallocate\nSparse File File is not really allocate to the disk, only record some metadata to represent the length of file. Advantage of sparse file is very fast allocate speed at create time, disadvantage is when really write the data to the file for first, the disk space are allocate, this may lead to disk fragment. This will lead slower write and read speed.\nFor more information, please see Sparse file on Wikipedia\nWrite by chunk If your data is several times bigger than disk sector, this will be the most effective. Modern computer has 4096 bytes (4KB) size disk sector. 4 times of 4k is 16384, so write by this number of data is effective too.\nFor more information, please see Disk sector on Wikipedia\nQuery process preprocess time range According to the max retention, shrink the query time range:\nif now is None: now = int(time.time()) if untilTime is None: untilTime = now fromTime = int(fromTime) untilTime = int(untilTime) # Here we try and be flexible and return as much data as we can. # If the range of data is from too far in the past or fully in the future, we # return nothing if fromTime  untilTime: raise InvalidTimeInterval(\"Invalid time interval: from time '%s' is after until time '%s'\" % (fromTime, untilTime)) oldestTime = now - header['maxRetention'] # Range is in the future if fromTime  now: return None # Range is beyond retention if untilTime  oldestTime: return None # Range requested is partially beyond retention, adjust if fromTime  oldestTime: fromTime = oldestTime # Range is partially in the future, adjust if untilTime  now: untilTime = now Find the archive Whisper will try to find the most precise archive:\ndiff = now - fromTime for archive in header['archives']: if archive['retention'] = diff: break Justify the data point Arrange the time to time interval:\nfromInterval = int(fromTime - (fromTime % archive['secondsPerPoint'])) + archive['secondsPerPoint'] untilInterval = int(untilTime - (untilTime % archive['secondsPerPoint'])) + archive['secondsPerPoint'] Summary, Whisper always find the next interval near the query time\nSpecial, if the start interval same with the end interval, always contain next interval:\nif fromInterval == untilInterval: # Zero-length time range: always include the next point untilInterval += archive['secondsPerPoint'] Compute offset # Determine fromOffset timeDistance = fromInterval - baseInterval pointDistance = timeDistance // archive['secondsPerPoint'] byteDistance = pointDistance * pointSize fromOffset = archive['offset'] + (byteDistance % archive['size']) # Determine untilOffset timeDistance = untilInterval - baseInterval pointDistance = timeDistance // archive['secondsPerPoint'] byteDistance = pointDistance * pointSize untilOffset = archive['offset'] + (byteDistance % archive['size']) Trick on % operation in Python Whisper use % to archive the wrap effect:\nbyteDistance % archive['size'] equal to\nif byteDistance = 0: return byteDistance else: return archive['size'] + byteDistance The trick or feature of % operation is:\nprint(-3 % 5) # output 2 print(3 % 5) # output 3 Read data # Now we unpack the series data we just read (anything faster than unpack?) byteOrder, pointTypes = pointFormat[0], pointFormat[1:] points = len(seriesString) // pointSize seriesFormat = byteOrder + (pointTypes * points) unpackedSeries = struct.unpack(seriesFormat, seriesString) # And finally we construct a list of values (optimize this!) valueList = [None] * points # Pre-allocate entire list for speed currentInterval = fromInterval step = archive['secondsPerPoint'] for i in xrange(0, len(unpackedSeries), 2): pointTime = unpackedSeries[i] if pointTime == currentInterval: pointValue = unpackedSeries[i+1] valueList[i//2] = pointValue # In-place reassignment is faster than append() currentInterval += step timeInfo = (fromInterval, untilInterval, step) return (timeInfo, valueList) Some key design in the process is that when Whisper read the data it will check weather the interval read from disk equal to expected timestamp. If not equaled, this means although here has a data point but the this not valid, it’s outdate data, then Whisper will use None as data value. This is very important this checker make Whisper can discrete write the disk and the result is always correct.\nWrite / Update data process Although Whisper have two update interface: update() and update_many(), but the latter interface support write multiply data point at one call. In the Carbon application, it almost use update_many(), which have better IO performance. Fallow text will cover update_many() but don’t worry about the update(), their are almost the same thing.\npre-require  path : Database file location points : a list of point ((timestamp, value) pair  Order the points Order the points by timestamp in the descending order, after that the newer point will at the head of list.\npoints = [(int(t), float(v)) for (t, v) in points] points.sort(key=lambda p: p[0], reverse=True) # Order points by timestamp, newest first Group the data point by retention for point in points: age = now - point[0] while currentArchive['retention']  age: # We can't fit any more points in this archive if currentPoints: # Commit all the points we've found that it can fit currentPoints.reverse() # Put points in chronological order __archive_update_many(fh, header, currentArchive, currentPoints) currentPoints = [] try: currentArchive = next(archives) except StopIteration: currentArchive = None break if not currentArchive: break # Drop remaining points that don't fit in the database currentPoints.append(point) if currentArchive and currentPoints: # Don't forget to commit after we've checked all the archives currentPoints.reverse() __archive_update_many(fh, header, currentArchive, currentPoints) It’s not easy to make clear what’s operation do: data will write from higher precision archive to lower precision one. If the data is belong to this archive, it will write by this archive, if out the retention, leave the data to next (lower precision) archive.\nThis is important that, before all the data pass to writer function __archive_update_many, their all do the order reverse by currentPoints.reverse()\nArrange the data point step = archive['secondsPerPoint'] alignedPoints = [(timestamp - (timestamp % step), value) for (timestamp, value) in points] Group the data by timestamp gap # Create a packed string for each contiguous sequence of points packedStrings = [] previousInterval = None currentString = b\"\" lenAlignedPoints = len(alignedPoints) for i in xrange(0, lenAlignedPoints): # Take last point in run of points with duplicate intervals if i + 1  lenAlignedPoints and alignedPoints[i][0] == alignedPoints[i + 1][0]: continue (interval, value) = alignedPoints[i] # if the point is the start point or the it's continue point from previous if (not previousInterval) or (interval == previousInterval + step): currentString += struct.pack(pointFormat, interval, value) previousInterval = interval else: # if the timestamp continue is breaked numberOfPoints = len(currentString) // pointSize startInterval = previousInterval - (step * (numberOfPoints - 1)) packedStrings.append((startInterval, currentString)) currentString = struct.pack(pointFormat, interval, value) previousInterval = interval if currentString: numberOfPoints = len(currentString) // pointSize startInterval = previousInterval - (step * (numberOfPoints - 1)) packedStrings.append((startInterval, currentString)) Important:\n Take last point in run of points with duplicate intervals\n This is a very important feature.\nWrite data # Read base point and determine where our writes will start fh.seek(archive['offset']) packedBasePoint = fh.read(pointSize) (baseInterval, baseValue) = struct.unpack(pointFormat, packedBasePoint) if baseInterval == 0: # This file's first update baseInterval = packedStrings[0][0] # Use our first string as the base, so we start at the start # Write all of our packed strings in locations determined by the baseInterval for (interval, packedString) in packedStrings: timeDistance = interval - baseInterval pointDistance = timeDistance // step byteDistance = pointDistance * pointSize myOffset = archive['offset'] + (byteDistance % archive['size']) fh.seek(myOffset) archiveEnd = archive['offset'] + archive['size'] bytesBeyond = (myOffset + len(packedString)) - archiveEnd if bytesBeyond  0: fh.write(packedString[:-bytesBeyond]) assert fh.tell() == archiveEnd, \"archiveEnd=%dfh.tell=%dbytesBeyond=%dlen(packedString)=%d\" % ( archiveEnd, fh.tell(), bytesBeyond, len(packedString)) fh.seek(archive['offset']) fh.write( packedString[-bytesBeyond:]) # Safe because it can't exceed the archive (retention checking logic above) else: fh.write(packedString) Note here: Write function have warp feature.\nAggregator All the archive will try to aggregate to the next archive\n# Now we propagate the updates to lower-precision archives higher = archive lowerArchives = [arc for arc in header['archives'] if arc['secondsPerPoint']  archive['secondsPerPoint']] for lower in lowerArchives: fit = lambda i: i - (i % lower['secondsPerPoint']) lowerIntervals = [fit(p[0]) for p in alignedPoints] uniqueLowerIntervals = set(lowerIntervals) propagateFurther = False for interval in uniqueLowerIntervals: if __propagate(fh, header, interval, higher, lower): propagateFurther = True if not propagateFurther: break higher = lower Aggregation method on single point def __propagate(fh, header, timestamp, higher, lower): aggregationMethod = header['aggregationMethod'] xff = header['xFilesFactor'] lowerIntervalStart = timestamp - (timestamp % lower['secondsPerPoint']) lowerIntervalEnd = lowerIntervalStart + lower['secondsPerPoint'] fh.seek(higher['offset']) packedPoint = fh.read(pointSize) (higherBaseInterval, higherBaseValue) = struct.unpack(pointFormat, packedPoint) if higherBaseInterval == 0: higherFirstOffset = higher['offset'] else: timeDistance = lowerIntervalStart - higherBaseInterval pointDistance = timeDistance // higher['secondsPerPoint'] byteDistance = pointDistance * pointSize higherFirstOffset = higher['offset'] + (byteDistance % higher['size']) higherPoints = lower['secondsPerPoint'] // higher['secondsPerPoint'] higherSize = higherPoints * pointSize relativeFirstOffset = higherFirstOffset - higher['offset'] relativeLastOffset = (relativeFirstOffset + higherSize) % higher['size'] higherLastOffset = relativeLastOffset + higher['offset'] fh.seek(higherFirstOffset) if higherFirstOffset  higherLastOffset: # We don't wrap the archive seriesString = fh.read(higherLastOffset - higherFirstOffset) else: # We do wrap the archive higherEnd = higher['offset'] + higher['size'] seriesString = fh.read(higherEnd - higherFirstOffset) fh.seek(higher['offset']) seriesString += fh.read(higherLastOffset - higher['offset']) # Now we unpack the series data we just read byteOrder, pointTypes = pointFormat[0], pointFormat[1:] points = len(seriesString) // pointSize seriesFormat = byteOrder + (pointTypes * points) unpackedSeries = struct.unpack(seriesFormat, seriesString) # And finally we construct a list of values neighborValues = [None] * points currentInterval = lowerIntervalStart step = higher['secondsPerPoint'] for i in xrange(0, len(unpackedSeries), 2): pointTime = unpackedSeries[i] if pointTime == currentInterval: neighborValues[i // 2] = unpackedSeries[i + 1] currentInterval += step # Propagate aggregateValue to propagate from neighborValues if we have enough known points knownValues = [v for v in neighborValues if v is not None] if not knownValues: return False knownPercent = float(len(knownValues)) / float(len(neighborValues)) if knownPercent = xff: # We have enough data to propagate a value! aggregateValue = aggregate(aggregationMethod, knownValues, neighborValues) myPackedPoint = struct.pack(pointFormat, lowerIntervalStart, aggregateValue) fh.seek(lower['offset']) packedPoint = fh.read(pointSize) (lowerBaseInterval, lowerBaseValue) = struct.unpack(pointFormat, packedPoint) if lowerBaseInterval == 0: # First propagated update to this lower archive fh.seek(lower['offset']) fh.write(myPackedPoint) else: # Not our first propagated update to this lower archive timeDistance = lowerIntervalStart - lowerBaseInterval pointDistance = timeDistance // lower['secondsPerPoint'] byteDistance = pointDistance * pointSize lowerOffset = lower['offset'] + (byteDistance % lower['size']) fh.seek(lowerOffset) fh.write(myPackedPoint) return True else: return False If the xff (too much invalid point below the threhold) lead the aggregation failed, the next level aggregation will be cancled.\nMISC IO operation Whisper’s author do some effect on the IO optimise. When open the file, Whisper use fadvise to tell OS optimise the IO operation.\nif CAN_FADVISE and FADVISE_RANDOM: posix_fadvise(fh.fileno(), 0, 0, POSIX_FADV_RANDOM) Let’s see how manual say about fadvise:\n Allows an application to to tell the kernel how it expects to use a file handle, so that the kernel can choose appropriate read-ahead and caching techniques for access to the corresponding file.\n fadvise have several options:\n FADV_NORMAL ：No special treatment FADV_RANDOM : Expect page references in random order FADV_SEQUENTIAL : Expect page references in sequential order FADV_WILLNEED : Expect access in the near future FADV_DONTNEED : Do not expect access in the near future. Subsequent access of pages in this range will succeed, but will result either in reloading of the memory contents from the underlying mapped file or zero-fill-in-demand pages for mappings without an underlying file FADV_NOREUSE : Access data only once  For more information, please see man fadvise\n",
+  "wordCount" : "2997",
+  "inLanguage": "en",
+  "datePublished": "2016-10-05T18:49:49Z",
+  "dateModified": "2016-10-05T18:49:49Z",
+  "author":{
+    "@type": "Person",
+    "name": "Xiaoquan Kong"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xiaoquan Kong's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.xiaoquankong.ai/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.xiaoquankong.ai/" accesskey="h" title="Xiaoquan Kong&#39;s Blog (Alt + H)">Xiaoquan Kong&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://blog.xiaoquankong.ai/zh/" title="中文"
+                            aria-label="中文">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.xiaoquankong.ai/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xiaoquankong.ai/categories" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xiaoquankong.ai/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.xiaoquankong.ai" title="About Me">
+                    <span>About Me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/">Home</a></div>
+    <h1 class="post-title">
+      Introduce to the implement of Whisper: the time-serial database
+    </h1>
+    <div class="post-meta"><span title='2016-10-05 18:49:49 +0000 UTC'>October 5, 2016</span>&nbsp;·&nbsp;15 min&nbsp;·&nbsp;Xiaoquan Kong&nbsp;|&nbsp;Translations:
+<ul class="i18n_list">
+    <li>
+        <a href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/">中文</a>
+    </li>
+</ul>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#what-s-the-whisper" aria-label="What&amp;rsquo;s the Whisper">What&rsquo;s the Whisper</a></li>
+                <li>
+                    <a href="#overview-the-structure-of-the-whisper-database" aria-label="Overview the structure of the Whisper database">Overview the structure of the Whisper database</a><ul>
+                        
+                <li>
+                    <a href="#summary" aria-label="Summary">Summary</a></li>
+                <li>
+                    <a href="#header" aria-label="Header">Header</a><ul>
+                        
+                <li>
+                    <a href="#aggregationtype" aria-label="aggregationType">aggregationType</a></li>
+                <li>
+                    <a href="#maxretention" aria-label="maxRetention">maxRetention</a></li>
+                <li>
+                    <a href="#xff" aria-label="xff">xff</a></li>
+                <li>
+                    <a href="#archivecount" aria-label="archiveCount">archiveCount</a></li></ul>
+                </li>
+                <li>
+                    <a href="#archives" aria-label="Archives">Archives</a><ul>
+                        
+                <li>
+                    <a href="#summary-1" aria-label="summary">summary</a></li>
+                <li>
+                    <a href="#structure" aria-label="structure">structure</a><ul>
+                        
+                <li>
+                    <a href="#offset" aria-label="offset">offset</a></li>
+                <li>
+                    <a href="#secondsperpoint" aria-label="secondsPerPoint">secondsPerPoint</a></li>
+                <li>
+                    <a href="#points" aria-label="points">points</a></li>
+                <li>
+                    <a href="#derivative" aria-label="derivative">derivative</a><ul>
+                        
+                <li>
+                    <a href="#retention" aria-label="retention">retention</a></li>
+                <li>
+                    <a href="#size" aria-label="size">size</a></li></ul>
+                </li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#data" aria-label="Data">Data</a><ul>
+                        
+                <li>
+                    <a href="#summary-2" aria-label="summary">summary</a></li>
+                <li>
+                    <a href="#point" aria-label="Point">Point</a><ul>
+                        
+                <li>
+                    <a href="#interval" aria-label="Interval">Interval</a></li>
+                <li>
+                    <a href="#data-1" aria-label="Data">Data</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a><ul>
+                        
+                <li>
+                    <a href="#ascii-art-chart" aria-label="ASCII Art Chart">ASCII Art Chart</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#create-process" aria-label="Create process">Create process</a><ul>
+                        
+                <li>
+                    <a href="#pre-requires" aria-label="pre-requires">pre-requires</a></li>
+                <li>
+                    <a href="#check-archivelist" aria-label="check archiveList">check archiveList</a><ul>
+                        
+                <li>
+                    <a href="#trap-on-the-implementation" aria-label="Trap on the implementation">Trap on the implementation</a></li></ul>
+                </li>
+                <li>
+                    <a href="#write-header" aria-label="Write Header">Write Header</a></li>
+                <li>
+                    <a href="#write-archivelist" aria-label="Write ArchiveList">Write ArchiveList</a></li>
+                <li>
+                    <a href="#write-data" aria-label="Write Data">Write Data</a><ul>
+                        
+                <li>
+                    <a href="#io-optimization" aria-label="IO optimization">IO optimization</a><ul>
+                        
+                <li>
+                    <a href="#fallocate" aria-label="Fallocate">Fallocate</a></li>
+                <li>
+                    <a href="#sparse-file" aria-label="Sparse File">Sparse File</a></li>
+                <li>
+                    <a href="#write-by-chunk" aria-label="Write by chunk">Write by chunk</a></li></ul>
+                </li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#query-process" aria-label="Query process">Query process</a><ul>
+                        
+                <li>
+                    <a href="#preprocess-time-range" aria-label="preprocess time range">preprocess time range</a></li>
+                <li>
+                    <a href="#find-the-archive" aria-label="Find the archive">Find the archive</a></li>
+                <li>
+                    <a href="#justify-the-data-point" aria-label="Justify the data point">Justify the data point</a></li>
+                <li>
+                    <a href="#compute-offset" aria-label="Compute offset">Compute offset</a><ul>
+                        
+                <li>
+                    <a href="#trick-on-operation-in-python" aria-label="Trick on % operation in Python">Trick on <code>%</code> operation in Python</a></li></ul>
+                </li>
+                <li>
+                    <a href="#read-data" aria-label="Read data">Read data</a></li></ul>
+                </li>
+                <li>
+                    <a href="#write-update-data-process" aria-label="Write / Update data process">Write / Update data process</a><ul>
+                        
+                <li>
+                    <a href="#pre-require" aria-label="pre-require">pre-require</a></li>
+                <li>
+                    <a href="#order-the-points" aria-label="Order the points">Order the points</a></li>
+                <li>
+                    <a href="#group-the-data-point-by-retention" aria-label="Group the data point by retention">Group the data point by retention</a></li>
+                <li>
+                    <a href="#arrange-the-data-point" aria-label="Arrange the data point">Arrange the data point</a></li>
+                <li>
+                    <a href="#group-the-data-by-timestamp-gap" aria-label="Group the data by timestamp gap">Group the data by timestamp gap</a></li>
+                <li>
+                    <a href="#write-data-1" aria-label="Write data">Write data</a></li>
+                <li>
+                    <a href="#aggregator" aria-label="Aggregator">Aggregator</a><ul>
+                        
+                <li>
+                    <a href="#aggregation-method-on-single-point" aria-label="Aggregation method on single point">Aggregation method on single point</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#misc" aria-label="MISC">MISC</a><ul>
+                        
+                <li>
+                    <a href="#io-operation" aria-label="IO operation">IO operation</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><strong>TL;DR</strong> This article show how Whisper work and some Linux programming tricks it used.</p>
+
+<h2 id="what-s-the-whisper">What&rsquo;s the Whisper<a hidden class="anchor" aria-hidden="true" href="#what-s-the-whisper">#</a></h2>
+
+<p>Many people familiar with the famous metric monitor system: <a href="https://graphite.readthedocs.io" target="_blank">graphite</a></p>
+
+<p>Here are some introduce from official website of graphite:</p>
+
+<blockquote>
+<p>Graphite is an enterprise-scale monitoring tool that runs well on cheap hardware.</p>
+
+<p>Graphite does two things:</p>
+
+<ul>
+<li>Store numeric time-series data</li>
+<li>Render graphs of this data on demand</li>
+</ul>
+</blockquote>
+
+<p>Whisper is one of the core parts of graphite. There are two components of &ldquo;Store numeric time-series data&rdquo;: One for receive the data from network which is the job of Carbon, another for write the data into physical disk (like a database) which is the job of Whisper.</p>
+
+<p>Officially, Whisper is a time-serial database or library which design for graphite project, but still very university as a time-serial database.</p>
+
+<p><strong>Important</strong>:</p>
+
+<p>Follow code / structure analysis based on <code>whisper==0.9.10</code>, different version may has different result.</p>
+
+<h2 id="overview-the-structure-of-the-whisper-database">Overview the structure of the Whisper database<a hidden class="anchor" aria-hidden="true" href="#overview-the-structure-of-the-whisper-database">#</a></h2>
+
+<h3 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h3>
+
+<p>Whisper is a single binary file database, each file have three parts: <code>Header</code> / <code>Archives</code> / <code>Data</code>. The reference implement (aka Whisper in Graphite) was wrote in Python with manipulate binary file with <code>struct</code> library.</p>
+
+<h3 id="header">Header<a hidden class="anchor" aria-hidden="true" href="#header">#</a></h3>
+
+<p>Header of Whisper used to record meta-information such as <code>aggregationType</code> / <code>maxRetention</code> / <code>xff</code> / <code>archiveCount</code></p>
+
+<h4 id="aggregationtype">aggregationType<a hidden class="anchor" aria-hidden="true" href="#aggregationtype">#</a></h4>
+
+<p>Data type: long int (aka &lsquo;L&rsquo; in <code>struct</code> format). <code>aggregationType</code> control how the higher precision aggregate to lower precision.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">aggregationTypeToMethod</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">({</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;average&#39;</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;last&#39;</span><span class="p">,</span>
+    <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;max&#39;</span><span class="p">,</span>
+    <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span>
+    <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;avg_zero&#39;</span>
+<span class="p">})</span></code></pre></div>
+<h4 id="maxretention">maxRetention<a hidden class="anchor" aria-hidden="true" href="#maxretention">#</a></h4>
+
+<p>Data type: long int. <code>maxRetention</code> show the max retention this database can hold. The unit of this field is second.</p>
+
+<h4 id="xff">xff<a hidden class="anchor" aria-hidden="true" href="#xff">#</a></h4>
+
+<p><code>xff</code> is the abbreviation for <code>xFilesFactor</code>. Data type: Float (aka &lsquo;l&rsquo; in <code>struct</code> format). When higher precision data aggregate to lower precision, if the proportion of valid data lower than this value, the result of aggregation will set to None.</p>
+
+<h4 id="archivecount">archiveCount<a hidden class="anchor" aria-hidden="true" href="#archivecount">#</a></h4>
+
+<p>Data type: long int. <code>archiveCount</code> are used to count the number of archive.</p>
+
+<h3 id="archives">Archives<a hidden class="anchor" aria-hidden="true" href="#archives">#</a></h3>
+
+<h4 id="summary-1">summary<a hidden class="anchor" aria-hidden="true" href="#summary-1">#</a></h4>
+
+<p><code>Archives</code> are stored the meta-information of <code>Data</code> or <code>Data</code> is a part of <code>Archives</code>. Different archive means different precision and retention for data store.</p>
+
+<p><code>Archives</code> field have several strict limitation:</p>
+
+<ul>
+<li>At least has one archive</li>
+<li>Archive&rsquo;s precision must strictly monotonically after ordered</li>
+<li>Precision of lower archive must be a multiple of higher&rsquo;s (not equal)</li>
+<li>Archive&rsquo;s retention must strictly monotonically too, the lower precision the longer retention</li>
+<li>Archive of higher precision must have enough point to consolidate archive of lower precision</li>
+</ul>
+
+<p>Here comes an example for the last limitation:
+Higher: 1s/20
+Lower: 60s/1</p>
+
+<p>This example fits first four limitation, but not the last one.</p>
+
+<p>Those limitations are checked by:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="ow">not</span> <span class="n">archiveList</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="n">InvalidConfiguration</span><span class="p">(</span><span class="s2">&#34;You must specify at least one archive configuration!&#34;</span><span class="p">)</span>
+
+<span class="n">archiveList</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Sort by precision (secondsPerPoint)</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">archive</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">archiveList</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">archiveList</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">break</span>
+
+    <span class="n">nextArchive</span> <span class="o">=</span> <span class="n">archiveList</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">nextArchive</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfiguration</span><span class="p">(</span><span class="s2">&#34;A Whisper database may not be configured having &#34;</span>
+                                   <span class="s2">&#34;two archives with the same precision (archive</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">, archive</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">)&#34;</span> <span class="o">%</span>
+                                   <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">archive</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nextArchive</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">nextArchive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="n">archive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfiguration</span><span class="p">(</span><span class="s2">&#34;Higher precision archives&#39; precision &#34;</span>
+                                   <span class="s2">&#34;must evenly divide all lower precision archives&#39; precision &#34;</span>
+                                   <span class="s2">&#34;(archive</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">, archive</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">)&#34;</span> <span class="o">%</span>
+                                   <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">archive</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nextArchive</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="n">retention</span> <span class="o">=</span> <span class="n">archive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">archive</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">nextRetention</span> <span class="o">=</span> <span class="n">nextArchive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">nextArchive</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">nextRetention</span> <span class="o">&gt;</span> <span class="n">retention</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfiguration</span><span class="p">(</span><span class="s2">&#34;Lower precision archives must cover &#34;</span>
+                                   <span class="s2">&#34;larger time intervals than higher precision archives &#34;</span>
+                                   <span class="s2">&#34;(archive</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> seconds, archive</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> seconds)&#34;</span> <span class="o">%</span>
+                                   <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">retention</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nextRetention</span><span class="p">))</span>
+
+    <span class="n">archivePoints</span> <span class="o">=</span> <span class="n">archive</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">pointsPerConsolidation</span> <span class="o">=</span> <span class="n">nextArchive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="n">archive</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">archivePoints</span> <span class="o">&gt;=</span> <span class="n">pointsPerConsolidation</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">InvalidConfiguration</span><span class="p">(</span><span class="s2">&#34;Each archive must have at least enough points &#34;</span>
+                                   <span class="s2">&#34;to consolidate to the next archive (archive</span><span class="si">%d</span><span class="s2"> consolidates </span><span class="si">%d</span><span class="s2"> of &#34;</span>
+                                   <span class="s2">&#34;archive</span><span class="si">%d</span><span class="s2">&#39;s points but it has only </span><span class="si">%d</span><span class="s2"> total points)&#34;</span> <span class="o">%</span>
+                                   <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pointsPerConsolidation</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">archivePoints</span><span class="p">))</span></code></pre></div>
+<h4 id="structure">structure<a hidden class="anchor" aria-hidden="true" href="#structure">#</a></h4>
+
+<p><code>Archives</code> have three fields: <code>offset</code> / <code>secondsPerPoint</code> / <code>points</code></p>
+
+<h5 id="offset">offset<a hidden class="anchor" aria-hidden="true" href="#offset">#</a></h5>
+
+<p>Data type: long int. <code>offset</code> indicate the offset from the very begin of file.</p>
+
+<h5 id="secondsperpoint">secondsPerPoint<a hidden class="anchor" aria-hidden="true" href="#secondsperpoint">#</a></h5>
+
+<p>Data type: long int. <code>secondsPerPoint</code> is the precision of archive. Obviously the max precision is one-second per data point.</p>
+
+<h5 id="points">points<a hidden class="anchor" aria-hidden="true" href="#points">#</a></h5>
+
+<p>Data type: long int. <code>points</code> indicate the capacity of this archive.</p>
+
+<h5 id="derivative">derivative<a hidden class="anchor" aria-hidden="true" href="#derivative">#</a></h5>
+
+<p>Few derivative attribution, not exists in the fields but can be compute form those fields</p>
+
+<h6 id="retention">retention<a hidden class="anchor" aria-hidden="true" href="#retention">#</a></h6>
+
+<blockquote>
+<p>retention = points * secondsPerPoint</p>
+</blockquote>
+
+<h6 id="size">size<a hidden class="anchor" aria-hidden="true" href="#size">#</a></h6>
+
+<p>Size of the <code>Data</code> field in physical occupation.</p>
+
+<blockquote>
+<p>size = points * pointSize</p>
+</blockquote>
+
+<p>pointSize will covered in the <code>Data</code> part, it is a fix size in Whisper.</p>
+
+<h3 id="data">Data<a hidden class="anchor" aria-hidden="true" href="#data">#</a></h3>
+
+<h4 id="summary-2">summary<a hidden class="anchor" aria-hidden="true" href="#summary-2">#</a></h4>
+
+<p>Data part are the actual data store part. Those parts are compose by <code>Point</code> which contain time and value information.</p>
+
+<h4 id="point">Point<a hidden class="anchor" aria-hidden="true" href="#point">#</a></h4>
+
+<p>each point have two parts: Interval, data</p>
+
+<h5 id="interval">Interval<a hidden class="anchor" aria-hidden="true" href="#interval">#</a></h5>
+
+<p>Data type: Long int, UNIX timestamp</p>
+
+<h5 id="data-1">Data<a hidden class="anchor" aria-hidden="true" href="#data-1">#</a></h5>
+
+<p>Data type: Double (aka &rsquo;d&rsquo; in struct format), store the metric value</p>
+
+<h3 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h3>
+
+<h4 id="ascii-art-chart">ASCII Art Chart<a hidden class="anchor" aria-hidden="true" href="#ascii-art-chart">#</a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="o">+-------------------------------------------------------------------------+</span>
+<span class="o">|</span><span class="n">AT</span><span class="o">|</span><span class="n">MR</span><span class="o">|</span><span class="n">xff</span><span class="o">|</span><span class="n">AC</span><span class="o">|</span><span class="n">offset</span><span class="o">|</span><span class="n">SPP</span><span class="o">|</span><span class="n">points</span><span class="o">|</span>      <span class="o">...</span>      <span class="o">|</span><span class="n">Interval</span><span class="o">|</span><span class="n">data</span><span class="o">|</span>     <span class="o">...</span>    <span class="o">|</span>
+<span class="o">+-------------------------------------------------------------------------+</span>
+<span class="o">|</span>            <span class="o">|</span>   <span class="n">Archive</span> <span class="n">One</span>   <span class="o">|</span>      <span class="o">...</span>      <span class="o">|</span>  <span class="n">Point</span> <span class="n">One</span>  <span class="o">|</span>     <span class="o">...</span>    <span class="o">|</span>
+<span class="o">+-------------------------------------------------------------------------+</span>
+<span class="o">|</span>    <span class="n">Header</span>  <span class="o">|</span>             <span class="n">Archives</span>            <span class="o">|</span>            <span class="n">Data</span>          <span class="o">|</span>
+<span class="o">+-------------------------------------------------------------------------+</span>
+<span class="o">|</span>                              <span class="n">Whisper</span> <span class="nb">file</span>                               <span class="o">|</span>
+<span class="o">+-------------------------------------------------------------------------+</span>
+
+<span class="n">AT</span><span class="p">:</span> <span class="n">aggregationType</span>
+<span class="n">MR</span><span class="p">:</span> <span class="n">maxRetention</span>
+<span class="n">AC</span><span class="p">:</span> <span class="n">archiveCount</span>
+<span class="n">SPP</span><span class="p">:</span> <span class="n">secondsPerPoint</span></code></pre></div>
+<h2 id="create-process">Create process<a hidden class="anchor" aria-hidden="true" href="#create-process">#</a></h2>
+
+<h3 id="pre-requires">pre-requires<a hidden class="anchor" aria-hidden="true" href="#pre-requires">#</a></h3>
+
+<p>There are two acquire pre-requires:</p>
+
+<ul>
+<li>path : the path of the database on disk</li>
+<li>archiveList : List of all the archive, can not modified after create</li>
+</ul>
+
+<p>Two optional pre-requires:</p>
+
+<ul>
+<li>xFilesFactor = None</li>
+<li>aggregationMethod = None</li>
+</ul>
+
+<h3 id="check-archivelist">check archiveList<a hidden class="anchor" aria-hidden="true" href="#check-archivelist">#</a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Validate archive configurations...</span>
+<span class="n">validateArchiveList</span><span class="p">(</span><span class="n">archiveList</span><span class="p">)</span></code></pre></div>
+<h4 id="trap-on-the-implementation">Trap on the implementation<a hidden class="anchor" aria-hidden="true" href="#trap-on-the-implementation">#</a></h4>
+
+<p>Function <code>validateArchiveList</code> seems only check the validation of <code>archiveList</code> but actually also change the <code>archiveList</code> by execute order operation <code>archiveList.sort(key=lambda a: a[0])</code>. This is not a good design, if people don&rsquo;t look at the implementation of <code>validateArchiveList</code>, their will never know <code>archiveList</code> already sorted. And because fallow code depend on the order of <code>archiveList</code>, if you don&rsquo;t know this, you will don&rsquo;t understand how the code works.</p>
+
+<p>Also see <code>summary</code> section of <code>Archives</code> part</p>
+
+<h3 id="write-header">Write Header<a hidden class="anchor" aria-hidden="true" href="#write-header">#</a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">aggregationType</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">longFormat</span><span class="p">,</span> <span class="n">aggregationMethodToType</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aggregationMethod</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">oldest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">secondsPerPoint</span> <span class="o">*</span> <span class="n">points</span> <span class="k">for</span> <span class="n">secondsPerPoint</span><span class="p">,</span> <span class="n">points</span> <span class="ow">in</span> <span class="n">archiveList</span><span class="p">])</span>
+<span class="n">maxRetention</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">longFormat</span><span class="p">,</span> <span class="n">oldest</span><span class="p">)</span>
+<span class="n">xFilesFactor</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">floatFormat</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">xFilesFactor</span><span class="p">))</span>
+<span class="n">archiveCount</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">longFormat</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">archiveList</span><span class="p">))</span>
+<span class="n">packedMetadata</span> <span class="o">=</span> <span class="n">aggregationType</span> <span class="o">+</span> <span class="n">maxRetention</span> <span class="o">+</span> <span class="n">xFilesFactor</span> <span class="o">+</span> <span class="n">archiveCount</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">packedMetadata</span><span class="p">)</span></code></pre></div>
+<h3 id="write-archivelist">Write ArchiveList<a hidden class="anchor" aria-hidden="true" href="#write-archivelist">#</a></h3>
+
+<p>The key point of this process is the offset computing.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">headerSize</span> <span class="o">=</span> <span class="n">metadataSize</span> <span class="o">+</span> <span class="p">(</span><span class="n">archiveInfoSize</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">archiveList</span><span class="p">))</span>
+<span class="n">archiveOffsetPointer</span> <span class="o">=</span> <span class="n">headerSize</span>
+
+<span class="k">for</span> <span class="n">secondsPerPoint</span><span class="p">,</span> <span class="n">points</span> <span class="ow">in</span> <span class="n">archiveList</span><span class="p">:</span>
+    <span class="n">archiveInfo</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">archiveInfoFormat</span><span class="p">,</span> <span class="n">archiveOffsetPointer</span><span class="p">,</span> <span class="n">secondsPerPoint</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">archiveInfo</span><span class="p">)</span>
+    <span class="n">archiveOffsetPointer</span> <span class="o">+=</span> <span class="p">(</span><span class="n">points</span> <span class="o">*</span> <span class="n">pointSize</span><span class="p">)</span></code></pre></div>
+<h3 id="write-data">Write Data<a hidden class="anchor" aria-hidden="true" href="#write-data">#</a></h3>
+
+<p>Because the database is just create, so there are no real data, the process will write some fake data: <code>\x00</code>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">CAN_FALLOCATE</span> <span class="ow">and</span> <span class="n">useFallocate</span><span class="p">:</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">archiveOffsetPointer</span> <span class="o">-</span> <span class="n">headerSize</span>
+    <span class="n">fallocate</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">headerSize</span><span class="p">,</span> <span class="n">remaining</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">sparse</span><span class="p">:</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">archiveOffsetPointer</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">archiveOffsetPointer</span> <span class="o">-</span> <span class="n">headerSize</span>
+    <span class="n">chunksize</span> <span class="o">=</span> <span class="mi">16384</span>
+    <span class="n">zeroes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="n">chunksize</span>
+    <span class="k">while</span> <span class="n">remaining</span> <span class="o">&gt;</span> <span class="n">chunksize</span><span class="p">:</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zeroes</span><span class="p">)</span>
+        <span class="n">remaining</span> <span class="o">-=</span> <span class="n">chunksize</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zeroes</span><span class="p">[:</span><span class="n">remaining</span><span class="p">])</span></code></pre></div>
+<h4 id="io-optimization">IO optimization<a hidden class="anchor" aria-hidden="true" href="#io-optimization">#</a></h4>
+
+<p>As you see, Whisper use several method to optimize the IO operation</p>
+
+<h5 id="fallocate">Fallocate<a hidden class="anchor" aria-hidden="true" href="#fallocate">#</a></h5>
+
+<p>This is a Linux-specific system call. The function prototype is <code>int fallocate(int fd, int mode, off_t offset, off_t len);</code>. <code>fallocate()</code> allows the caller to directly manipulate the allocated disk space for the file referred to by <code>fd</code> for the byte range starting at <code>offset</code> and continuing for <code>len</code> bytes.</p>
+
+<p>For more information, please see <a href="http://man7.org/linux/man-pages/man2/fallocate.2.html" target="_blank">man fallocate</a></p>
+
+<h5 id="sparse-file">Sparse File<a hidden class="anchor" aria-hidden="true" href="#sparse-file">#</a></h5>
+
+<p>File is not really allocate to the disk, only record some metadata to represent the length of file. Advantage of sparse file is very fast allocate speed at create time, disadvantage is when really write the data to the file for first, the disk space are allocate, this may lead to disk fragment. This will lead slower write and read speed.</p>
+
+<p>For more information, please see <a href="https://en.wikipedia.org/wiki/Sparse_file" target="_blank">Sparse file on Wikipedia</a></p>
+
+<h5 id="write-by-chunk">Write by chunk<a hidden class="anchor" aria-hidden="true" href="#write-by-chunk">#</a></h5>
+
+<p>If your data is several times bigger than disk sector, this will be the most effective. Modern computer has 4096 bytes (4KB) size disk sector. 4 times of 4k is 16384, so write by this number of data is effective too.</p>
+
+<p>For more information, please see <a href="https://en.wikipedia.org/wiki/Disk_sector" target="_blank">Disk sector on Wikipedia</a></p>
+
+<h2 id="query-process">Query process<a hidden class="anchor" aria-hidden="true" href="#query-process">#</a></h2>
+
+<h3 id="preprocess-time-range">preprocess time range<a hidden class="anchor" aria-hidden="true" href="#preprocess-time-range">#</a></h3>
+
+<p>According to the max retention, shrink the query time range:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">now</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+<span class="k">if</span> <span class="n">untilTime</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">untilTime</span> <span class="o">=</span> <span class="n">now</span>
+<span class="n">fromTime</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fromTime</span><span class="p">)</span>
+<span class="n">untilTime</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">untilTime</span><span class="p">)</span>
+
+<span class="c1"># Here we try and be flexible and return as much data as we can.</span>
+<span class="c1"># If the range of data is from too far in the past or fully in the future, we</span>
+<span class="c1"># return nothing</span>
+<span class="k">if</span> <span class="n">fromTime</span> <span class="o">&gt;</span> <span class="n">untilTime</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="n">InvalidTimeInterval</span><span class="p">(</span><span class="s2">&#34;Invalid time interval: from time &#39;</span><span class="si">%s</span><span class="s2">&#39; is after until time &#39;</span><span class="si">%s</span><span class="s2">&#39;&#34;</span> <span class="o">%</span> <span class="p">(</span><span class="n">fromTime</span><span class="p">,</span> <span class="n">untilTime</span><span class="p">))</span>
+
+<span class="n">oldestTime</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;maxRetention&#39;</span><span class="p">]</span>
+<span class="c1"># Range is in the future</span>
+<span class="k">if</span> <span class="n">fromTime</span> <span class="o">&gt;</span> <span class="n">now</span><span class="p">:</span>
+    <span class="k">return</span> <span class="bp">None</span>
+<span class="c1"># Range is beyond retention</span>
+<span class="k">if</span> <span class="n">untilTime</span> <span class="o">&lt;</span> <span class="n">oldestTime</span><span class="p">:</span>
+    <span class="k">return</span> <span class="bp">None</span>
+<span class="c1"># Range requested is partially beyond retention, adjust</span>
+<span class="k">if</span> <span class="n">fromTime</span> <span class="o">&lt;</span> <span class="n">oldestTime</span><span class="p">:</span>
+    <span class="n">fromTime</span> <span class="o">=</span> <span class="n">oldestTime</span>
+<span class="c1"># Range is partially in the future, adjust</span>
+<span class="k">if</span> <span class="n">untilTime</span> <span class="o">&gt;</span> <span class="n">now</span><span class="p">:</span>
+    <span class="n">untilTime</span> <span class="o">=</span> <span class="n">now</span></code></pre></div>
+<h3 id="find-the-archive">Find the archive<a hidden class="anchor" aria-hidden="true" href="#find-the-archive">#</a></h3>
+
+<p>Whisper will try to find the most precise archive:</p>
+<pre><code>diff = now - fromTime
+for archive in header[&#39;archives&#39;]:
+  if archive[&#39;retention&#39;] &gt;= diff:
+      break</code></pre>
+<h3 id="justify-the-data-point">Justify the data point<a hidden class="anchor" aria-hidden="true" href="#justify-the-data-point">#</a></h3>
+
+<p>Arrange the time to time interval:</p>
+<pre><code>fromInterval = int(fromTime - (fromTime % archive[&#39;secondsPerPoint&#39;])) + archive[&#39;secondsPerPoint&#39;]
+untilInterval = int(untilTime - (untilTime % archive[&#39;secondsPerPoint&#39;])) + archive[&#39;secondsPerPoint&#39;]</code></pre>
+<p>Summary, Whisper always find the next interval near the query time</p>
+
+<p>Special, if the start interval same with the end interval, always contain next interval:</p>
+<pre><code>if fromInterval == untilInterval:
+    # Zero-length time range: always include the next point
+    untilInterval += archive[&#39;secondsPerPoint&#39;]</code></pre>
+<h3 id="compute-offset">Compute offset<a hidden class="anchor" aria-hidden="true" href="#compute-offset">#</a></h3>
+<pre><code># Determine fromOffset
+timeDistance = fromInterval - baseInterval
+pointDistance = timeDistance // archive[&#39;secondsPerPoint&#39;]
+byteDistance = pointDistance * pointSize
+fromOffset = archive[&#39;offset&#39;] + (byteDistance % archive[&#39;size&#39;])
+
+# Determine untilOffset
+timeDistance = untilInterval - baseInterval
+pointDistance = timeDistance // archive[&#39;secondsPerPoint&#39;]
+byteDistance = pointDistance * pointSize
+untilOffset = archive[&#39;offset&#39;] + (byteDistance % archive[&#39;size&#39;])</code></pre>
+<h4 id="trick-on-operation-in-python">Trick on <code>%</code> operation in Python<a hidden class="anchor" aria-hidden="true" href="#trick-on-operation-in-python">#</a></h4>
+
+<p>Whisper use <code>%</code> to archive the wrap effect:</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">byteDistance</span> <span class="o">%</span> <span class="n">archive</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span></code></pre></div>
+<p>equal to</p>
+<pre><code>if byteDistance &gt;= 0:
+    return byteDistance
+else:
+    return archive[&#39;size&#39;] + byteDistance</code></pre>
+<p>The trick or feature of <code>%</code> operation is:</p>
+<pre><code>print(-3 % 5)
+#  output 2
+print(3 % 5)
+#  output 3</code></pre>
+<h3 id="read-data">Read data<a hidden class="anchor" aria-hidden="true" href="#read-data">#</a></h3>
+<pre><code># Now we unpack the series data we just read (anything faster than unpack?)
+byteOrder, pointTypes = pointFormat[0], pointFormat[1:]
+points = len(seriesString) // pointSize
+seriesFormat = byteOrder + (pointTypes * points)
+unpackedSeries = struct.unpack(seriesFormat, seriesString)
+
+# And finally we construct a list of values (optimize this!)
+valueList = [None] * points  # Pre-allocate entire list for speed
+currentInterval = fromInterval
+step = archive[&#39;secondsPerPoint&#39;]
+
+for i in xrange(0, len(unpackedSeries), 2):
+pointTime = unpackedSeries[i]
+    if pointTime == currentInterval:
+          pointValue = unpackedSeries[i+1]
+          valueList[i//2] = pointValue  # In-place reassignment is faster than append()
+    currentInterval += step
+
+timeInfo = (fromInterval, untilInterval, step)
+return (timeInfo, valueList)</code></pre>
+<p>Some key design in the process is that when Whisper read the data it will check weather the interval read from disk equal to expected timestamp. If not equaled, this means although here has a data point but the this not valid, it&rsquo;s outdate data, then Whisper will use <code>None</code> as data value. This is very important this checker make Whisper can discrete write the disk and the result is always correct.</p>
+
+<h2 id="write-update-data-process">Write / Update data process<a hidden class="anchor" aria-hidden="true" href="#write-update-data-process">#</a></h2>
+
+<p>Although Whisper have two update interface: <code>update()</code> and <code>update_many()</code>, but the latter interface support write multiply data point at one call. In the Carbon application, it almost use <code>update_many()</code>, which have better IO performance. Fallow text will cover <code>update_many()</code> but don&rsquo;t worry about the <code>update()</code>, their are almost the same thing.</p>
+
+<h3 id="pre-require">pre-require<a hidden class="anchor" aria-hidden="true" href="#pre-require">#</a></h3>
+
+<ul>
+<li>path : Database file location</li>
+<li>points : a list of point ((timestamp, value) pair</li>
+</ul>
+
+<h3 id="order-the-points">Order the points<a hidden class="anchor" aria-hidden="true" href="#order-the-points">#</a></h3>
+
+<p>Order the points by timestamp in the descending order, after that the newer point will at the head of list.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">points</span> <span class="o">=</span> <span class="p">[(</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span>
+<span class="n">points</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># Order points by timestamp, newest first</span></code></pre></div>
+<h3 id="group-the-data-point-by-retention">Group the data point by retention<a hidden class="anchor" aria-hidden="true" href="#group-the-data-point-by-retention">#</a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">points</span><span class="p">:</span>
+    <span class="n">age</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="n">currentArchive</span><span class="p">[</span><span class="s1">&#39;retention&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">age</span><span class="p">:</span>  <span class="c1"># We can&#39;t fit any more points in this archive</span>
+        <span class="k">if</span> <span class="n">currentPoints</span><span class="p">:</span>  <span class="c1"># Commit all the points we&#39;ve found that it can fit</span>
+            <span class="n">currentPoints</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>  <span class="c1"># Put points in chronological order</span>
+            <span class="n">__archive_update_many</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">currentArchive</span><span class="p">,</span> <span class="n">currentPoints</span><span class="p">)</span>
+            <span class="n">currentPoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">currentArchive</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">archives</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="n">currentArchive</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">currentArchive</span><span class="p">:</span>
+        <span class="k">break</span>  <span class="c1"># Drop remaining points that don&#39;t fit in the database</span>
+
+    <span class="n">currentPoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">currentArchive</span> <span class="ow">and</span> <span class="n">currentPoints</span><span class="p">:</span>  <span class="c1"># Don&#39;t forget to commit after we&#39;ve checked all the archives</span>
+    <span class="n">currentPoints</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="n">__archive_update_many</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">currentArchive</span><span class="p">,</span> <span class="n">currentPoints</span><span class="p">)</span></code></pre></div>
+<p>It&rsquo;s not easy to make clear what&rsquo;s operation do: data will write from higher precision archive to lower precision one. If the data is belong to this archive, it will write by this archive, if out the retention, leave the data to next (lower precision) archive.</p>
+
+<p>This is important that, before all the data pass to writer function <code>__archive_update_many</code>, their all do the order reverse by <code>currentPoints.reverse()</code></p>
+
+<h3 id="arrange-the-data-point">Arrange the data point<a hidden class="anchor" aria-hidden="true" href="#arrange-the-data-point">#</a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">step</span> <span class="o">=</span> <span class="n">archive</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span>
+<span class="n">alignedPoints</span> <span class="o">=</span> <span class="p">[(</span><span class="n">timestamp</span> <span class="o">-</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">%</span> <span class="n">step</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">points</span><span class="p">]</span></code></pre></div>
+<h3 id="group-the-data-by-timestamp-gap">Group the data by timestamp gap<a hidden class="anchor" aria-hidden="true" href="#group-the-data-by-timestamp-gap">#</a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Create a packed string for each contiguous sequence of points</span>
+<span class="n">packedStrings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">previousInterval</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">currentString</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;&#34;</span>
+<span class="n">lenAlignedPoints</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alignedPoints</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lenAlignedPoints</span><span class="p">):</span>
+    <span class="c1"># Take last point in run of points with duplicate intervals</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">lenAlignedPoints</span> <span class="ow">and</span> <span class="n">alignedPoints</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">alignedPoints</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">continue</span>
+    <span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">=</span> <span class="n">alignedPoints</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="c1"># if the point is the start point or the it&#39;s continue point from previous</span>
+    <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">previousInterval</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">interval</span> <span class="o">==</span> <span class="n">previousInterval</span> <span class="o">+</span> <span class="n">step</span><span class="p">):</span>
+        <span class="n">currentString</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pointFormat</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">previousInterval</span> <span class="o">=</span> <span class="n">interval</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1">#  if the timestamp continue is breaked</span>
+        <span class="n">numberOfPoints</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">currentString</span><span class="p">)</span> <span class="o">//</span> <span class="n">pointSize</span>
+        <span class="n">startInterval</span> <span class="o">=</span> <span class="n">previousInterval</span> <span class="o">-</span> <span class="p">(</span><span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">numberOfPoints</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">packedStrings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">startInterval</span><span class="p">,</span> <span class="n">currentString</span><span class="p">))</span>
+        <span class="n">currentString</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pointFormat</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">previousInterval</span> <span class="o">=</span> <span class="n">interval</span>
+<span class="k">if</span> <span class="n">currentString</span><span class="p">:</span>
+    <span class="n">numberOfPoints</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">currentString</span><span class="p">)</span> <span class="o">//</span> <span class="n">pointSize</span>
+    <span class="n">startInterval</span> <span class="o">=</span> <span class="n">previousInterval</span> <span class="o">-</span> <span class="p">(</span><span class="n">step</span> <span class="o">*</span> <span class="p">(</span><span class="n">numberOfPoints</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">packedStrings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">startInterval</span><span class="p">,</span> <span class="n">currentString</span><span class="p">))</span></code></pre></div>
+<p><strong>Important:</strong></p>
+
+<blockquote>
+<p>Take last point in run of points with duplicate intervals</p>
+</blockquote>
+
+<p>This is a very important feature.</p>
+
+<h3 id="write-data-1">Write data<a hidden class="anchor" aria-hidden="true" href="#write-data-1">#</a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Read base point and determine where our writes will start</span>
+<span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">archive</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
+<span class="n">packedBasePoint</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">pointSize</span><span class="p">)</span>
+<span class="p">(</span><span class="n">baseInterval</span><span class="p">,</span> <span class="n">baseValue</span><span class="p">)</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">pointFormat</span><span class="p">,</span> <span class="n">packedBasePoint</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">baseInterval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># This file&#39;s first update</span>
+    <span class="n">baseInterval</span> <span class="o">=</span> <span class="n">packedStrings</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Use our first string as the base, so we start at the start</span>
+
+<span class="c1"># Write all of our packed strings in locations determined by the baseInterval</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">interval</span><span class="p">,</span> <span class="n">packedString</span><span class="p">)</span> <span class="ow">in</span> <span class="n">packedStrings</span><span class="p">:</span>
+    <span class="n">timeDistance</span> <span class="o">=</span> <span class="n">interval</span> <span class="o">-</span> <span class="n">baseInterval</span>
+    <span class="n">pointDistance</span> <span class="o">=</span> <span class="n">timeDistance</span> <span class="o">//</span> <span class="n">step</span>
+    <span class="n">byteDistance</span> <span class="o">=</span> <span class="n">pointDistance</span> <span class="o">*</span> <span class="n">pointSize</span>
+    <span class="n">myOffset</span> <span class="o">=</span> <span class="n">archive</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">byteDistance</span> <span class="o">%</span> <span class="n">archive</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">myOffset</span><span class="p">)</span>
+    <span class="n">archiveEnd</span> <span class="o">=</span> <span class="n">archive</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">archive</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span>
+    <span class="n">bytesBeyond</span> <span class="o">=</span> <span class="p">(</span><span class="n">myOffset</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">packedString</span><span class="p">))</span> <span class="o">-</span> <span class="n">archiveEnd</span>
+
+    <span class="k">if</span> <span class="n">bytesBeyond</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">packedString</span><span class="p">[:</span><span class="o">-</span><span class="n">bytesBeyond</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">==</span> <span class="n">archiveEnd</span><span class="p">,</span> <span class="s2">&#34;archiveEnd=</span><span class="si">%d</span><span class="s2"> fh.tell=</span><span class="si">%d</span><span class="s2"> bytesBeyond=</span><span class="si">%d</span><span class="s2"> len(packedString)=</span><span class="si">%d</span><span class="s2">&#34;</span> <span class="o">%</span> <span class="p">(</span>
+        <span class="n">archiveEnd</span><span class="p">,</span> <span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">(),</span> <span class="n">bytesBeyond</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">packedString</span><span class="p">))</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">archive</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="n">packedString</span><span class="p">[</span><span class="o">-</span><span class="n">bytesBeyond</span><span class="p">:])</span>  <span class="c1"># Safe because it can&#39;t exceed the archive (retention checking logic above)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">packedString</span><span class="p">)</span></code></pre></div>
+<p>Note here: Write function have warp feature.</p>
+
+<h3 id="aggregator">Aggregator<a hidden class="anchor" aria-hidden="true" href="#aggregator">#</a></h3>
+
+<p>All the archive will try to aggregate to the next archive</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Now we propagate the updates to lower-precision archives</span>
+<span class="n">higher</span> <span class="o">=</span> <span class="n">archive</span>
+<span class="n">lowerArchives</span> <span class="o">=</span> <span class="p">[</span><span class="n">arc</span> <span class="k">for</span> <span class="n">arc</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;archives&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">arc</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">archive</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]]</span>
+
+<span class="k">for</span> <span class="n">lower</span> <span class="ow">in</span> <span class="n">lowerArchives</span><span class="p">:</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">lower</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">])</span>
+    <span class="n">lowerIntervals</span> <span class="o">=</span> <span class="p">[</span><span class="n">fit</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">alignedPoints</span><span class="p">]</span>
+    <span class="n">uniqueLowerIntervals</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">lowerIntervals</span><span class="p">)</span>
+    <span class="n">propagateFurther</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">uniqueLowerIntervals</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">__propagate</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">higher</span><span class="p">,</span> <span class="n">lower</span><span class="p">):</span>
+            <span class="n">propagateFurther</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">propagateFurther</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">higher</span> <span class="o">=</span> <span class="n">lower</span></code></pre></div>
+<h4 id="aggregation-method-on-single-point">Aggregation method on single point<a hidden class="anchor" aria-hidden="true" href="#aggregation-method-on-single-point">#</a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">__propagate</span><span class="p">(</span><span class="n">fh</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">,</span> <span class="n">higher</span><span class="p">,</span> <span class="n">lower</span><span class="p">):</span>
+    <span class="n">aggregationMethod</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;aggregationMethod&#39;</span><span class="p">]</span>
+    <span class="n">xff</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="s1">&#39;xFilesFactor&#39;</span><span class="p">]</span>
+
+    <span class="n">lowerIntervalStart</span> <span class="o">=</span> <span class="n">timestamp</span> <span class="o">-</span> <span class="p">(</span><span class="n">timestamp</span> <span class="o">%</span> <span class="n">lower</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">])</span>
+    <span class="n">lowerIntervalEnd</span> <span class="o">=</span> <span class="n">lowerIntervalStart</span> <span class="o">+</span> <span class="n">lower</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span>
+
+    <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
+    <span class="n">packedPoint</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">pointSize</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">higherBaseInterval</span><span class="p">,</span> <span class="n">higherBaseValue</span><span class="p">)</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">pointFormat</span><span class="p">,</span> <span class="n">packedPoint</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">higherBaseInterval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">higherFirstOffset</span> <span class="o">=</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">timeDistance</span> <span class="o">=</span> <span class="n">lowerIntervalStart</span> <span class="o">-</span> <span class="n">higherBaseInterval</span>
+        <span class="n">pointDistance</span> <span class="o">=</span> <span class="n">timeDistance</span> <span class="o">//</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span>
+        <span class="n">byteDistance</span> <span class="o">=</span> <span class="n">pointDistance</span> <span class="o">*</span> <span class="n">pointSize</span>
+        <span class="n">higherFirstOffset</span> <span class="o">=</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">byteDistance</span> <span class="o">%</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+
+    <span class="n">higherPoints</span> <span class="o">=</span> <span class="n">lower</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span> <span class="o">//</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span>
+    <span class="n">higherSize</span> <span class="o">=</span> <span class="n">higherPoints</span> <span class="o">*</span> <span class="n">pointSize</span>
+    <span class="n">relativeFirstOffset</span> <span class="o">=</span> <span class="n">higherFirstOffset</span> <span class="o">-</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span>
+    <span class="n">relativeLastOffset</span> <span class="o">=</span> <span class="p">(</span><span class="n">relativeFirstOffset</span> <span class="o">+</span> <span class="n">higherSize</span><span class="p">)</span> <span class="o">%</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span>
+    <span class="n">higherLastOffset</span> <span class="o">=</span> <span class="n">relativeLastOffset</span> <span class="o">+</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span>
+    <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">higherFirstOffset</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">higherFirstOffset</span> <span class="o">&lt;</span> <span class="n">higherLastOffset</span><span class="p">:</span>  <span class="c1"># We don&#39;t wrap the archive</span>
+        <span class="n">seriesString</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">higherLastOffset</span> <span class="o">-</span> <span class="n">higherFirstOffset</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># We do wrap the archive</span>
+        <span class="n">higherEnd</span> <span class="o">=</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span>
+        <span class="n">seriesString</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">higherEnd</span> <span class="o">-</span> <span class="n">higherFirstOffset</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
+        <span class="n">seriesString</span> <span class="o">+=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">higherLastOffset</span> <span class="o">-</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Now we unpack the series data we just read</span>
+    <span class="n">byteOrder</span><span class="p">,</span> <span class="n">pointTypes</span> <span class="o">=</span> <span class="n">pointFormat</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pointFormat</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seriesString</span><span class="p">)</span> <span class="o">//</span> <span class="n">pointSize</span>
+    <span class="n">seriesFormat</span> <span class="o">=</span> <span class="n">byteOrder</span> <span class="o">+</span> <span class="p">(</span><span class="n">pointTypes</span> <span class="o">*</span> <span class="n">points</span><span class="p">)</span>
+    <span class="n">unpackedSeries</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">seriesFormat</span><span class="p">,</span> <span class="n">seriesString</span><span class="p">)</span>
+
+    <span class="c1"># And finally we construct a list of values</span>
+    <span class="n">neighborValues</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">points</span>
+    <span class="n">currentInterval</span> <span class="o">=</span> <span class="n">lowerIntervalStart</span>
+    <span class="n">step</span> <span class="o">=</span> <span class="n">higher</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">unpackedSeries</span><span class="p">),</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">pointTime</span> <span class="o">=</span> <span class="n">unpackedSeries</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">pointTime</span> <span class="o">==</span> <span class="n">currentInterval</span><span class="p">:</span>
+            <span class="n">neighborValues</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">unpackedSeries</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">currentInterval</span> <span class="o">+=</span> <span class="n">step</span>
+
+    <span class="c1"># Propagate aggregateValue to propagate from neighborValues if we have enough known points</span>
+    <span class="n">knownValues</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">neighborValues</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">knownValues</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="n">knownPercent</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">knownValues</span><span class="p">))</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">neighborValues</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">knownPercent</span> <span class="o">&gt;=</span> <span class="n">xff</span><span class="p">:</span>  <span class="c1"># We have enough data to propagate a value!</span>
+        <span class="n">aggregateValue</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">aggregationMethod</span><span class="p">,</span> <span class="n">knownValues</span><span class="p">,</span> <span class="n">neighborValues</span><span class="p">)</span>
+        <span class="n">myPackedPoint</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">pointFormat</span><span class="p">,</span> <span class="n">lowerIntervalStart</span><span class="p">,</span> <span class="n">aggregateValue</span><span class="p">)</span>
+        <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">lower</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
+        <span class="n">packedPoint</span> <span class="o">=</span> <span class="n">fh</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">pointSize</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">lowerBaseInterval</span><span class="p">,</span> <span class="n">lowerBaseValue</span><span class="p">)</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">pointFormat</span><span class="p">,</span> <span class="n">packedPoint</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">lowerBaseInterval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># First propagated update to this lower archive</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">lower</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">])</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">myPackedPoint</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Not our first propagated update to this lower archive</span>
+            <span class="n">timeDistance</span> <span class="o">=</span> <span class="n">lowerIntervalStart</span> <span class="o">-</span> <span class="n">lowerBaseInterval</span>
+            <span class="n">pointDistance</span> <span class="o">=</span> <span class="n">timeDistance</span> <span class="o">//</span> <span class="n">lower</span><span class="p">[</span><span class="s1">&#39;secondsPerPoint&#39;</span><span class="p">]</span>
+            <span class="n">byteDistance</span> <span class="o">=</span> <span class="n">pointDistance</span> <span class="o">*</span> <span class="n">pointSize</span>
+            <span class="n">lowerOffset</span> <span class="o">=</span> <span class="n">lower</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">byteDistance</span> <span class="o">%</span> <span class="n">lower</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">lowerOffset</span><span class="p">)</span>
+            <span class="n">fh</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">myPackedPoint</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span></code></pre></div>
+<p>If the <code>xff</code> (too much invalid point below the threhold) lead the aggregation failed, the next level aggregation will be cancled.</p>
+
+<h2 id="misc">MISC<a hidden class="anchor" aria-hidden="true" href="#misc">#</a></h2>
+
+<h3 id="io-operation">IO operation<a hidden class="anchor" aria-hidden="true" href="#io-operation">#</a></h3>
+
+<p>Whisper&rsquo;s author do some effect on the IO optimise. When open the file, Whisper use <code>fadvise</code> to tell OS optimise the IO operation.</p>
+<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">CAN_FADVISE</span> <span class="ow">and</span> <span class="n">FADVISE_RANDOM</span><span class="p">:</span>
+    <span class="n">posix_fadvise</span><span class="p">(</span><span class="n">fh</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">POSIX_FADV_RANDOM</span><span class="p">)</span></code></pre></div>
+<p>Let&rsquo;s see how manual say about <code>fadvise</code>:</p>
+
+<blockquote>
+<p>Allows an application to to tell the kernel how it expects to use a file handle, so that the kernel can choose appropriate read-ahead and caching techniques for access to the corresponding file.</p>
+</blockquote>
+
+<p><code>fadvise</code> have several options:</p>
+
+<ul>
+<li><code>FADV_NORMAL</code> ：No special treatment</li>
+<li><code>FADV_RANDOM</code> : Expect page references in random order</li>
+<li><code>FADV_SEQUENTIAL</code> : Expect page references in sequential order</li>
+<li><code>FADV_WILLNEED</code> : Expect access in the near future</li>
+<li><code>FADV_DONTNEED</code> : Do not expect access in the near future. Subsequent access of pages in this range will succeed, but will result either in reloading of the memory contents from the underlying mapped file or zero-fill-in-demand pages for mappings without an underlying file</li>
+<li><code>FADV_NOREUSE</code> : Access data only once</li>
+</ul>
+
+<p>For more information, please see <a href="https://linux.die.net/man/2/fadvise" target="_blank">man fadvise</a></p>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>Solution for TensorBoard embedding blocked when loading metadata</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Introduce to the implement of Whisper: the time-serial database on twitter"
+        href="https://twitter.com/intent/tweet/?text=Introduce%20to%20the%20implement%20of%20Whisper%3a%20the%20time-serial%20database&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fintroduce-to-the-implement-of-whisper%2f&amp;hashtags=">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Introduce to the implement of Whisper: the time-serial database on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fintroduce-to-the-implement-of-whisper%2f&amp;title=Introduce%20to%20the%20implement%20of%20Whisper%3a%20the%20time-serial%20database&amp;summary=Introduce%20to%20the%20implement%20of%20Whisper%3a%20the%20time-serial%20database&amp;source=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fintroduce-to-the-implement-of-whisper%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Introduce to the implement of Whisper: the time-serial database on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fintroduce-to-the-implement-of-whisper%2f&title=Introduce%20to%20the%20implement%20of%20Whisper%3a%20the%20time-serial%20database">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Introduce to the implement of Whisper: the time-serial database on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fintroduce-to-the-implement-of-whisper%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Introduce to the implement of Whisper: the time-serial database on whatsapp"
+        href="https://api.whatsapp.com/send?text=Introduce%20to%20the%20implement%20of%20Whisper%3a%20the%20time-serial%20database%20-%20https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fintroduce-to-the-implement-of-whisper%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Introduce to the implement of Whisper: the time-serial database on telegram"
+        href="https://telegram.me/share/url?text=Introduce%20to%20the%20implement%20of%20Whisper%3a%20the%20time-serial%20database&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fintroduce-to-the-implement-of-whisper%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://blog.xiaoquankong.ai/">Xiaoquan Kong&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
