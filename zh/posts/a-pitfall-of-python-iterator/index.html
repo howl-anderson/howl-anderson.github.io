@@ -8,10 +8,11 @@
 <title>python iterator 遇到的一个坑 | Xiaoquan Kong&#39;s Blog</title>
 <meta name="keywords" content="python, iterable, iterator">
 <meta name="description" content="在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
+
 ">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -82,13 +83,13 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="python iterator 遇到的一个坑" />
+</script><meta property="og:title" content="python iterator 遇到的一个坑" />
 <meta property="og:description" content="在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
+
 " />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -100,6 +101,7 @@ if (!doNotTrack) {
 
 <meta name="twitter:title" content="python iterator 遇到的一个坑"/>
 <meta name="twitter:description" content="在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
+
 "/>
 
 
@@ -107,7 +109,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -123,11 +131,11 @@ if (!doNotTrack) {
   "@type": "BlogPosting",
   "headline": "python iterator 遇到的一个坑",
   "name": "python iterator 遇到的一个坑",
-  "description": "在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。 \n",
+  "description": "在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。 ",
   "keywords": [
     "python", "iterable", "iterator"
   ],
-  "articleBody": "在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。 \nBug 复现 原来的问题比较复杂，导致出错难以调试，经过将问题不断简化，最后简化后的代码如下：\n打印 iterator 的函数 我们定义一个用于打印 iterator 的函数\ndef print_iterator(iterator): while True: try: element = next(iterator) except StopIteration: break else: print(element) 测试一下\nprint_iterator(iter([1, 2, 3])) 输出：\n1 2 3 代码工作正常\n定义一个计算 iterable 长度的函数 def counter_iterable(iterable): iterator = iter(iterable) iterator_length = sum(1 for _ in iterator) print(iterator_length) 测试一下\ncounter_iterable([1, 2, 3]) 输出：\n3 代码工作正常\n整合在一起 将 放在 中调用：\ndef counter_iterable_and_print(iterable): iterator = iter(iterable) iterator_length = sum(1 for _ in iterator) print(iterator_length) print_iterator(iterator) 测试一下\ncounter_iterable_and_print([1, 2, 3]) 期望的输出应该有长度和打印内容两个部分构成：\n3 1 2 3 但实际上输出是：\n3 代码工作不正常\nbug 原因 这个 bug 的\u0008产生和我对两个概念的理解和记忆错误有关： 第一个是没有充分理解和记忆 iterator 的工作机制。\niterator 是什么 根据 Iterator on Python wiki :\n An iterator is an object that implements next (in python3, it is __next__) method, which is expected to return the next element of the iterable object that returned it, and raise a StopIteration exception when no more elements are available.\nIterator will typically need to maintain some kind of position state information (like the index of the last element returned or the like). If the iterable maintained that state itself, it would become inherently non-reentrant (meaning you could use it only one loop at a time).\n 上述 bug 产生的原因：上面的代码中共享了一个 iterator 对象，由于 iterator 具有记忆内部状态的能力，所以当\niterator_length = sum(1 for _ in iterator) 执行完毕后，实际这个 iterator 对象已经完成了全部元素的迭代。后续再次调用这个对象的 __next__() 方法时，直接抛出 StopIteration \u0008异常。因此这就是为什么后续的\nprint_iterator(iterator) 并没有任何输出的原因，因为函数收到的参数已经是一个走到最后的\u0008 iterator 对象了。\niterator 内有有状态信息，具有不可重入（non-reentrant）的特性，这个和 list, tuple, dict 等容器不一样，容器通过 __getitem__ 来迭代。\n另外一个是没有搞清楚 iterable 和 iterator 的区别。正确的理解是：iterable 是一个工厂函数，通过显式的调用 iter 函数或者调用其 __iter__() 方法或者使用\u0008 for 循环来获得这个工厂的产品：一个 iterator 对象。\n这里需要简单说明的是：无论是使用 iter 函数还是在 for 循环中使用，都是间接的调用 iterable 对象的 __iter__ 方法。\n\u0008iterator 被要求需要支持 iterable 协议的。通常情况下，对 iterator 调用 __iter__ 方法，返回的 iterator 就是它自己。 这样 iterator 对象就能够在 for-loop 中使用了。\n关于 iterator 的 PEP 在 PEP 234 – Iterators\n",
+  "articleBody": "在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。 Bug 复现 原来的问题比较复杂，导致出错难以调试，经过将问题不断简化，最后简化后的代码如下：\n打印 iterator 的函数 我们定义一个用于打印 iterator 的函数\ndef print_iterator(iterator): while True: try: element = next(iterator) except StopIteration: break else: print(element) 测试一下\nprint_iterator(iter([1, 2, 3])) 输出：\n1 2 3 代码工作正常\n定义一个计算 iterable 长度的函数 def counter_iterable(iterable): iterator = iter(iterable) iterator_length = sum(1 for _ in iterator) print(iterator_length) 测试一下\ncounter_iterable([1, 2, 3]) 输出：\n3 代码工作正常\n整合在一起 将 放在 中调用：\ndef counter_iterable_and_print(iterable): iterator = iter(iterable) iterator_length = sum(1 for _ in iterator) print(iterator_length) print_iterator(iterator) 测试一下\ncounter_iterable_and_print([1, 2, 3]) 期望的输出应该有长度和打印内容两个部分构成：\n3 1 2 3 但实际上输出是：\n3 代码工作不正常\nbug 原因 这个 bug 的\u0008产生和我对两个概念的理解和记忆错误有关： 第一个是没有充分理解和记忆 iterator 的工作机制。\niterator 是什么 根据 Iterator on Python wiki :\nAn iterator is an object that implements next (in python3, it is __next__) method, which is expected to return the next element of the iterable object that returned it, and raise a StopIteration exception when no more elements are available.\nIterator will typically need to maintain some kind of position state information (like the index of the last element returned or the like). If the iterable maintained that state itself, it would become inherently non-reentrant (meaning you could use it only one loop at a time).\n上述 bug 产生的原因：上面的代码中共享了一个 iterator 对象，由于 iterator 具有记忆内部状态的能力，所以当\niterator_length = sum(1 for _ in iterator) 执行完毕后，实际这个 iterator 对象已经完成了全部元素的迭代。后续再次调用这个对象的 __next__() 方法时，直接抛出 StopIteration \u0008异常。因此这就是为什么后续的\nprint_iterator(iterator) 并没有任何输出的原因，因为函数收到的参数已经是一个走到最后的\u0008 iterator 对象了。\niterator 内有有状态信息，具有不可重入（non-reentrant）的特性，这个和 list, tuple, dict 等容器不一样，容器通过 __getitem__ 来迭代。\n另外一个是没有搞清楚 iterable 和 iterator 的区别。正确的理解是：iterable 是一个工厂函数，通过显式的调用 iter 函数或者调用其 __iter__() 方法或者使用\u0008 for 循环来获得这个工厂的产品：一个 iterator 对象。\n这里需要简单说明的是：无论是使用 iter 函数还是在 for 循环中使用，都是间接的调用 iterable 对象的 __iter__ 方法。\n\u0008iterator 被要求需要支持 iterable 协议的。通常情况下，对 iterator 调用 __iter__ 方法，返回的 iterator 就是它自己。 这样 iterator 对象就能够在 for-loop 中使用了。\n关于 iterator 的 PEP 在 PEP 234 – Iterators\n",
   "wordCount" : "271",
   "inLanguage": "zh",
   "datePublished": "0001-01-01T00:00:00Z",
@@ -231,7 +239,7 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       python iterator 遇到的一个坑
     </h1>
@@ -269,94 +277,78 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p>在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
-<a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb" target="_blank"><img src="https://mybinder.org/badge.svg" alt="Binder" /></a></p>
-
+<a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb"><img loading="lazy" src="https://mybinder.org/badge.svg" alt="Binder"  />
+</a></p>
 <h2 id="bug-复现">Bug 复现<a hidden class="anchor" aria-hidden="true" href="#bug-复现">#</a></h2>
-
 <p>原来的问题比较复杂，导致出错难以调试，经过将问题不断简化，最后简化后的代码如下：</p>
-
 <h3 id="打印-iterator-的函数">打印 iterator 的函数<a hidden class="anchor" aria-hidden="true" href="#打印-iterator-的函数">#</a></h3>
-
 <p>我们定义一个用于打印 iterator 的函数</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">print_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">element</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-            <span class="k">break</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">element</span><span class="p">)</span></code></pre></div>
-<p>测试一下</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">print_iterator</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span></code></pre></div>
-<p>输出：</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span></code></pre></div>
-<p>代码工作正常</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">print_iterator</span><span class="p">(</span><span class="n">iterator</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="n">element</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+</span></span></code></pre></div><p>测试一下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">print_iterator</span><span class="p">(</span><span class="nb">iter</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="m">3</span>
+</span></span></code></pre></div><p>代码工作正常</p>
 <h3 id="定义一个计算-iterable-长度的函数">定义一个计算 iterable 长度的函数<a hidden class="anchor" aria-hidden="true" href="#定义一个计算-iterable-长度的函数">#</a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">counter_iterable</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
-    <span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-    <span class="n">iterator_length</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">)</span>
-
-    <span class="k">print</span><span class="p">(</span><span class="n">iterator_length</span><span class="p">)</span></code></pre></div>
-<p>测试一下</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">counter_iterable</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span></code></pre></div>
-<p>输出：</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">3</span></code></pre></div>
-<p>代码工作正常</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">counter_iterable</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iterator</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">iterator_length</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">iterator_length</span><span class="p">)</span>
+</span></span></code></pre></div><p>测试一下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">counter_iterable</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span></span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">3</span>
+</span></span></code></pre></div><p>代码工作正常</p>
 <h3 id="整合在一起">整合在一起<a hidden class="anchor" aria-hidden="true" href="#整合在一起">#</a></h3>
-
 <p>将 <code>放在</code> 中调用：</p>
-<pre><code>def counter_iterable_and_print(iterable):
+<pre tabindex="0"><code>def counter_iterable_and_print(iterable):
     iterator = iter(iterable)
     iterator_length = sum(1 for _ in iterator)
 
     print(iterator_length)
 
-    print_iterator(iterator)</code></pre>
-<p>测试一下</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">counter_iterable_and_print</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span></code></pre></div>
-<p>期望的输出应该有长度和打印内容两个部分构成：</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">3</span>
-<span class="m">1</span>
-<span class="m">2</span>
-<span class="m">3</span></code></pre></div>
-<p>但实际上输出是：</p>
-<pre><code>3</code></pre>
-<p>代码工作不正常</p>
-
+    print_iterator(iterator)
+</code></pre><p>测试一下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">counter_iterable_and_print</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+</span></span></code></pre></div><p>期望的输出应该有长度和打印内容两个部分构成：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">3</span>
+</span></span><span class="line"><span class="cl"><span class="m">1</span>
+</span></span><span class="line"><span class="cl"><span class="m">2</span>
+</span></span><span class="line"><span class="cl"><span class="m">3</span>
+</span></span></code></pre></div><p>但实际上输出是：</p>
+<pre tabindex="0"><code>3
+</code></pre><p>代码工作不正常</p>
 <h2 id="bug-原因">bug 原因<a hidden class="anchor" aria-hidden="true" href="#bug-原因">#</a></h2>
-
 <p>这个 bug 的产生和我对两个概念的理解和记忆错误有关：
 第一个是没有充分理解和记忆 iterator 的工作机制。</p>
-
 <h3 id="iterator-是什么">iterator 是什么<a hidden class="anchor" aria-hidden="true" href="#iterator-是什么">#</a></h3>
-
-<p>根据 <a href="https://wiki.python.org/moin/Iterator" target="_blank">Iterator on Python wiki</a> :</p>
-
+<p>根据 <a href="https://wiki.python.org/moin/Iterator">Iterator on Python wiki</a> :</p>
 <blockquote>
 <p>An <code>iterator</code> is an object that implements <code>next</code> (in python3, it is <code>__next__</code>) method, which is expected to return the next element of the iterable object that returned it, and raise a <code>StopIteration</code> exception when no more elements are available.</p>
-
+</blockquote>
+<blockquote>
 <p><code>Iterator</code> will typically need to maintain some kind of position state information (like the index of the last element returned or the like). If the iterable maintained that state itself, it would become inherently non-reentrant (meaning you could use it only one loop at a time).</p>
 </blockquote>
-
 <p>上述 bug 产生的原因：上面的代码中共享了一个 <code>iterator</code> 对象，由于 <code>iterator</code> 具有记忆内部状态的能力，所以当</p>
-<pre><code>iterator_length = sum(1 for _ in iterator)</code></pre>
-<p>执行完毕后，实际这个 <code>iterator</code> 对象已经完成了全部元素的迭代。后续再次调用这个对象的 <code>__next__()</code> 方法时，直接抛出 <code>StopIteration</code> 异常。因此这就是为什么后续的</p>
-<pre><code>print_iterator(iterator)</code></pre>
-<p>并没有任何输出的原因，因为函数收到的参数已经是一个走到最后的 <code>iterator</code> 对象了。</p>
-
+<pre tabindex="0"><code>iterator_length = sum(1 for _ in iterator)
+</code></pre><p>执行完毕后，实际这个 <code>iterator</code> 对象已经完成了全部元素的迭代。后续再次调用这个对象的 <code>__next__()</code> 方法时，直接抛出 <code>StopIteration</code> 异常。因此这就是为什么后续的</p>
+<pre tabindex="0"><code>print_iterator(iterator)
+</code></pre><p>并没有任何输出的原因，因为函数收到的参数已经是一个走到最后的 <code>iterator</code> 对象了。</p>
 <p><code>iterator</code> 内有有状态信息，具有不可重入（non-reentrant）的特性，这个和 <code>list</code>, <code>tuple</code>, <code>dict</code> 等容器不一样，容器通过 <code>__getitem__</code> 来迭代。</p>
-
 <p>另外一个是没有搞清楚 <code>iterable</code> 和 <code>iterator</code> 的区别。正确的理解是：<code>iterable</code> 是一个工厂函数，通过显式的调用 <code>iter</code> 函数或者调用其 <code>__iter__()</code> 方法或者使用 <code>for</code> 循环来获得这个工厂的产品：一个 <code>iterator</code> 对象。</p>
-
 <p>这里需要简单说明的是：无论是使用 <code>iter</code> 函数还是在 for 循环中使用，都是间接的调用 <code>iterable</code> 对象的 <code>__iter__</code> 方法。</p>
-
 <p><code>iterator</code> 被要求需要支持 <code>iterable</code> 协议的。通常情况下，对 <code>iterator</code> 调用 <code>__iter__</code> 方法，返回的 <code>iterator</code> 就是它自己。 这样 <code>iterator</code> 对象就能够在 for-loop 中使用了。</p>
-
-<p>关于 <code>iterator</code> 的 PEP 在 <a href="https://www.python.org/dev/peps/pep-0234/" target="_blank">PEP 234 &ndash; Iterators</a></p>
+<p>关于 <code>iterator</code> 的 PEP 在 <a href="https://www.python.org/dev/peps/pep-0234/">PEP 234 &ndash; Iterators</a></p>
 
   </div>
 

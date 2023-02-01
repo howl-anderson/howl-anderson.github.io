@@ -10,7 +10,7 @@
 <meta name="description" content="TL;DR 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="Python bisect模块的妙用" />
+</script><meta property="og:title" content="Python bisect模块的妙用" />
 <meta property="og:description" content="TL;DR 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -124,7 +129,7 @@ if (!doNotTrack) {
   "keywords": [
     "Python"
   ],
-  "articleBody": "TL;DR 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。\n难题：查询整数所属的区间 应用开发过程中，经常出现一种情景，需要你查询一个整数落在哪一个范围内，比如根据消费金额确定优惠金额或者打折力度等。具体的例子有：消费满100元优惠10元，消费满200元优惠25元，等等。\n常规解决方案及其缺点 通常情况下，都是使用switch／if-elif来解决的，范围比较少的情况，代码还属于比较简洁的，当范围的数量增加，代码就变的相当的不简洁了，正如下面的代码：\ndiscount = None if value  100: discount = 0 elif value  200: discount = 10 elif values  300: discount = 25 elif values  400: discount = 42 elif values  500: discount = 53 elif values  600: discount = 64 elif values  700: discount = 75 elif values  800: discount = 86 elif values  900: discount = 97 elif values  1000: discount = 108 else: discount = 120 基于bisect的方案 bisect介绍 bisect是python的标准模块，是一个关于数组二分查找法的库，里面提供了在这里非常有用的三个函数bisect_left, bisect_right, bisect. 这三个参数都接受一个array和一个数字，返回将数字插入这个array后这个数字的位置（index），但并不真正执行插入操作。比如：\nIn[0]: import bisect In[1]: bisect.bisect([1, 3, 5], 2) Out[1]: 1 表示如果将2插入1 3 5中间，那么插进去之后的index则为返回值（本例，返回值为1），如果出现相同的值，bisect()函数选择将值插在后面也就是原有值的右侧：\nIn[0]: import bisect In[1]: bisect.bisect([1, 3, 5], 3) Out[1]: 2 bisect_left()函数选择将值插在前面也就是原有值的左侧：\nIn[0]: import bisect In[1]: bisect.bisect_left([1, 3, 5], 3) Out[1]: 1 另外bisect_right()函数是bisect()函数的别名，或者反之。\n利用bisect查找整数范围 bisect函数是二分查找，既可以用来插入，当然也可以用来检索信息，比如查找值所属的区段／区间。\n前面我们提到的那个函数就可以利用bisect做改写:\nmapping = { 0: 0, 1:\t10, 2: 25, 3: 42, 4: 53, 5: 64, 6: 75, 7: 86, 8: 97, 9: 108, 10: 120, } i = bisect(range(100, 1001, 100), value) discount = mapping[i] 这种方案在业务方案多变，查询范围特别多的情况下具备极大的可维护性和性能优势。\n",
+  "articleBody": "TL;DR 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。\n难题：查询整数所属的区间 应用开发过程中，经常出现一种情景，需要你查询一个整数落在哪一个范围内，比如根据消费金额确定优惠金额或者打折力度等。具体的例子有：消费满100元优惠10元，消费满200元优惠25元，等等。\n常规解决方案及其缺点 通常情况下，都是使用switch／if-elif来解决的，范围比较少的情况，代码还属于比较简洁的，当范围的数量增加，代码就变的相当的不简洁了，正如下面的代码：\ndiscount = None if value \u003c 100: discount = 0 elif value \u003c 200: discount = 10 elif values \u003c 300: discount = 25 elif values \u003c 400: discount = 42 elif values \u003c 500: discount = 53 elif values \u003c 600: discount = 64 elif values \u003c 700: discount = 75 elif values \u003c 800: discount = 86 elif values \u003c 900: discount = 97 elif values \u003c 1000: discount = 108 else: discount = 120 基于bisect的方案 bisect介绍 bisect是python的标准模块，是一个关于数组二分查找法的库，里面提供了在这里非常有用的三个函数bisect_left, bisect_right, bisect. 这三个参数都接受一个array和一个数字，返回将数字插入这个array后这个数字的位置（index），但并不真正执行插入操作。比如：\nIn[0]: import bisect In[1]: bisect.bisect([1, 3, 5], 2) Out[1]: 1 表示如果将2插入1 3 5中间，那么插进去之后的index则为返回值（本例，返回值为1），如果出现相同的值，bisect()函数选择将值插在后面也就是原有值的右侧：\nIn[0]: import bisect In[1]: bisect.bisect([1, 3, 5], 3) Out[1]: 2 bisect_left()函数选择将值插在前面也就是原有值的左侧：\nIn[0]: import bisect In[1]: bisect.bisect_left([1, 3, 5], 3) Out[1]: 1 另外bisect_right()函数是bisect()函数的别名，或者反之。\n利用bisect查找整数范围 bisect函数是二分查找，既可以用来插入，当然也可以用来检索信息，比如查找值所属的区段／区间。\n前面我们提到的那个函数就可以利用bisect做改写:\nmapping = { 0: 0, 1:\t10, 2: 25, 3: 42, 4: 53, 5: 64, 6: 75, 7: 86, 8: 97, 9: 108, 10: 120, } i = bisect(range(100, 1001, 100), value) discount = mapping[i] 这种方案在业务方案多变，查询范围特别多的情况下具备极大的可维护性和性能优势。\n",
   "wordCount" : "164",
   "inLanguage": "zh",
   "datePublished": "2017-11-17T18:57:39Z",
@@ -228,11 +233,11 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       Python bisect模块的妙用
     </h1>
-    <div class="post-meta"><span title='2017-11-17 18:57:39 +0000 UTC'>November 17, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2017-11-17 18:57:39 +0000 UTC'>十一月 17, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -243,7 +248,7 @@ if (!doNotTrack) {
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#%e9%9a%be%e9%a2%98-%e6%9f%a5%e8%af%a2%e6%95%b4%e6%95%b0%e6%89%80%e5%b1%9e%e7%9a%84%e5%8c%ba%e9%97%b4" aria-label="难题：查询整数所属的区间">难题：查询整数所属的区间</a><ul>
+                    <a href="#%e9%9a%be%e9%a2%98%e6%9f%a5%e8%af%a2%e6%95%b4%e6%95%b0%e6%89%80%e5%b1%9e%e7%9a%84%e5%8c%ba%e9%97%b4" aria-label="难题：查询整数所属的区间">难题：查询整数所属的区间</a><ul>
                         
                 <li>
                     <a href="#%e5%b8%b8%e8%a7%84%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88%e5%8f%8a%e5%85%b6%e7%bc%ba%e7%82%b9" aria-label="常规解决方案及其缺点">常规解决方案及其缺点</a></li>
@@ -265,80 +270,71 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p><strong>TL;DR</strong> 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。</p>
-
-<h1 id="难题-查询整数所属的区间">难题：查询整数所属的区间<a hidden class="anchor" aria-hidden="true" href="#难题-查询整数所属的区间">#</a></h1>
-
+<h1 id="难题查询整数所属的区间">难题：查询整数所属的区间<a hidden class="anchor" aria-hidden="true" href="#难题查询整数所属的区间">#</a></h1>
 <p>应用开发过程中，经常出现一种情景，需要你查询一个整数落在哪一个范围内，比如根据消费金额确定优惠金额或者打折力度等。具体的例子有：消费满100元优惠10元，消费满200元优惠25元，等等。</p>
-
 <h2 id="常规解决方案及其缺点">常规解决方案及其缺点<a hidden class="anchor" aria-hidden="true" href="#常规解决方案及其缺点">#</a></h2>
-
 <p>通常情况下，都是使用switch／if-elif来解决的，范围比较少的情况，代码还属于比较简洁的，当范围的数量增加，代码就变的相当的不简洁了，正如下面的代码：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">discount</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">elif</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">25</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">42</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">53</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">64</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">700</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">75</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">800</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">86</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">900</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">97</span>
-<span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">108</span>
-<span class="k">else</span><span class="p">:</span>
-	<span class="n">discount</span> <span class="o">=</span> <span class="mi">120</span></code></pre></div>
-<h2 id="基于bisect的方案">基于bisect的方案<a hidden class="anchor" aria-hidden="true" href="#基于bisect的方案">#</a></h2>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">discount</span> <span class="o">=</span> <span class="kc">None</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">200</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">25</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">42</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">53</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">600</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">64</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">700</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">75</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">800</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">86</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">900</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">97</span>
+</span></span><span class="line"><span class="cl"><span class="k">elif</span> <span class="n">values</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">108</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">	<span class="n">discount</span> <span class="o">=</span> <span class="mi">120</span>
+</span></span></code></pre></div><h2 id="基于bisect的方案">基于bisect的方案<a hidden class="anchor" aria-hidden="true" href="#基于bisect的方案">#</a></h2>
 <h3 id="bisect介绍">bisect介绍<a hidden class="anchor" aria-hidden="true" href="#bisect介绍">#</a></h3>
-
 <p>bisect是python的标准模块，是一个关于数组二分查找法的库，里面提供了在这里非常有用的三个函数<code>bisect_left</code>, <code>bisect_right</code>, <code>bisect</code>. 这三个参数都接受一个array和一个数字，返回将数字插入这个array后这个数字的位置（index），但并不真正执行插入操作。比如：</p>
-<pre><code>In[0]: import bisect
+<pre tabindex="0"><code>In[0]: import bisect
 In[1]: bisect.bisect([1, 3, 5], 2)
 Out[1]:
-1</code></pre>
-<p>表示如果将2插入1 3 5中间，那么插进去之后的index则为返回值（本例，返回值为1），如果出现相同的值，<code>bisect()</code>函数选择将值插在后面也就是原有值的右侧：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">In</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">bisect</span>
-<span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-<span class="mi">2</span></code></pre></div>
-<p><code>bisect_left()</code>函数选择将值插在前面也就是原有值的左侧：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">In</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">bisect</span>
-<span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-<span class="mi">1</span></code></pre></div>
-<p>另外<code>bisect_right()</code>函数是<code>bisect()</code>函数的别名，或者反之。</p>
-
+1
+</code></pre><p>表示如果将2插入1 3 5中间，那么插进去之后的index则为返回值（本例，返回值为1），如果出现相同的值，<code>bisect()</code>函数选择将值插在后面也就是原有值的右侧：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">In</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">bisect</span>
+</span></span><span class="line"><span class="cl"><span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+</span></span><span class="line"><span class="cl"><span class="mi">2</span>
+</span></span></code></pre></div><p><code>bisect_left()</code>函数选择将值插在前面也就是原有值的左侧：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">In</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="kn">import</span> <span class="nn">bisect</span>
+</span></span><span class="line"><span class="cl"><span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect_left</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Out</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+</span></span><span class="line"><span class="cl"><span class="mi">1</span>
+</span></span></code></pre></div><p>另外<code>bisect_right()</code>函数是<code>bisect()</code>函数的别名，或者反之。</p>
 <h3 id="利用bisect查找整数范围">利用bisect查找整数范围<a hidden class="anchor" aria-hidden="true" href="#利用bisect查找整数范围">#</a></h3>
-
 <p>bisect函数是二分查找，既可以用来插入，当然也可以用来检索信息，比如查找值所属的区段／区间。</p>
-
 <p>前面我们提到的那个函数就可以利用bisect做改写:</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span>
-	<span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-	<span class="mi">1</span><span class="p">:</span>	<span class="mi">10</span><span class="p">,</span>
-	<span class="mi">2</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
-	<span class="mi">3</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
-	<span class="mi">4</span><span class="p">:</span> <span class="mi">53</span><span class="p">,</span>
-	<span class="mi">5</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
-	<span class="mi">6</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
-	<span class="mi">7</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span>
-	<span class="mi">8</span><span class="p">:</span> <span class="mi">97</span><span class="p">,</span>
-	<span class="mi">9</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span>
-	<span class="mi">10</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
-<span class="p">}</span>
-
-<span class="n">i</span> <span class="o">=</span> <span class="n">bisect</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1001</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
-<span class="n">discount</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></code></pre></div>
-<p>这种方案在业务方案多变，查询范围特别多的情况下具备极大的可维护性和性能优势。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">1</span><span class="p">:</span>	<span class="mi">10</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">2</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">3</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">4</span><span class="p">:</span> <span class="mi">53</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">5</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">6</span><span class="p">:</span> <span class="mi">75</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">7</span><span class="p">:</span> <span class="mi">86</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">8</span><span class="p">:</span> <span class="mi">97</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">9</span><span class="p">:</span> <span class="mi">108</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">	<span class="mi">10</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">i</span> <span class="o">=</span> <span class="n">bisect</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1001</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">discount</span> <span class="o">=</span> <span class="n">mapping</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+</span></span></code></pre></div><p>这种方案在业务方案多变，查询范围特别多的情况下具备极大的可维护性和性能优势。</p>
 
   </div>
 

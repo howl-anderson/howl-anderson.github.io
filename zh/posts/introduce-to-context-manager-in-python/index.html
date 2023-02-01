@@ -10,7 +10,7 @@
 <meta name="description" content="TL;DR 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="Python context manager 上下文管理器" />
+</script><meta property="og:title" content="Python context manager 上下文管理器" />
 <meta property="og:description" content="TL;DR 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -124,7 +129,7 @@ if (!doNotTrack) {
   "keywords": [
     "Python"
   ],
-  "articleBody": "TL;DR 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能\n什么是上下文管理器 上下文管理器 context manager 能够控制程序执行的上下文,比如控制文件的关闭,抑制异常,捕获异常,修改上下文变量等\n调用过程 简单例子 class Context(object): def __enter__(self): print(\"__enter__ invoked\") def __exit__(self, exc_type, exc_val, exc_tb): print(\"__exit__ invoked\") with Context(): print(\"with block\") ` 运行以上代码，则会有如下输出: `__enter__ invoked with block __exit__ invoked ` ### 中级复杂的例子 `class ContextInstance(object): def __init__(self, msg): self.msg = msg def say(self): print(self.msg) def when_exit(self): print(\"instance exited!\") class Context(object): def __init__(self, msg): self.msg = msg self.instance = None super(Context, self).__init__() def __enter__(self): print(\"__enter__ invoked\") self.instance = ContextInstance(self.msg) return self.instance def __exit__(self, exc_type, exc_val, exc_tb): print(\"__exit__ invoked\") self.instance.when_exit() with Context(\"Message\") as ctx: ctx.say() print(\"within block\") ` 运行以上代码，则会有如下输出: `__enter__ invoked Message within block __exit__ invoked instance exited! ` ### 复杂例子 `class ContextManager(object): def __init__(self, msg): self.msg = msg self.instance = None super(ContextManager, self).__init__() def __enter__(self): print(\"__enter__ invoked\") self.instance = ContextInstance(self.msg) return self.instance def __exit__(self, exc_type, exc_val, exc_tb): print(\"__exit__ invoked\") self.instance.when_exit() class ContextInstance(object): def __init__(self, msg): self.msg = msg super(ContextInstance, self).__init__() def say(self): print(self.msg) def when_exit(self): print(\"instance existed!\") with ContextManager(\"Message\") as ctx: ctx.say() print(\"with block\") ` 运行以上代码，则会有如下输出: `__enter__ invoked Message with block __exit__ invoked instance existed! ` ## 使用场景 ### 控制文件关闭 `with open(\"/tmp/context_manager.txt\", 'wt') as f: f.write(\"contexts go here\") ` ### 抑制异常 `class Context(object): def __enter__(self): return self def __exit__(self, exc_type, exc_val, exc_tb): # supress all the exception return True with Context(): print(\"start\") raise ValueError(\"E!\") print(\"end\") print(\"next\") ` 运行以上代码，则会有如下输出: `start next ` ### 捕获异常 `# TODO： see unittest catch exceptioon ` ### 修改上下文 `env_context = [] class Context(object): def __enter__(self): env_context.append(1) def __exit__(self, exc_type, exc_val, exc_tb): env_context.pop() print(\"before with\", len(env_context)) with Context(): print(\"in with\", len(env_context)) print(\"after with\", len(env_context)) ` 运行以上代码，则会有如下输出: `('before with', 0) ('in with', 1) ('after with', 0) ` ## contextlib 库 contextlib是Python官方包，使用contenxtlib可以很方便的构建上下文管理器 ### contextlib.contextmanager #### 简单用法 `import contextlib @contextlib.contextmanager def context(): print(\"before yeild\") yield [] print(\"after yeild\") with context() as value: print(\"before value\") print(value) print(\"after value\") ` 运行以上代码，则会有如下输出: `before yeild before value [] after value after yeild ` #### 捕获异常 `import contextlib @contextlib.contextmanager def context(): print(\"before yeild\") try: yield except ValueError as e: print(e) print(\"after yeild\") with context(): raise ValueError(\"NO\") print(\"after exception\") print(\"after with\") ` 运行以上代码，则会有如下输出: `before yeild NO after yeild after with ` ### 嵌套的上下文管理器 (Nesting contexts) `import contextlib @contextlib.contextmanager def context(name): print(\"entring %s\" % name) yield name print(\"exiting %s\" % name) with contextlib.nested(context('a'), context('b'), context('c')) as (a, b, c): print(\"inside with statement: %s\" % ((a, b, c), )) ` 运行以上代码，则会有如下输出: `entring a entring b entring c inside with statement: ('a', 'b', 'c') exiting c exiting b exiting a /usr/local/lib/python2.7/dist-packages/ipykernel_launcher.py:9: DeprecationWarning: With-statements now directly support multiple context managers if __name__ == '__main__': ` 观察输出，你会发现，嵌套的上下文管理器工作起来像是先入后出的栈一样：最先进入的管理器最后退出，最后进入的管理器最先退出。 同时你应该观察到一个Warning：DeprecationWarning: With-statements now directly support multiple context managers。contextlib.nested函数将于后续Python版本被弃用，Python 2.7引入了嵌套上下文管理器新语法。 #### Python 2.7 版本的新语法 (py2.7 now support nested) `import contextlib @contextlib.contextmanager def context(name): print(\"entring %s\" % name) yield name print(\"exiting %s\" % name) with context('a') as a, context('b') as b, context('c') as c: print(\"inside with statement: %s\" % ((a, b, c), )) ` 运行以上代码，则会有如下输出: `entring a entring b entring c inside with statement: ('a', 'b', 'c') exiting c exiting b exiting a ` ### 自动关闭的上下文管理器 (closing context) `contextlib.closing`等价与如下代码: `import contextlib @contextlib.contextmanager def closing(thing): try: yield thing finally: thing.close() ` ### 简单例子 `import contextlib class Door(): def close(self): print(\"Door closing\") def do_something(self): print(\"doing something\") try: with contextlib.closing(Door()) as door: door.do_something() raise ValueError(\"Exception raising\") except ValueError as e: print(e) ` 运行以上代码，则会有如下输出: `doing something Door closing Exception raising ` ### 替代的例子 `import contextlib @contextlib.contextmanager def closing(thing): try: yield thing finally: thing.close() class Door(): def close(self): print(\"Door closing\") def do_something(self): print(\"doing something\") try: with closing(Door()) as door: door.do_something() raise ValueError(\"Exception raising\") except ValueError as e: print(e) ` 运行以上代码，则会有如下输出: `doing something Door closing Exception raising ` ### 实际的例子 `from contextlib import closing import urllib fair_license_url = 'http://www.samurajdata.se/opensource/mirror/licenses/fair.txt' with closing(urllib.urlopen(fair_license_url)) as page: for line in page: print(line) ` 运行以上代码，则会有如下输出: `Fair License \u0026lt;Copyright Information\u0026gt; Usage of the works is permitted provided that this instrument is retained with the works, so that any entity that uses the works is notified of this instrument. DISCLAIMER: THE WORKS ARE WITHOUT WARRANTY. [2004, Fair License: rhid.com/fair] 参考  Python官方contexlib库文档 ",
+  "articleBody": "TL;DR 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能\n什么是上下文管理器 上下文管理器 context manager 能够控制程序执行的上下文,比如控制文件的关闭,抑制异常,捕获异常,修改上下文变量等\n调用过程 简单例子 class Context(object): def __enter__(self): print(\"__enter__ invoked\") def __exit__(self, exc_type, exc_val, exc_tb): print(\"__exit__ invoked\") with Context(): print(\"with block\") ` 运行以上代码，则会有如下输出: `__enter__ invoked with block __exit__ invoked ` ### 中级复杂的例子 `class ContextInstance(object): def __init__(self, msg): self.msg = msg def say(self): print(self.msg) def when_exit(self): print(\"instance exited!\") class Context(object): def __init__(self, msg): self.msg = msg self.instance = None super(Context, self).__init__() def __enter__(self): print(\"__enter__ invoked\") self.instance = ContextInstance(self.msg) return self.instance def __exit__(self, exc_type, exc_val, exc_tb): print(\"__exit__ invoked\") self.instance.when_exit() with Context(\"Message\") as ctx: ctx.say() print(\"within block\") ` 运行以上代码，则会有如下输出: `__enter__ invoked Message within block __exit__ invoked instance exited! ` ### 复杂例子 `class ContextManager(object): def __init__(self, msg): self.msg = msg self.instance = None super(ContextManager, self).__init__() def __enter__(self): print(\"__enter__ invoked\") self.instance = ContextInstance(self.msg) return self.instance def __exit__(self, exc_type, exc_val, exc_tb): print(\"__exit__ invoked\") self.instance.when_exit() class ContextInstance(object): def __init__(self, msg): self.msg = msg super(ContextInstance, self).__init__() def say(self): print(self.msg) def when_exit(self): print(\"instance existed!\") with ContextManager(\"Message\") as ctx: ctx.say() print(\"with block\") ` 运行以上代码，则会有如下输出: `__enter__ invoked Message with block __exit__ invoked instance existed! ` ## 使用场景 ### 控制文件关闭 `with open(\"/tmp/context_manager.txt\", 'wt') as f: f.write(\"contexts go here\") ` ### 抑制异常 `class Context(object): def __enter__(self): return self def __exit__(self, exc_type, exc_val, exc_tb): # supress all the exception return True with Context(): print(\"start\") raise ValueError(\"E!\") print(\"end\") print(\"next\") ` 运行以上代码，则会有如下输出: `start next ` ### 捕获异常 `# TODO： see unittest catch exceptioon ` ### 修改上下文 `env_context = [] class Context(object): def __enter__(self): env_context.append(1) def __exit__(self, exc_type, exc_val, exc_tb): env_context.pop() print(\"before with\", len(env_context)) with Context(): print(\"in with\", len(env_context)) print(\"after with\", len(env_context)) ` 运行以上代码，则会有如下输出: `('before with', 0) ('in with', 1) ('after with', 0) ` ## contextlib 库 contextlib是Python官方包，使用contenxtlib可以很方便的构建上下文管理器 ### contextlib.contextmanager #### 简单用法 `import contextlib @contextlib.contextmanager def context(): print(\"before yeild\") yield [] print(\"after yeild\") with context() as value: print(\"before value\") print(value) print(\"after value\") ` 运行以上代码，则会有如下输出: `before yeild before value [] after value after yeild ` #### 捕获异常 `import contextlib @contextlib.contextmanager def context(): print(\"before yeild\") try: yield except ValueError as e: print(e) print(\"after yeild\") with context(): raise ValueError(\"NO\") print(\"after exception\") print(\"after with\") ` 运行以上代码，则会有如下输出: `before yeild NO after yeild after with ` ### 嵌套的上下文管理器 (Nesting contexts) `import contextlib @contextlib.contextmanager def context(name): print(\"entring %s\" % name) yield name print(\"exiting %s\" % name) with contextlib.nested(context('a'), context('b'), context('c')) as (a, b, c): print(\"inside with statement: %s\" % ((a, b, c), )) ` 运行以上代码，则会有如下输出: `entring a entring b entring c inside with statement: ('a', 'b', 'c') exiting c exiting b exiting a /usr/local/lib/python2.7/dist-packages/ipykernel_launcher.py:9: DeprecationWarning: With-statements now directly support multiple context managers if __name__ == '__main__': ` 观察输出，你会发现，嵌套的上下文管理器工作起来像是先入后出的栈一样：最先进入的管理器最后退出，最后进入的管理器最先退出。 同时你应该观察到一个Warning：DeprecationWarning: With-statements now directly support multiple context managers。contextlib.nested函数将于后续Python版本被弃用，Python 2.7引入了嵌套上下文管理器新语法。 #### Python 2.7 版本的新语法 (py2.7 now support nested) `import contextlib @contextlib.contextmanager def context(name): print(\"entring %s\" % name) yield name print(\"exiting %s\" % name) with context('a') as a, context('b') as b, context('c') as c: print(\"inside with statement: %s\" % ((a, b, c), )) ` 运行以上代码，则会有如下输出: `entring a entring b entring c inside with statement: ('a', 'b', 'c') exiting c exiting b exiting a ` ### 自动关闭的上下文管理器 (closing context) `contextlib.closing`等价与如下代码: `import contextlib @contextlib.contextmanager def closing(thing): try: yield thing finally: thing.close() ` ### 简单例子 `import contextlib class Door(): def close(self): print(\"Door closing\") def do_something(self): print(\"doing something\") try: with contextlib.closing(Door()) as door: door.do_something() raise ValueError(\"Exception raising\") except ValueError as e: print(e) ` 运行以上代码，则会有如下输出: `doing something Door closing Exception raising ` ### 替代的例子 `import contextlib @contextlib.contextmanager def closing(thing): try: yield thing finally: thing.close() class Door(): def close(self): print(\"Door closing\") def do_something(self): print(\"doing something\") try: with closing(Door()) as door: door.do_something() raise ValueError(\"Exception raising\") except ValueError as e: print(e) ` 运行以上代码，则会有如下输出: `doing something Door closing Exception raising ` ### 实际的例子 `from contextlib import closing import urllib fair_license_url = 'http://www.samurajdata.se/opensource/mirror/licenses/fair.txt' with closing(urllib.urlopen(fair_license_url)) as page: for line in page: print(line) ` 运行以上代码，则会有如下输出: `Fair License \u0026lt;Copyright Information\u0026gt; Usage of the works is permitted provided that this instrument is retained with the works, so that any entity that uses the works is notified of this instrument. DISCLAIMER: THE WORKS ARE WITHOUT WARRANTY. [2004, Fair License: rhid.com/fair] 参考 Python官方contexlib库文档 ",
   "wordCount" : "645",
   "inLanguage": "zh",
   "datePublished": "2017-08-13T13:18:22Z",
@@ -228,11 +233,11 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       Python context manager 上下文管理器
     </h1>
-    <div class="post-meta"><span title='2017-08-13 13:18:22 +0000 UTC'>August 13, 2017</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2017-08-13 13:18:22 +0000 UTC'>八月 13, 2017</span>&nbsp;·&nbsp;4 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -262,23 +267,19 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p><strong>TL;DR</strong> 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能</p>
-
 <h1 id="什么是上下文管理器">什么是上下文管理器<a hidden class="anchor" aria-hidden="true" href="#什么是上下文管理器">#</a></h1>
-
 <p>上下文管理器 <code>context manager</code> 能够控制程序执行的上下文,比如控制文件的关闭,抑制异常,捕获异常,修改上下文变量等</p>
-
 <h2 id="调用过程">调用过程<a hidden class="anchor" aria-hidden="true" href="#调用过程">#</a></h2>
-
 <h3 id="简单例子">简单例子<a hidden class="anchor" aria-hidden="true" href="#简单例子">#</a></h3>
 <pre><code>class Context(object):
     def __enter__(self):
-        print(&#34;__enter__ invoked&#34;)
+        print(&quot;__enter__ invoked&quot;)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&#34;__exit__ invoked&#34;)
+        print(&quot;__exit__ invoked&quot;)
 
 with Context():
-    print(&#34;with block&#34;)
+    print(&quot;with block&quot;)
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -298,7 +299,7 @@ __exit__ invoked
         print(self.msg)
 
     def when_exit(self):
-        print(&#34;instance exited!&#34;)
+        print(&quot;instance exited!&quot;)
 
 class Context(object):
     def __init__(self, msg):
@@ -307,17 +308,17 @@ class Context(object):
         super(Context, self).__init__()
 
     def __enter__(self):
-        print(&#34;__enter__ invoked&#34;)
+        print(&quot;__enter__ invoked&quot;)
         self.instance = ContextInstance(self.msg)
         return self.instance
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&#34;__exit__ invoked&#34;)
+        print(&quot;__exit__ invoked&quot;)
         self.instance.when_exit()
 
-with Context(&#34;Message&#34;) as ctx:
+with Context(&quot;Message&quot;) as ctx:
     ctx.say()
-    print(&#34;within block&#34;)
+    print(&quot;within block&quot;)
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -338,12 +339,12 @@ instance exited!
         super(ContextManager, self).__init__()
 
     def __enter__(self):
-        print(&#34;__enter__ invoked&#34;)
+        print(&quot;__enter__ invoked&quot;)
         self.instance = ContextInstance(self.msg)
         return self.instance
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&#34;__exit__ invoked&#34;)
+        print(&quot;__exit__ invoked&quot;)
         self.instance.when_exit()
 
 class ContextInstance(object):
@@ -355,11 +356,11 @@ class ContextInstance(object):
         print(self.msg)
 
     def when_exit(self):
-        print(&#34;instance existed!&#34;)
+        print(&quot;instance existed!&quot;)
 
-with ContextManager(&#34;Message&#34;) as ctx:
+with ContextManager(&quot;Message&quot;) as ctx:
     ctx.say()
-    print(&#34;with block&#34;)
+    print(&quot;with block&quot;)
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -375,8 +376,8 @@ instance existed!
 
 ### 控制文件关闭
 
-&lt;pre&gt;`with open(&#34;/tmp/context_manager.txt&#34;, &#39;wt&#39;) as f:
-    f.write(&#34;contexts go here&#34;)
+&lt;pre&gt;`with open(&quot;/tmp/context_manager.txt&quot;, 'wt') as f:
+    f.write(&quot;contexts go here&quot;)
 `&lt;/pre&gt;
 
 ### 抑制异常
@@ -390,10 +391,10 @@ instance existed!
         return True
 
 with Context():
-    print(&#34;start&#34;)
-    raise ValueError(&#34;E!&#34;)
-    print(&#34;end&#34;)
-print(&#34;next&#34;)
+    print(&quot;start&quot;)
+    raise ValueError(&quot;E!&quot;)
+    print(&quot;end&quot;)
+print(&quot;next&quot;)
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -418,19 +419,19 @@ class Context(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         env_context.pop()
 
-print(&#34;before with&#34;, len(env_context))
+print(&quot;before with&quot;, len(env_context))
 
 with Context():
-    print(&#34;in with&#34;, len(env_context))
+    print(&quot;in with&quot;, len(env_context))
 
-print(&#34;after with&#34;, len(env_context))
+print(&quot;after with&quot;, len(env_context))
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
 
-&lt;pre&gt;`(&#39;before with&#39;, 0)
-(&#39;in with&#39;, 1)
-(&#39;after with&#39;, 0)
+&lt;pre&gt;`('before with', 0)
+('in with', 1)
+('after with', 0)
 `&lt;/pre&gt;
 
 ## contextlib 库
@@ -445,14 +446,14 @@ contextlib是Python官方包，使用contenxtlib可以很方便的构建上下�
 
 @contextlib.contextmanager
 def context():
-    print(&#34;before yeild&#34;)
+    print(&quot;before yeild&quot;)
     yield []
-    print(&#34;after yeild&#34;)
+    print(&quot;after yeild&quot;)
 
 with context() as value:
-    print(&#34;before value&#34;)
+    print(&quot;before value&quot;)
     print(value)
-    print(&#34;after value&#34;)
+    print(&quot;after value&quot;)
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -470,19 +471,19 @@ after yeild
 
 @contextlib.contextmanager
 def context():
-    print(&#34;before yeild&#34;)
+    print(&quot;before yeild&quot;)
     try:
         yield
     except ValueError as e:
         print(e)
 
-    print(&#34;after yeild&#34;)
+    print(&quot;after yeild&quot;)
 
 with context():
-    raise ValueError(&#34;NO&#34;)
-    print(&#34;after exception&#34;)
+    raise ValueError(&quot;NO&quot;)
+    print(&quot;after exception&quot;)
 
-print(&#34;after with&#34;)
+print(&quot;after with&quot;)
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -499,12 +500,12 @@ after with
 
 @contextlib.contextmanager
 def context(name):
-    print(&#34;entring %s&#34; % name)
+    print(&quot;entring %s&quot; % name)
     yield name
-    print(&#34;exiting %s&#34; % name)
+    print(&quot;exiting %s&quot; % name)
 
-with contextlib.nested(context(&#39;a&#39;), context(&#39;b&#39;), context(&#39;c&#39;)) as (a, b, c):
-    print(&#34;inside with statement: %s&#34; % ((a, b, c), ))
+with contextlib.nested(context('a'), context('b'), context('c')) as (a, b, c):
+    print(&quot;inside with statement: %s&quot; % ((a, b, c), ))
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -512,13 +513,13 @@ with contextlib.nested(context(&#39;a&#39;), context(&#39;b&#39;), context(&#39;
 &lt;pre&gt;`entring a
 entring b
 entring c
-inside with statement: (&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)
+inside with statement: ('a', 'b', 'c')
 exiting c
 exiting b
 exiting a
 
 /usr/local/lib/python2.7/dist-packages/ipykernel_launcher.py:9: DeprecationWarning: With-statements now directly support multiple context managers
-  if __name__ == &#39;__main__&#39;:
+  if __name__ == '__main__':
 `&lt;/pre&gt;
 
 观察输出，你会发现，嵌套的上下文管理器工作起来像是先入后出的栈一样：最先进入的管理器最后退出，最后进入的管理器最先退出。
@@ -531,12 +532,12 @@ exiting a
 
 @contextlib.contextmanager
 def context(name):
-    print(&#34;entring %s&#34; % name)
+    print(&quot;entring %s&quot; % name)
     yield name
-    print(&#34;exiting %s&#34; % name)
+    print(&quot;exiting %s&quot; % name)
 
-with context(&#39;a&#39;) as a, context(&#39;b&#39;) as b, context(&#39;c&#39;) as c:
-    print(&#34;inside with statement: %s&#34; % ((a, b, c), ))
+with context('a') as a, context('b') as b, context('c') as c:
+    print(&quot;inside with statement: %s&quot; % ((a, b, c), ))
 `&lt;/pre&gt;
 
 运行以上代码，则会有如下输出:
@@ -544,7 +545,7 @@ with context(&#39;a&#39;) as a, context(&#39;b&#39;) as b, context(&#39;c&#39;) 
 &lt;pre&gt;`entring a
 entring b
 entring c
-inside with statement: (&#39;a&#39;, &#39;b&#39;, &#39;c&#39;)
+inside with statement: ('a', 'b', 'c')
 exiting c
 exiting b
 exiting a
@@ -570,14 +571,14 @@ def closing(thing):
 
 class Door():
     def close(self):
-        print(&#34;Door closing&#34;)
+        print(&quot;Door closing&quot;)
     def do_something(self):
-        print(&#34;doing something&#34;)
+        print(&quot;doing something&quot;)
 
 try:
     with contextlib.closing(Door()) as door:
         door.do_something()
-        raise ValueError(&#34;Exception raising&#34;)
+        raise ValueError(&quot;Exception raising&quot;)
 except ValueError as e:
     print(e)
 `&lt;/pre&gt;
@@ -602,14 +603,14 @@ def closing(thing):
 
 class Door():
     def close(self):
-        print(&#34;Door closing&#34;)
+        print(&quot;Door closing&quot;)
     def do_something(self):
-        print(&#34;doing something&#34;)
+        print(&quot;doing something&quot;)
 
 try:
     with closing(Door()) as door:
         door.do_something()
-        raise ValueError(&#34;Exception raising&#34;)
+        raise ValueError(&quot;Exception raising&quot;)
 except ValueError as e:
     print(e)
 `&lt;/pre&gt;
@@ -626,7 +627,7 @@ Exception raising
 &lt;pre&gt;`from contextlib import closing
 import urllib
 
-fair_license_url = &#39;http://www.samurajdata.se/opensource/mirror/licenses/fair.txt&#39;
+fair_license_url = 'http://www.samurajdata.se/opensource/mirror/licenses/fair.txt'
 
 with closing(urllib.urlopen(fair_license_url)) as page:
     for line in page:
@@ -647,11 +648,11 @@ that uses the works is notified of this instrument.
 
 DISCLAIMER: THE WORKS ARE WITHOUT WARRANTY.
 
-[2004, Fair License: rhid.com/fair]</code></pre>
+[2004, Fair License: rhid.com/fair]
+</code></pre>
 <h2 id="参考">参考<a hidden class="anchor" aria-hidden="true" href="#参考">#</a></h2>
-
 <ol>
-<li><a href="https://docs.python.org/2/library/contextlib.html" target="_blank">Python官方contexlib库文档</a></li>
+<li><a href="https://docs.python.org/2/library/contextlib.html">Python官方contexlib库文档</a></li>
 </ol>
 
   </div>

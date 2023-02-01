@@ -10,7 +10,7 @@
 <meta name="description" content="将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/implementing-a-dag-based-chinese-tokenizer/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="构建中文分词器 - 有向无环图法" />
+</script><meta property="og:title" content="构建中文分词器 - 有向无环图法" />
 <meta property="og:description" content="将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/implementing-a-dag-based-chinese-tokenizer/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -124,7 +129,7 @@ if (!doNotTrack) {
   "keywords": [
     
   ],
-  "articleBody": "将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。\n解释 所需的语料是一个包含词语频率的字典。查找所有可能的分词结果可以通过查找字典中的词是否在一个字符串的开始位置来完成。\n构建成有向无环图后，我们找出所有路径中联合概率（朴素观点为：各个\u0008词语概率相乘）最大的路径。但一般情况下图理论和图相关的库都是用来求解最短路径（所有路径中权重之和最小的路径），因此这里做数学上的变换，能够按照最小路径求解的方式，找到联合概率最大的路径。\u0008具体变动如下:\n使用 log 函数将求解相乘问题转换成相加问题 log(a * b) = log(a) + log(b) 使用倒数函数将求解最大问题变成求解最小问题 a  b then 1/a  示例 以 我们在野生动物园玩 为例，假设我们的词典里只包含如下词汇\n   词汇 频数 概率 概率的倒数 log(概率的倒数)     我们 30 0.30 3.3 1.19   在 40 0.40 2.5 3.69   在野 2 0.02 50 3.91   野生动物园 8 0.08 12.5 2.53   物 1 0.01 100 4.61   园 1 0.01 100 4.61   玩 18 0.18 5.6 1.72    NOTE : log 函数在这里是以自然对数 e 为低的\u0008，等同于函数 ln\n从 我们在野生动物园玩 开始，扫描词汇表，找到匹配的前缀词汇。\n 第一轮找到词汇 我们，剩余未分词\u0008\u0008字符串为 在野生动物园玩 第二轮找到词汇 在 和 在野，剩余未分词字符串为 野生动物园玩 和 生动物园玩 第三轮则对上面两个未分词字符串，应用相同的规则分词，得到词汇 野生动物园 和 生动 如此重复直到所有的未分词字符串为空。  经过上述步骤，我们得到两种分词可能\n 我们 / 在 / 野生动物园 / 玩 我们 / 在野 / 生动 / 物 / 园 / 玩  添加开始节点  和 结束节点  后，我们可以构建一个 有向无环图, 节点之间的边的权重为上一个节点对应的 log(概率的倒数)。\n则得到类似如下的有向无环图：\n通过求解最小路径的方法可以得到最短路径为 我们 / 在 / 野生动物园 / 玩\n局限 因为基于词典，因此不具备新词发现的能力，同时也很难处理歧义问题。\n",
+  "articleBody": "将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。\n解释 所需的语料是一个包含词语频率的字典。查找所有可能的分词结果可以通过查找字典中的词是否在一个字符串的开始位置来完成。\n构建成有向无环图后，我们找出所有路径中联合概率（朴素观点为：各个\u0008词语概率相乘）最大的路径。但一般情况下图理论和图相关的库都是用来求解最短路径（所有路径中权重之和最小的路径），因此这里做数学上的变换，能够按照最小路径求解的方式，找到联合概率最大的路径。\u0008具体变动如下:\n使用 log 函数将求解相乘问题转换成相加问题 log(a * b) = log(a) + log(b) 使用倒数函数将求解最大问题变成求解最小问题 a \u003e b then 1/a \u003c 1/b 示例 以 我们在野生动物园玩 为例，假设我们的词典里只包含如下词汇\n词汇 频数 概率 概率的倒数 log(概率的倒数) 我们 30 0.30 3.3 1.19 在 40 0.40 2.5 3.69 在野 2 0.02 50 3.91 野生动物园 8 0.08 12.5 2.53 物 1 0.01 100 4.61 园 1 0.01 100 4.61 玩 18 0.18 5.6 1.72 NOTE : log 函数在这里是以自然对数 e 为低的\u0008，等同于函数 ln\n从 我们在野生动物园玩 开始，扫描词汇表，找到匹配的前缀词汇。\n第一轮找到词汇 我们，剩余未分词\u0008\u0008字符串为 在野生动物园玩 第二轮找到词汇 在 和 在野，剩余未分词字符串为 野生动物园玩 和 生动物园玩 第三轮则对上面两个未分词字符串，应用相同的规则分词，得到词汇 野生动物园 和 生动 如此重复直到所有的未分词字符串为空。 经过上述步骤，我们得到两种分词可能\n我们 / 在 / 野生动物园 / 玩 我们 / 在野 / 生动 / 物 / 园 / 玩 添加开始节点 和 结束节点 后，我们可以构建一个 有向无环图, 节点之间的边的权重为上一个节点对应的 log(概率的倒数)。\n则得到类似如下的有向无环图：\n通过求解最小路径的方法可以得到最短路径为 我们 / 在 / 野生动物园 / 玩\n局限 因为基于词典，因此不具备新词发现的能力，同时也很难处理歧义问题。\n",
   "wordCount" : "130",
   "inLanguage": "zh",
   "datePublished": "0001-01-01T00:00:00Z",
@@ -228,7 +233,7 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       构建中文分词器 - 有向无环图法
     </h1>
@@ -261,23 +266,17 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p>将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。</p>
-
 <h1 id="解释">解释<a hidden class="anchor" aria-hidden="true" href="#解释">#</a></h1>
-
 <p>所需的语料是一个包含词语频率的字典。查找所有可能的分词结果可以通过查找字典中的词是否在一个字符串的开始位置来完成。</p>
-
 <p>构建成有向无环图后，我们找出所有路径中联合概率（朴素观点为：各个词语概率相乘）最大的路径。但一般情况下图理论和图相关的库都是用来求解最短路径（所有路径中权重之和最小的路径），因此这里做数学上的变换，能够按照最小路径求解的方式，找到联合概率最大的路径。具体变动如下:</p>
-
 <h2 id="使用-log-函数将求解相乘问题转换成相加问题">使用 log 函数将求解相乘问题转换成相加问题<a hidden class="anchor" aria-hidden="true" href="#使用-log-函数将求解相乘问题转换成相加问题">#</a></h2>
-<pre><code class="language-math" data-lang="math">log(a * b) = log(a) + log(b)</code></pre>
-<h2 id="使用倒数函数将求解最大问题变成求解最小问题">使用倒数函数将求解最大问题变成求解最小问题<a hidden class="anchor" aria-hidden="true" href="#使用倒数函数将求解最大问题变成求解最小问题">#</a></h2>
-<pre><code class="language-math" data-lang="math">a &gt; b
+<pre tabindex="0"><code class="language-math" data-lang="math">log(a * b) = log(a) + log(b)
+</code></pre><h2 id="使用倒数函数将求解最大问题变成求解最小问题">使用倒数函数将求解最大问题变成求解最小问题<a hidden class="anchor" aria-hidden="true" href="#使用倒数函数将求解最大问题变成求解最小问题">#</a></h2>
+<pre tabindex="0"><code class="language-math" data-lang="math">a &gt; b
 then
-1/a &lt; 1/b</code></pre>
-<h1 id="示例">示例<a hidden class="anchor" aria-hidden="true" href="#示例">#</a></h1>
-
+1/a &lt; 1/b
+</code></pre><h1 id="示例">示例<a hidden class="anchor" aria-hidden="true" href="#示例">#</a></h1>
 <p>以 <code>我们在野生动物园玩</code> 为例，假设我们的词典里只包含如下词汇</p>
-
 <table>
 <thead>
 <tr>
@@ -288,7 +287,6 @@ then
 <th>log(概率的倒数)</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>我们</td>
@@ -297,7 +295,6 @@ then
 <td>3.3</td>
 <td>1.19</td>
 </tr>
-
 <tr>
 <td>在</td>
 <td>40</td>
@@ -305,7 +302,6 @@ then
 <td>2.5</td>
 <td>3.69</td>
 </tr>
-
 <tr>
 <td>在野</td>
 <td>2</td>
@@ -313,7 +309,6 @@ then
 <td>50</td>
 <td>3.91</td>
 </tr>
-
 <tr>
 <td>野生动物园</td>
 <td>8</td>
@@ -321,7 +316,6 @@ then
 <td>12.5</td>
 <td>2.53</td>
 </tr>
-
 <tr>
 <td>物</td>
 <td>1</td>
@@ -329,7 +323,6 @@ then
 <td>100</td>
 <td>4.61</td>
 </tr>
-
 <tr>
 <td>园</td>
 <td>1</td>
@@ -337,7 +330,6 @@ then
 <td>100</td>
 <td>4.61</td>
 </tr>
-
 <tr>
 <td>玩</td>
 <td>18</td>
@@ -347,35 +339,25 @@ then
 </tr>
 </tbody>
 </table>
-
 <p><em>NOTE</em> : <code>log</code> 函数在这里是以自然对数 <code>e</code> 为低的，等同于函数 <code>ln</code></p>
-
 <p>从 <code>我们在野生动物园玩</code> 开始，扫描词汇表，找到匹配的前缀词汇。</p>
-
 <ol>
 <li>第一轮找到词汇 <code>我们</code>，剩余未分词字符串为 <code>在野生动物园玩</code></li>
 <li>第二轮找到词汇 <code>在</code> 和 <code>在野</code>，剩余未分词字符串为 <code>野生动物园玩</code> 和 <code>生动物园玩</code></li>
 <li>第三轮则对上面两个未分词字符串，应用相同的规则分词，得到词汇 <code>野生动物园</code> 和 <code>生动</code></li>
 <li>如此重复直到所有的未分词字符串为空。</li>
 </ol>
-
 <p>经过上述步骤，我们得到两种分词可能</p>
-
 <ol>
 <li><code>我们</code> / <code>在</code> / <code>野生动物园</code> / <code>玩</code></li>
 <li><code>我们</code> / <code>在野</code> / <code>生动</code> / <code>物</code> / <code>园</code> / <code>玩</code></li>
 </ol>
-
 <p>添加开始节点 <code>&lt;start&gt;</code> 和 结束节点 <code>&lt;end&gt;</code> 后，我们可以构建一个 <code>有向无环图</code>, 节点之间的边的权重为上一个节点对应的 <code>log(概率的倒数)</code>。</p>
-
 <p>则得到类似如下的有向无环图：</p>
-
-<p><img src="./DAG.png" alt="DAG" /></p>
-
+<p><img loading="lazy" src="./DAG.png" alt="DAG"  />
+</p>
 <p>通过求解最小路径的方法可以得到最短路径为 <code>我们</code> / <code>在</code> / <code>野生动物园</code> / <code>玩</code></p>
-
 <h1 id="局限">局限<a hidden class="anchor" aria-hidden="true" href="#局限">#</a></h1>
-
 <p>因为基于词典，因此不具备新词发现的能力，同时也很难处理歧义问题。</p>
 
   </div>

@@ -17,7 +17,8 @@
       
       <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</guid>
       <description>&lt;p&gt;在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
-&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34; /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
+&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>

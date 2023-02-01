@@ -10,7 +10,7 @@
 <meta name="description" content="TL;DR using relative path as metadata_path to projector will cause TensorBoard cannot find metadata. The correct way is use FQPN (fully-qualified path name, aka absolute path)">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -82,12 +82,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="Solution for TensorBoard embedding blocked when loading metadata" />
+</script><meta property="og:title" content="Solution for TensorBoard embedding blocked when loading metadata" />
 <meta property="og:description" content="TL;DR using relative path as metadata_path to projector will cause TensorBoard cannot find metadata. The correct way is use FQPN (fully-qualified path name, aka absolute path)" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -105,7 +104,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -229,7 +234,7 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/">Home</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/">Home</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/posts/">Posts</a></div>
     <h1 class="post-title">
       Solution for TensorBoard embedding blocked when loading metadata
     </h1>
@@ -257,37 +262,33 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p><strong>TL;DR</strong> using relative path as <code>metadata_path</code> to <code>projector</code> will cause TensorBoard cannot find metadata. The correct way is use FQPN (fully-qualified path name, aka absolute path)</p>
-
 <h2 id="how-it-happened">How it happened<a hidden class="anchor" aria-hidden="true" href="#how-it-happened">#</a></h2>
-
-<p>Follow code copied from TensorFlow official website <a href="https://www.tensorflow.org/versions/r1.3/programmers_guide/embedding" target="_blank">https://www.tensorflow.org/versions/r1.3/programmers_guide/embedding</a>, which is also the official approach to use TensorFlow&rsquo;s embedding projector. This is also most people actually do in their code.</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python">    <span class="kn">from</span> <span class="nn">tensorflow.contrib.tensorboard.plugins</span> <span class="kn">import</span> <span class="n">projector</span>
-
-    <span class="c1"># Create randomly initialized embedding weights which will be trained.</span>
-    <span class="n">vocabulary_size</span> <span class="o">=</span> <span class="mi">10000</span>
-    <span class="n">embedding_size</span> <span class="o">=</span> <span class="mi">200</span>
-    <span class="n">embedding_var</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;word_embedding&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">vocabulary_size</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">])</span>
-
-    <span class="c1"># Format: tensorflow/tensorboard/plugins/projector/projector_config.proto</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="n">projector</span><span class="o">.</span><span class="n">ProjectorConfig</span><span class="p">()</span>
-
-    <span class="c1"># You can add multiple embeddings. Here we add only one.</span>
-    <span class="n">embedding</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
-    <span class="n">embedding</span><span class="o">.</span><span class="n">tensor_name</span> <span class="o">=</span> <span class="n">embedding_var</span><span class="o">.</span><span class="n">name</span>
-    <span class="c1"># Link this tensor to its metadata file (e.g. labels).</span>
-    <span class="n">embedding</span><span class="o">.</span><span class="n">metadata_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOG_DIR</span><span class="p">,</span> <span class="s1">&#39;metadata.tsv&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Use the same LOG_DIR where you stored your checkpoint.</span>
-    <span class="n">summary_writer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">FileWriter</span><span class="p">(</span><span class="n">LOG_DIR</span><span class="p">)</span>
-
-    <span class="c1"># The next line writes a projector_config.pbtxt in the LOG_DIR. TensorBoard will</span>
-    <span class="c1"># read this file during startup.</span>
-    <span class="n">projector</span><span class="o">.</span><span class="n">visualize_embeddings</span><span class="p">(</span><span class="n">summary_writer</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span></code></pre></div>
-<p>Above code binding tensor <code>embedding_var</code> to it&rsquo;s metadata file location by <code>metadata_path</code>, then the config information will write to disk by <code>summary_writer</code>.</p>
-
+<p>Follow code copied from TensorFlow official website <a href="https://www.tensorflow.org/versions/r1.3/programmers_guide/embedding">https://www.tensorflow.org/versions/r1.3/programmers_guide/embedding</a>, which is also the official approach to use TensorFlow&rsquo;s embedding projector. This is also most people actually do in their code.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl">    <span class="kn">from</span> <span class="nn">tensorflow.contrib.tensorboard.plugins</span> <span class="kn">import</span> <span class="n">projector</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Create randomly initialized embedding weights which will be trained.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">vocabulary_size</span> <span class="o">=</span> <span class="mi">10000</span>
+</span></span><span class="line"><span class="cl">    <span class="n">embedding_size</span> <span class="o">=</span> <span class="mi">200</span>
+</span></span><span class="line"><span class="cl">    <span class="n">embedding_var</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">get_variable</span><span class="p">(</span><span class="s1">&#39;word_embedding&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">vocabulary_size</span><span class="p">,</span> <span class="n">embedding_size</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Format: tensorflow/tensorboard/plugins/projector/projector_config.proto</span>
+</span></span><span class="line"><span class="cl">    <span class="n">config</span> <span class="o">=</span> <span class="n">projector</span><span class="o">.</span><span class="n">ProjectorConfig</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># You can add multiple embeddings. Here we add only one.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">embedding</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">embeddings</span><span class="o">.</span><span class="n">add</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">embedding</span><span class="o">.</span><span class="n">tensor_name</span> <span class="o">=</span> <span class="n">embedding_var</span><span class="o">.</span><span class="n">name</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Link this tensor to its metadata file (e.g. labels).</span>
+</span></span><span class="line"><span class="cl">    <span class="n">embedding</span><span class="o">.</span><span class="n">metadata_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">LOG_DIR</span><span class="p">,</span> <span class="s1">&#39;metadata.tsv&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Use the same LOG_DIR where you stored your checkpoint.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">summary_writer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">FileWriter</span><span class="p">(</span><span class="n">LOG_DIR</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># The next line writes a projector_config.pbtxt in the LOG_DIR. TensorBoard will</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># read this file during startup.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">projector</span><span class="o">.</span><span class="n">visualize_embeddings</span><span class="p">(</span><span class="n">summary_writer</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+</span></span></code></pre></div><p>Above code binding tensor <code>embedding_var</code> to it&rsquo;s metadata file location by <code>metadata_path</code>, then the config information will write to disk by <code>summary_writer</code>.</p>
 <p>The problem is the path of metadata file assign to <code>embedding.metadata_path</code> is relative path. If current path is log directory (i.e: <code>LOG_DIR</code> in source code), program can find the metadata file. But people usually don&rsquo;t start TensorBoard in log directory, most people like me usually use <code>TensorBoard --logdir ./log</code> to start TensorBoard, in such condition, TensorBoard read the config and get the location of metadata file, but TensorBoard can not find the file by this location info, this is because location is correct only if your current work path is log directory, which most likely not true. Then TensorBoard cannot find the metadata file, loading process will never be done.</p>
-
-<p><strong>PS</strong> Someone also notice this issue and give same <a href="https://stackoverflow.com/a/45462663" target="_blank">solution</a></p>
+<p><strong>PS</strong> Someone also notice this issue and give same <a href="https://stackoverflow.com/a/45462663">solution</a></p>
 
   </div>
 

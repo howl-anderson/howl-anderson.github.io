@@ -10,7 +10,7 @@
 <meta name="description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="使用 Rasa 构建天气查询机器人" />
+</script><meta property="og:title" content="使用 Rasa 构建天气查询机器人" />
 <meta property="og:description" content="本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -124,8 +129,8 @@ if (!doNotTrack) {
   "keywords": [
     "Rasa", "Rasa NLU", "Rasa Core"
   ],
-  "articleBody": "本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。\n源代码地址 https://github.com/howl-anderson/WeatherBot\n功能 这个机器人可以根据你提供的城市（北京、上海等）和日期（明天、后天等），查询出相应的天气预报。\n功能截图 特性 使用 Frame-based 对话管理方案，如果上述两个 Slot (既城市和天气)，有任意一个用户未提供，对话管理系统会负责让你澄清相关 Slot 的值。\n能力范围  受限于天气数据提供方的能力，这个机器人只能查询 中国大陆地区市级城市 三天以内 （今天，明天，后天） 的气象数据，不能查询过去（昨天，前天）等历史数据。 受限于开发时间，这个机器人 不提供 诸如 这个星期五、下个星期一 这种需要计算才能得到日期给定方式。也 不能提供 诸如 绝对日期：三月一号、六一儿童节日 这种日期的查询能力。 因为使用的是免费的天气查询接口，所以 会有配额限制，可能会因为 超出调用次数 ，而在一个小时内不能用。同时网络查询接口可能存在不稳定因素，导致 没有结果返回或者出现异常，尝试多次重新发送请求可解决问题。  在线演示 Demo for 天气预报查询机器人\nRasa NLU Rasa NLU 提供了提取用户意图和词槽的功能。具体原理和使用等不在这里详述，请访问文章 TODO。 这里我们使用的 Rasa NLU 的 pipeline 配置（在项目文件 nlu_model_config.yaml 中）如下:\nlanguage:\"zh\"pipeline:- name:\"nlp_mitie\"model:\"data/total_word_feature_extractor.dat\"- name:\"tokenizer_jieba\"- name:\"ner_mitie\"- name:\"ner_synonyms\"- name:\"intent_featurizer_mitie\"- name:\"intent_classifier_sklearn\" 所用的训练数据 （在项目文件 nlu.json 中）如下（内容过长，已做截断）：\n{\"rasa_nlu_data\": {\"common_examples\": [{\"intent\": \"weather_address_date-time\",\"entities\": [{\"start\": 2,\"end\": 4,\"value\": \"上海\",\"entity\": \"address\"},{\"start\": 4,\"end\": 6,\"value\": \"明天\",\"entity\": \"date-time\"}],\"text\": \"我要上海明天的天气\"},{\"intent\": \"weather_address_date-time\",\"entities\": [{\"start\": 0,\"end\": 2,\"value\": \"上海\",\"entity\": \"address\"},{\"start\": 2,\"end\": 4,\"value\": \"明天\",\"entity\": \"date-time\"}],\"text\": \"上海明天的天气\"},...}} 训练所用的命令为 (在项目文件 train_NLU.bash 中):\npython -m rasa_nlu.train -c nlu_model_config.yaml -d nlu.json --fixed_model_name current -o models Rasa Core Rasa Core 负责对话管理。具体原理和使用等不在这里详述，请访问文章 TODO。 Rasa core 需要提供一个 domain 文件，里面设定了整个对话机器人的小宇宙，它能知道的所有的意图、词槽和动作。\n本项目所用的 domain (在项目文件 domain.yml 中)，其内容为：\nintents: - greet - goodbye - weather_address_date-time - weather_address - weather_date-time slots: address: type: text date-time: type: text matches: type: unfeaturized entities: - address - date-time actions: - utter_greet - utter_ask_address - utter_ask_date-time - utter_working_on_it - bot.ActionReportWeather - utter_report_weather - utter_goodbye templates: utter_greet: - text: \"你好，请说出需要提供天气预测服务的地点和时间\" utter_working_on_it: - text: \"正在查询中，请稍后 ...\" utter_goodbye: - text: \"再见！\" utter_ask_address: - text: \"哪里呢？\" utter_ask_date-time: - text: \"什么时候？\" utter_report_weather: - text: \"{matches}\" utter_other: - text: \"系统不明白您说的话\" Rasa Core 还需要通过 故事(story) 的形式让框架学习正确的对话管理样本，格式为 Markdown 格式。本项目中的 Story （在项目文件 stories.md 中）定义如下（内容过长，已做截断）：\n## simple path with greet * greet - utter_greet * weather_address_date-time{\"address\": \"上海\", \"date-time\": \"明天\"} - utter_working_on_it - action_report_weather - utter_report_weather ## simple path * weather_address_date-time{\"address\": \"上海\", \"date-time\": \"明天\"} - utter_working_on_it - action_report_weather - utter_report_weather ## address + date-time path with greet * greet - utter_greet * weather_address{\"address\": \"上海\"} - utter_ask_date-time * weather_date-time{\"date-time\": \"明天\"} - utter_working_on_it - action_report_weather - utter_report_weather ... 训练所用的命令为 (在项目文件 train_CORE.bash 中):\npython -m rasa_core.train -s stories.md -d domain.yml -o models/dialogue --epochs 500 依赖 python 版本 python 3\npython 依赖 pip install -r requirements.txt 下载数据和模型  data/total_word_feature_extractor.dat: 从 https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus 下载，解压缩后放置到对应位置 models/default/current：通过运行 train_NLU.bash 生成 models/dialogue：通过运行 train_CORE.bash 生成  功能入口 申请 API key 本项目目前使用 心知天气 提供天气数据，该平台为个人提供免费的 API，但任然需要用户注册并申请 API key 才能使用。用户注册后可以自行找到 我的API密钥。\n启动服务 将如下的 xxx 替换成你的 API key，然后执行即可\nSENIVERSE_KEY=xxx python ./webchat.py 启动成功后，请用浏览器访问 http://localhost:5500 , 你将得到 web 页面，have fun!\n",
-  "wordCount" : "335",
+  "articleBody": "本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。\n源代码地址 https://github.com/howl-anderson/WeatherBot\n功能 这个机器人可以根据你提供的城市（北京、上海等）和日期（明天、后天等），查询出相应的天气预报。\n功能截图 特性 使用 Frame-based 对话管理方案，如果上述两个 Slot (既城市和天气)，有任意一个用户未提供，对话管理系统会负责让你澄清相关 Slot 的值。\n能力范围 受限于天气数据提供方的能力，这个机器人只能查询 中国大陆地区市级城市 三天以内 （今天，明天，后天） 的气象数据，不能查询过去（昨天，前天）等历史数据。 受限于开发时间，这个机器人 不提供 诸如 这个星期五、下个星期一 这种需要计算才能得到日期给定方式。也 不能提供 诸如 绝对日期：三月一号、六一儿童节日 这种日期的查询能力。 因为使用的是免费的天气查询接口，所以 会有配额限制，可能会因为 超出调用次数 ，而在一个小时内不能用。同时网络查询接口可能存在不稳定因素，导致 没有结果返回或者出现异常，尝试多次重新发送请求可解决问题。 在线演示 Demo for 天气预报查询机器人\nRasa NLU Rasa NLU 提供了提取用户意图和词槽的功能。具体原理和使用等不在这里详述，请访问文章 TODO。 这里我们使用的 Rasa NLU 的 pipeline 配置（在项目文件 nlu_model_config.yaml 中）如下:\nlanguage: \"zh\" pipeline: - name: \"nlp_mitie\" model: \"data/total_word_feature_extractor.dat\" - name: \"tokenizer_jieba\" - name: \"ner_mitie\" - name: \"ner_synonyms\" - name: \"intent_featurizer_mitie\" - name: \"intent_classifier_sklearn\" 所用的训练数据 （在项目文件 nlu.json 中）如下（内容过长，已做截断）：\n{ \"rasa_nlu_data\": { \"common_examples\": [ { \"intent\": \"weather_address_date-time\", \"entities\": [ { \"start\": 2, \"end\": 4, \"value\": \"上海\", \"entity\": \"address\" }, { \"start\": 4, \"end\": 6, \"value\": \"明天\", \"entity\": \"date-time\" } ], \"text\": \"我要上海明天的天气\" }, { \"intent\": \"weather_address_date-time\", \"entities\": [ { \"start\": 0, \"end\": 2, \"value\": \"上海\", \"entity\": \"address\" }, { \"start\": 2, \"end\": 4, \"value\": \"明天\", \"entity\": \"date-time\" } ], \"text\": \"上海明天的天气\" }, ... } } 训练所用的命令为 (在项目文件 train_NLU.bash 中):\npython -m rasa_nlu.train -c nlu_model_config.yaml -d nlu.json --fixed_model_name current -o models Rasa Core Rasa Core 负责对话管理。具体原理和使用等不在这里详述，请访问文章 TODO。 Rasa core 需要提供一个 domain 文件，里面设定了整个对话机器人的小宇宙，它能知道的所有的意图、词槽和动作。\n本项目所用的 domain (在项目文件 domain.yml 中)，其内容为：\nintents: - greet - goodbye - weather_address_date-time - weather_address - weather_date-time slots: address: type: text date-time: type: text matches: type: unfeaturized entities: - address - date-time actions: - utter_greet - utter_ask_address - utter_ask_date-time - utter_working_on_it - bot.ActionReportWeather - utter_report_weather - utter_goodbye templates: utter_greet: - text: \"你好，请说出需要提供天气预测服务的地点和时间\" utter_working_on_it: - text: \"正在查询中，请稍后 ...\" utter_goodbye: - text: \"再见！\" utter_ask_address: - text: \"哪里呢？\" utter_ask_date-time: - text: \"什么时候？\" utter_report_weather: - text: \"{matches}\" utter_other: - text: \"系统不明白您说的话\" Rasa Core 还需要通过 故事(story) 的形式让框架学习正确的对话管理样本，格式为 Markdown 格式。本项目中的 Story （在项目文件 stories.md 中）定义如下（内容过长，已做截断）：\n## simple path with greet * greet - utter_greet * weather_address_date-time{\"address\": \"上海\", \"date-time\": \"明天\"} - utter_working_on_it - action_report_weather - utter_report_weather ## simple path * weather_address_date-time{\"address\": \"上海\", \"date-time\": \"明天\"} - utter_working_on_it - action_report_weather - utter_report_weather ## address + date-time path with greet * greet - utter_greet * weather_address{\"address\": \"上海\"} - utter_ask_date-time * weather_date-time{\"date-time\": \"明天\"} - utter_working_on_it - action_report_weather - utter_report_weather ... 训练所用的命令为 (在项目文件 train_CORE.bash 中):\npython -m rasa_core.train -s stories.md -d domain.yml -o models/dialogue --epochs 500 依赖 python 版本 python 3\npython 依赖 pip install -r requirements.txt 下载数据和模型 data/total_word_feature_extractor.dat: 从 https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus 下载，解压缩后放置到对应位置 models/default/current：通过运行 train_NLU.bash 生成 models/dialogue：通过运行 train_CORE.bash 生成 功能入口 申请 API key 本项目目前使用 心知天气 提供天气数据，该平台为个人提供免费的 API，但任然需要用户注册并申请 API key 才能使用。用户注册后可以自行找到 我的API密钥。\n启动服务 将如下的 xxx 替换成你的 API key，然后执行即可\nSENIVERSE_KEY=xxx python ./webchat.py 启动成功后，请用浏览器访问 http://localhost:5500 , 你将得到 web 页面，have fun!\n",
+  "wordCount" : "392",
   "inLanguage": "zh",
   "datePublished": "2018-09-09T11:08:04Z",
   "dateModified": "2018-09-09T11:08:04Z",
@@ -228,11 +233,11 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       使用 Rasa 构建天气查询机器人
     </h1>
-    <div class="post-meta"><span title='2018-09-09 11:08:04 +0000 UTC'>September 9, 2018</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2018-09-09 11:08:04 +0000 UTC'>九月 9, 2018</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -284,212 +289,187 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p>本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。</p>
-
 <h2 id="源代码地址">源代码地址<a hidden class="anchor" aria-hidden="true" href="#源代码地址">#</a></h2>
-
-<p><a href="https://github.com/howl-anderson/WeatherBot" target="_blank">https://github.com/howl-anderson/WeatherBot</a></p>
-
+<p><a href="https://github.com/howl-anderson/WeatherBot">https://github.com/howl-anderson/WeatherBot</a></p>
 <h2 id="功能">功能<a hidden class="anchor" aria-hidden="true" href="#功能">#</a></h2>
-
 <p>这个机器人可以根据你提供的城市（北京、上海等）和日期（明天、后天等），查询出相应的天气预报。</p>
-
 <h2 id="功能截图">功能截图<a hidden class="anchor" aria-hidden="true" href="#功能截图">#</a></h2>
-
-<p><img src="./weather_bot_query_interface.png" width="50%"></p>
-
+<img src="./weather_bot_query_interface.png" width="50%">
 <h2 id="特性">特性<a hidden class="anchor" aria-hidden="true" href="#特性">#</a></h2>
-
 <p>使用 Frame-based 对话管理方案，如果上述两个 Slot (既城市和天气)，有任意一个用户未提供，对话管理系统会负责让你澄清相关 Slot 的值。</p>
-
 <h2 id="能力范围">能力范围<a hidden class="anchor" aria-hidden="true" href="#能力范围">#</a></h2>
-
 <ul>
 <li>受限于天气数据提供方的能力，这个机器人只能查询 <strong>中国大陆地区市级城市</strong> 三天以内 <strong>（今天，明天，后天）</strong> 的气象数据，<strong>不能查询过去</strong>（昨天，前天）等历史数据。</li>
 <li>受限于开发时间，这个机器人 <strong>不提供</strong> 诸如 <strong>这个星期五、下个星期一</strong> 这种需要计算才能得到日期给定方式。也 <strong>不能提供</strong> 诸如 <strong>绝对日期：三月一号、六一儿童节日</strong> 这种日期的查询能力。</li>
 <li>因为使用的是免费的天气查询接口，所以 <strong>会有配额限制</strong>，可能会因为 <strong>超出调用次数</strong> ，而在一个小时内不能用。同时网络查询接口可能存在不稳定因素，导致 <strong>没有结果返回或者出现异常</strong>，<strong>尝试多次重新发送请求可解决问题</strong>。</li>
 </ul>
-
 <h2 id="在线演示">在线演示<a hidden class="anchor" aria-hidden="true" href="#在线演示">#</a></h2>
-
-<p><a href="http://weather_bot.xiaoquankong.ai/" target="_blank">Demo for 天气预报查询机器人</a></p>
-
+<p><a href="http://weather_bot.xiaoquankong.ai/">Demo for 天气预报查询机器人</a></p>
 <h2 id="rasa-nlu">Rasa NLU<a hidden class="anchor" aria-hidden="true" href="#rasa-nlu">#</a></h2>
-
 <p>Rasa NLU 提供了提取用户意图和词槽的功能。具体原理和使用等不在这里详述，请访问文章 <a href="#">TODO</a>。
-这里我们使用的 Rasa NLU 的 pipeline 配置（在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/nlu_model_config.yaml" target="_blank">nlu_model_config.yaml</a> 中）如下:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="k">language</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;zh&#34;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="k">pipeline</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;nlp_mitie&#34;</span><span class="w">
-</span><span class="w">  </span><span class="k">model</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;data/total_word_feature_extractor.dat&#34;</span><span class="w">
-</span><span class="w"></span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;tokenizer_jieba&#34;</span><span class="w">
-</span><span class="w"></span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;ner_mitie&#34;</span><span class="w">
-</span><span class="w"></span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;ner_synonyms&#34;</span><span class="w">
-</span><span class="w"></span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;intent_featurizer_mitie&#34;</span><span class="w">
-</span><span class="w"></span>- <span class="k">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;intent_classifier_sklearn&#34;</span></code></pre></div>
-<p>所用的训练数据 （在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/nlu.json" target="_blank">nlu.json</a> 中）如下（内容过长，已做截断）：</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">{<span class="w">
-</span><span class="w">  </span><span class="k">&#34;rasa_nlu_data&#34;: </span>{<span class="w">
-</span><span class="w">    </span><span class="k">&#34;common_examples&#34;: </span><span class="p">[</span><span class="w">
-</span><span class="w">      </span>{<span class="w">
-</span><span class="w">        </span><span class="k">&#34;intent&#34;: </span><span class="s2">&#34;weather_address_date-time&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">        </span><span class="k">&#34;entities&#34;: </span><span class="p">[</span><span class="w">
-</span><span class="w">          </span>{<span class="w">
-</span><span class="w">            </span><span class="k">&#34;start&#34;: </span><span class="m">2</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;end&#34;: </span><span class="m">4</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;value&#34;: </span><span class="s2">&#34;上海&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;entity&#34;: </span><span class="s2">&#34;address&#34;</span><span class="w">
-</span><span class="w">          </span>}<span class="p">,</span><span class="w">
-</span><span class="w">          </span>{<span class="w">
-</span><span class="w">            </span><span class="k">&#34;start&#34;: </span><span class="m">4</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;end&#34;: </span><span class="m">6</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;value&#34;: </span><span class="s2">&#34;明天&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;entity&#34;: </span><span class="s2">&#34;date-time&#34;</span><span class="w">
-</span><span class="w">          </span>}<span class="w">
-</span><span class="w">        </span><span class="p">],</span><span class="w">
-</span><span class="w">        </span><span class="k">&#34;text&#34;: </span><span class="s2">&#34;我要上海明天的天气&#34;</span><span class="w">
-</span><span class="w">      </span>}<span class="p">,</span><span class="w">
-</span><span class="w">      </span>{<span class="w">
-</span><span class="w">        </span><span class="k">&#34;intent&#34;: </span><span class="s2">&#34;weather_address_date-time&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">        </span><span class="k">&#34;entities&#34;: </span><span class="p">[</span><span class="w">
-</span><span class="w">          </span>{<span class="w">
-</span><span class="w">            </span><span class="k">&#34;start&#34;: </span><span class="m">0</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;end&#34;: </span><span class="m">2</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;value&#34;: </span><span class="s2">&#34;上海&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;entity&#34;: </span><span class="s2">&#34;address&#34;</span><span class="w">
-</span><span class="w">          </span>}<span class="p">,</span><span class="w">
-</span><span class="w">          </span>{<span class="w">
-</span><span class="w">            </span><span class="k">&#34;start&#34;: </span><span class="m">2</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;end&#34;: </span><span class="m">4</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;value&#34;: </span><span class="s2">&#34;明天&#34;</span><span class="p">,</span><span class="w">
-</span><span class="w">            </span><span class="k">&#34;entity&#34;: </span><span class="s2">&#34;date-time&#34;</span><span class="w">
-</span><span class="w">          </span>}<span class="w">
-</span><span class="w">        </span><span class="p">],</span><span class="w">
-</span><span class="w">        </span><span class="k">&#34;text&#34;: </span><span class="s2">&#34;上海明天的天气&#34;</span><span class="w">
-</span><span class="w">      </span>}<span class="p">,</span><span class="w">
-</span><span class="w">      </span>...<span class="w">
-</span><span class="w">  </span>}<span class="w">
-</span><span class="w"></span>}</code></pre></div>
-<p>训练所用的命令为 (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/train_NLU.bash" target="_blank">train_NLU.bash</a> 中):</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">python -m rasa_nlu.train -c nlu_model_config.yaml -d nlu.json --fixed_model_name current -o models</code></pre></div>
-<h2 id="rasa-core">Rasa Core<a hidden class="anchor" aria-hidden="true" href="#rasa-core">#</a></h2>
-
+这里我们使用的 Rasa NLU 的 pipeline 配置（在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/nlu_model_config.yaml">nlu_model_config.yaml</a> 中）如下:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">language</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;zh&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">pipeline</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;nlp_mitie&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;data/total_word_feature_extractor.dat&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;tokenizer_jieba&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;ner_mitie&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;ner_synonyms&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;intent_featurizer_mitie&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;intent_classifier_sklearn&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>所用的训练数据 （在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/nlu.json">nlu.json</a> 中）如下（内容过长，已做截断）：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl">{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">&#34;rasa_nlu_data&#34;: </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">&#34;common_examples&#34;: </span><span class="p">[</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">&#34;intent&#34;: </span><span class="s2">&#34;weather_address_date-time&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">&#34;entities&#34;: </span><span class="p">[</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;start&#34;: </span><span class="m">2</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;end&#34;: </span><span class="m">4</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;value&#34;: </span><span class="s2">&#34;上海&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;entity&#34;: </span><span class="s2">&#34;address&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>}<span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;start&#34;: </span><span class="m">4</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;end&#34;: </span><span class="m">6</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;value&#34;: </span><span class="s2">&#34;明天&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;entity&#34;: </span><span class="s2">&#34;date-time&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">],</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">&#34;text&#34;: </span><span class="s2">&#34;我要上海明天的天气&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>}<span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">&#34;intent&#34;: </span><span class="s2">&#34;weather_address_date-time&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">&#34;entities&#34;: </span><span class="p">[</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;start&#34;: </span><span class="m">0</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;end&#34;: </span><span class="m">2</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;value&#34;: </span><span class="s2">&#34;上海&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;entity&#34;: </span><span class="s2">&#34;address&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>}<span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>{<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;start&#34;: </span><span class="m">2</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;end&#34;: </span><span class="m">4</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;value&#34;: </span><span class="s2">&#34;明天&#34;</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">&#34;entity&#34;: </span><span class="s2">&#34;date-time&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">],</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">&#34;text&#34;: </span><span class="s2">&#34;上海明天的天气&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>}<span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="l">...</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>}<span class="w">
+</span></span></span></code></pre></div><p>训练所用的命令为 (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/train_NLU.bash">train_NLU.bash</a> 中):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python -m rasa_nlu.train -c nlu_model_config.yaml -d nlu.json --fixed_model_name current -o models
+</span></span></code></pre></div><h2 id="rasa-core">Rasa Core<a hidden class="anchor" aria-hidden="true" href="#rasa-core">#</a></h2>
 <p>Rasa Core 负责对话管理。具体原理和使用等不在这里详述，请访问文章 <a href="#">TODO</a>。
 Rasa core 需要提供一个 domain 文件，里面设定了整个对话机器人的小宇宙，它能知道的所有的意图、词槽和动作。</p>
-
-<p>本项目所用的 domain (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/domain.yml" target="_blank">domain.yml</a> 中)，其内容为：</p>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="err">intents:</span>
-  <span class="err">-</span> <span class="err">greet</span>
-  <span class="err">-</span> <span class="err">goodbye</span>
-  <span class="err">-</span> <span class="err">weather_address_date-time</span>
-  <span class="err">-</span> <span class="err">weather_address</span>
-  <span class="err">-</span> <span class="err">weather_date-time</span>
-
-<span class="err">slots:</span>
-  <span class="err">address:</span>
-    <span class="err">type:</span> <span class="err">text</span>
-  <span class="err">date-time:</span>
-    <span class="err">type:</span> <span class="err">text</span>
-  <span class="err">matches:</span>
-    <span class="err">type:</span> <span class="err">unfeaturized</span>
-
-<span class="err">entities:</span>
-  <span class="err">-</span> <span class="err">address</span>
-  <span class="err">-</span> <span class="err">date-time</span>
-
-<span class="err">actions:</span>
-  <span class="err">-</span> <span class="err">utter_greet</span>
-  <span class="err">-</span> <span class="err">utter_ask_address</span>
-  <span class="err">-</span> <span class="err">utter_ask_date-time</span>
-  <span class="err">-</span> <span class="err">utter_working_on_it</span>
-  <span class="err">-</span> <span class="err">bot.ActionReportWeather</span>
-  <span class="err">-</span> <span class="err">utter_report_weather</span>
-  <span class="err">-</span> <span class="err">utter_goodbye</span>
-
-<span class="err">templates:</span>
-  <span class="err">utter_greet:</span>
-    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;你好，请说出需要提供天气预测服务的地点和时间&#34;</span>
-
-  <span class="err">utter_working_on_it:</span>
-    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;正在查询中，请稍后 ...&#34;</span>
-
-  <span class="err">utter_goodbye:</span>
-    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;再见！&#34;</span>
-
-  <span class="err">utter_ask_address:</span>
-    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;哪里呢？&#34;</span>
-
-  <span class="err">utter_ask_date-time:</span>
-    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;什么时候？&#34;</span>
-
-  <span class="err">utter_report_weather:</span>
-    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;{matches}&#34;</span>
-
-  <span class="err">utter_other:</span>
-    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;系统不明白您说的话&#34;</span></code></pre></div>
-<p>Rasa Core 还需要通过 <code>故事(story)</code> 的形式让框架学习正确的对话管理样本，格式为 Markdown 格式。本项目中的 Story  （在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/stories.md" target="_blank">stories.md</a> 中）定义如下（内容过长，已做截断）：</p>
-<div class="highlight"><pre class="chroma"><code class="language-markdown" data-lang="markdown"><span class="gu">## simple path with greet
-</span><span class="gu"></span><span class="k">*</span> greet
-  <span class="k">-</span> utter_greet
-<span class="k">*</span> weather_address_date-time{&#34;address&#34;: &#34;上海&#34;, &#34;date-time&#34;: &#34;明天&#34;}
-  <span class="k">-</span> utter_working_on_it
-  <span class="k">-</span> action_report_weather
-  <span class="k">-</span> utter_report_weather
-
-<span class="gu">## simple path
-</span><span class="gu"></span><span class="k">*</span> weather_address_date-time{&#34;address&#34;: &#34;上海&#34;, &#34;date-time&#34;: &#34;明天&#34;}
-  <span class="k">-</span> utter_working_on_it
-  <span class="k">-</span> action_report_weather
-  <span class="k">-</span> utter_report_weather
-
-<span class="gu">## address + date-time path with greet
-</span><span class="gu"></span><span class="k">*</span> greet
-  <span class="k">-</span> utter_greet
-<span class="k">*</span> weather_address{&#34;address&#34;: &#34;上海&#34;}
-  <span class="k">-</span> utter_ask_date-time
-<span class="k">*</span> weather_date-time{&#34;date-time&#34;: &#34;明天&#34;}
-  <span class="k">-</span> utter_working_on_it
-  <span class="k">-</span> action_report_weather
-  <span class="k">-</span> utter_report_weather
-
-...</code></pre></div>
-<p>训练所用的命令为 (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/train_CORE.bash" target="_blank">train_CORE.bash</a> 中):</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">python -m rasa_core.train -s stories.md -d domain.yml -o models/dialogue --epochs <span class="m">500</span></code></pre></div>
-<h2 id="依赖">依赖<a hidden class="anchor" aria-hidden="true" href="#依赖">#</a></h2>
-
+<p>本项目所用的 domain (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/domain.yml">domain.yml</a> 中)，其内容为：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="err">intents:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">greet</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">goodbye</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">weather_address_date-time</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">weather_address</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">weather_date-time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">slots:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">address:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">type:</span> <span class="err">text</span>
+</span></span><span class="line"><span class="cl">  <span class="err">date-time:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">type:</span> <span class="err">text</span>
+</span></span><span class="line"><span class="cl">  <span class="err">matches:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">type:</span> <span class="err">unfeaturized</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">entities:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">address</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">date-time</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">actions:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">utter_greet</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">utter_ask_address</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">utter_ask_date-time</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">utter_working_on_it</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">bot.ActionReportWeather</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">utter_report_weather</span>
+</span></span><span class="line"><span class="cl">  <span class="err">-</span> <span class="err">utter_goodbye</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="err">templates:</span>
+</span></span><span class="line"><span class="cl">  <span class="err">utter_greet:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;你好，请说出需要提供天气预测服务的地点和时间&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">utter_working_on_it:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;正在查询中，请稍后 ...&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">utter_goodbye:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;再见！&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">utter_ask_address:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;哪里呢？&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">utter_ask_date-time:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;什么时候？&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">utter_report_weather:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;{matches}&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="err">utter_other:</span>
+</span></span><span class="line"><span class="cl">    <span class="err">-</span> <span class="err">text:</span> <span class="s2">&#34;系统不明白您说的话&#34;</span>
+</span></span></code></pre></div><p>Rasa Core 还需要通过 <code>故事(story)</code> 的形式让框架学习正确的对话管理样本，格式为 Markdown 格式。本项目中的 Story  （在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/stories.md">stories.md</a> 中）定义如下（内容过长，已做截断）：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gu">## simple path with greet
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">*</span> greet
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_greet
+</span></span><span class="line"><span class="cl"><span class="k">*</span> weather_address_date-time{&#34;address&#34;: &#34;上海&#34;, &#34;date-time&#34;: &#34;明天&#34;}
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_working_on_it
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> action_report_weather
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_report_weather
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## simple path
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">*</span> weather_address_date-time{&#34;address&#34;: &#34;上海&#34;, &#34;date-time&#34;: &#34;明天&#34;}
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_working_on_it
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> action_report_weather
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_report_weather
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## address + date-time path with greet
+</span></span></span><span class="line"><span class="cl"><span class="gu"></span><span class="k">*</span> greet
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_greet
+</span></span><span class="line"><span class="cl"><span class="k">*</span> weather_address{&#34;address&#34;: &#34;上海&#34;}
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_ask_date-time
+</span></span><span class="line"><span class="cl"><span class="k">*</span> weather_date-time{&#34;date-time&#34;: &#34;明天&#34;}
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_working_on_it
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> action_report_weather
+</span></span><span class="line"><span class="cl">  <span class="k">-</span> utter_report_weather
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><p>训练所用的命令为 (在项目文件 <a href="https://github.com/howl-anderson/WeatherBot/blob/master/train_CORE.bash">train_CORE.bash</a> 中):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python -m rasa_core.train -s stories.md -d domain.yml -o models/dialogue --epochs <span class="m">500</span>
+</span></span></code></pre></div><h2 id="依赖">依赖<a hidden class="anchor" aria-hidden="true" href="#依赖">#</a></h2>
 <h3 id="python-版本">python 版本<a hidden class="anchor" aria-hidden="true" href="#python-版本">#</a></h3>
-
 <p>python 3</p>
-
 <h3 id="python-依赖">python 依赖<a hidden class="anchor" aria-hidden="true" href="#python-依赖">#</a></h3>
-<pre><code class="language-console" data-lang="console">pip install -r requirements.txt</code></pre>
-<h2 id="下载数据和模型">下载数据和模型<a hidden class="anchor" aria-hidden="true" href="#下载数据和模型">#</a></h2>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">pip install -r requirements.txt
+</span></span></span></code></pre></div><h2 id="下载数据和模型">下载数据和模型<a hidden class="anchor" aria-hidden="true" href="#下载数据和模型">#</a></h2>
 <ul>
-<li><code>data/total_word_feature_extractor.dat</code>: 从 <a href="https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus/releases" target="_blank">https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus</a> 下载，解压缩后放置到对应位置</li>
+<li><code>data/total_word_feature_extractor.dat</code>: 从 <a href="https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus/releases">https://github.com/howl-anderson/MITIE_Chinese_Wikipedia_corpus</a> 下载，解压缩后放置到对应位置</li>
 <li><code>models/default/current</code>：通过运行 <code>train_NLU.bash</code> 生成</li>
 <li><code>models/dialogue</code>：通过运行 <code>train_CORE.bash</code> 生成</li>
 </ul>
-
 <h2 id="功能入口">功能入口<a hidden class="anchor" aria-hidden="true" href="#功能入口">#</a></h2>
-
 <h3 id="申请-api-key">申请 API key<a hidden class="anchor" aria-hidden="true" href="#申请-api-key">#</a></h3>
-
-<p>本项目目前使用 <a href="https://www.seniverse.com/" target="_blank">心知天气</a> 提供天气数据，该平台为个人提供免费的 API，但任然需要用户注册并申请 API key 才能使用。用户注册后可以自行找到 <code>我的API密钥</code>。</p>
-
+<p>本项目目前使用 <a href="https://www.seniverse.com/">心知天气</a> 提供天气数据，该平台为个人提供免费的 API，但任然需要用户注册并申请 API key 才能使用。用户注册后可以自行找到 <code>我的API密钥</code>。</p>
 <h3 id="启动服务">启动服务<a hidden class="anchor" aria-hidden="true" href="#启动服务">#</a></h3>
-
 <p>将如下的 <code>xxx</code> 替换成你的 API key，然后执行即可</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">SENIVERSE_KEY</span><span class="o">=</span>xxx python ./webchat.py</code></pre></div>
-<p>启动成功后，请用浏览器访问 <a href="http://localhost:5500" target="_blank">http://localhost:5500</a> , 你将得到 web 页面，have fun!</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">SENIVERSE_KEY</span><span class="o">=</span>xxx python ./webchat.py
+</span></span></code></pre></div><p>启动成功后，请用浏览器访问 <a href="http://localhost:5500">http://localhost:5500</a> , 你将得到 web 页面，have fun!</p>
 
   </div>
 
   <footer class="post-footer">
     <ul class="post-tags">
       <li><a href="https://blog.xiaoquankong.ai/zh/tags/rasa/">Rasa</a></li>
-      <li><a href="https://blog.xiaoquankong.ai/zh/tags/rasa-core/">Rasa Core</a></li>
       <li><a href="https://blog.xiaoquankong.ai/zh/tags/rasa-nlu/">Rasa NLU</a></li>
+      <li><a href="https://blog.xiaoquankong.ai/zh/tags/rasa-core/">Rasa Core</a></li>
     </ul>
 <nav class="paginav">
   <a class="next" href="https://blog.xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/">

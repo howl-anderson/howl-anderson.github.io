@@ -10,7 +10,7 @@
 <meta name="description" content="TL;DR 本文使用开源框架chatterbot从零开始构建你自己的聊天机器人（还带有WEB界面奥～）。">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="使用chatterbot构建自己的中文chat(闲聊)机器人" />
+</script><meta property="og:title" content="使用chatterbot构建自己的中文chat(闲聊)机器人" />
 <meta property="og:description" content="TL;DR 本文使用开源框架chatterbot从零开始构建你自己的聊天机器人（还带有WEB界面奥～）。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -228,11 +233,11 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       使用chatterbot构建自己的中文chat(闲聊)机器人
     </h1>
-    <div class="post-meta"><span title='2017-11-09 15:05:54 +0000 UTC'>November 9, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2017-11-09 15:05:54 +0000 UTC'>十一月 9, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -245,7 +250,7 @@ if (!doNotTrack) {
                 <li>
                     <a href="#%e5%ae%89%e8%a3%85" aria-label="安装">安装</a></li>
                 <li>
-                    <a href="#%e5%bf%ab%e9%80%9f%e5%85%a5%e9%97%a8-toy%e7%ba%a7%e5%88%ab%e7%9a%84%e6%96%b9%e6%a1%88" aria-label="快速入门（toy级别的方案）">快速入门（toy级别的方案）</a></li>
+                    <a href="#%e5%bf%ab%e9%80%9f%e5%85%a5%e9%97%a8toy%e7%ba%a7%e5%88%ab%e7%9a%84%e6%96%b9%e6%a1%88" aria-label="快速入门（toy级别的方案）">快速入门（toy级别的方案）</a></li>
                 <li>
                     <a href="#%e6%af%94%e8%be%83%e6%ad%a3%e5%bc%8f%e7%9a%84%e6%96%b9%e6%a1%88" aria-label="比较正式的方案">比较正式的方案</a></li>
                 <li>
@@ -270,82 +275,72 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p><strong>TL;DR</strong> 本文使用开源框架chatterbot从零开始构建你自己的聊天机器人（还带有WEB界面奥～）。</p>
-
 <p>聊天机器人大体上分为三种：闲聊机器人、问答机器人和任务型机器人。闲聊机器人，顾名思义就是和你闲聊插科打诨的机器人，目前比较典型的代表是微软小冰，小黄鸡等。问答机器人有一个标准答案库，当用户来咨询时机器人负责理解用户的语意，给出符合语意的标准答案，目前比较典型的应用是各类咨询机器人，客服机器人等。最后一类：任务型机器人，通过和客户的沟通帮助用户完成特定任务比如定机票、定闹钟等，目前比较典型的应用是各种私人助理，苹果的siri系统也具备此类功能。</p>
-
-<p>我们这里介绍一个简单易用的闲聊机器人框架chatterbot website: <a href="http://chatterbot.readthedocs.io/" target="_blank">http://chatterbot.readthedocs.io/</a></p>
-
+<p>我们这里介绍一个简单易用的闲聊机器人框架chatterbot website: <a href="http://chatterbot.readthedocs.io/">http://chatterbot.readthedocs.io/</a></p>
 <p>先上一个成品图，这将是我们最后完成时的效果：</p>
-
-<p><img src="Chat_Instance-1024x736.png" alt="Chat Instance" /></p>
-
+<p><img loading="lazy" src="Chat_Instance-1024x736.png" alt="Chat Instance"  />
+</p>
 <h2 id="安装">安装<a hidden class="anchor" aria-hidden="true" href="#安装">#</a></h2>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">pip install chatterbot</code></pre></div>
-<h2 id="快速入门-toy级别的方案">快速入门（toy级别的方案）<a hidden class="anchor" aria-hidden="true" href="#快速入门-toy级别的方案">#</a></h2>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pip install chatterbot
+</span></span></code></pre></div><h2 id="快速入门toy级别的方案">快速入门（toy级别的方案）<a hidden class="anchor" aria-hidden="true" href="#快速入门toy级别的方案">#</a></h2>
 <p>下面的代码实现了一个toy聊天机器人</p>
-<div class="highlight"><pre class="chroma"><code class="language-python3" data-lang="python3"><span class="c1"># 导入所需的依赖</span>
-<span class="kn">from</span> <span class="nn">chatterbot</span> <span class="k">import</span> <span class="n">ChatBot</span>
-<span class="kn">from</span> <span class="nn">chatterbot.trainers</span> <span class="k">import</span> <span class="n">ListTrainer</span>
-
-<span class="n">chatbot</span> <span class="o">=</span> <span class="n">ChatBot</span><span class="p">(</span><span class="s2">&#34;SillyRobot&#34;</span><span class="p">)</span>  <span class="c1"># 这里创建了机器人实例，并设定了机器人的名字：SillyRobot</span>
-
-<span class="c1"># 定义训练数据集</span>
-<span class="n">conversation</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&#34;Hello&#34;</span><span class="p">,</span>
-    <span class="s2">&#34;Hi there!&#34;</span><span class="p">,</span>
-    <span class="s2">&#34;How are you doing?&#34;</span><span class="p">,</span>
-    <span class="s2">&#34;I&#39;m doing great.&#34;</span><span class="p">,</span>
-    <span class="s2">&#34;That is good to hear&#34;</span><span class="p">,</span>
-    <span class="s2">&#34;Thank you.&#34;</span><span class="p">,</span>
-    <span class="s2">&#34;You&#39;re welcome.&#34;</span>
-<span class="p">]</span>
-
-<span class="c1"># 训练</span>
-<span class="n">chatbot</span><span class="o">.</span><span class="n">set_trainer</span><span class="p">(</span><span class="n">ListTrainer</span><span class="p">)</span>
-<span class="n">chatbot</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">conversation</span><span class="p">)</span>
-
-<span class="c1"># 响应用户请求</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">chatbot</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="s2">&#34;Good morning!&#34;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></code></pre></div>
-<p>上述代码会训练你给定的训练集，并把训练结果保存起来，没有指定的情况下，会使用存储模块<code>chatterbot.storage.SQLStorageAdapter</code>完成模型的存储。在完成训练后就可以将训练代码移除，这样机器人就不会每次都要从头训练了。</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python3" data-lang="python3"><span class="line"><span class="cl"><span class="c1"># 导入所需的依赖</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">chatterbot</span> <span class="kn">import</span> <span class="n">ChatBot</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">chatterbot.trainers</span> <span class="kn">import</span> <span class="n">ListTrainer</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">chatbot</span> <span class="o">=</span> <span class="n">ChatBot</span><span class="p">(</span><span class="s2">&#34;SillyRobot&#34;</span><span class="p">)</span>  <span class="c1"># 这里创建了机器人实例，并设定了机器人的名字：SillyRobot</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 定义训练数据集</span>
+</span></span><span class="line"><span class="cl"><span class="n">conversation</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Hello&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Hi there!&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;How are you doing?&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;I&#39;m doing great.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;That is good to hear&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;Thank you.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;You&#39;re welcome.&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 训练</span>
+</span></span><span class="line"><span class="cl"><span class="n">chatbot</span><span class="o">.</span><span class="n">set_trainer</span><span class="p">(</span><span class="n">ListTrainer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">chatbot</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">conversation</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 响应用户请求</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">chatbot</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="s2">&#34;Good morning!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span></code></pre></div><p>上述代码会训练你给定的训练集，并把训练结果保存起来，没有指定的情况下，会使用存储模块<code>chatterbot.storage.SQLStorageAdapter</code>完成模型的存储。在完成训练后就可以将训练代码移除，这样机器人就不会每次都要从头训练了。</p>
 <h2 id="比较正式的方案">比较正式的方案<a hidden class="anchor" aria-hidden="true" href="#比较正式的方案">#</a></h2>
-
 <p>上面的方案使用的语料库是硬编码在文档中的，这在正式项目中是不合适的。下面介绍一个比较正式的使用chatter的方案。</p>
-<div class="highlight"><pre class="chroma"><code class="language-python3" data-lang="python3"><span class="kn">import</span> <span class="nn">os</span>
-
-<span class="kn">from</span> <span class="nn">chatterbot</span> <span class="k">import</span> <span class="n">ChatBot</span>
-<span class="kn">from</span> <span class="nn">chatterbot.trainers</span> <span class="k">import</span> <span class="n">ChatterBotCorpusTrainer</span>
-
-<span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
-
-<span class="n">chat_bot</span> <span class="o">=</span> <span class="n">ChatBot</span><span class="p">(</span><span class="s2">&#34;SillyRobot&#34;</span><span class="p">)</span> <span class="c1"># 这里创建了机器人实例，并设定了机器人的名字：SillyRobot</span>
-<span class="n">chat_bot</span><span class="o">.</span><span class="n">set_trainer</span><span class="p">(</span><span class="n">ChatterBotCorpusTrainer</span><span class="p">)</span>
-<span class="c1"># 使用中文语料库训练它</span>
-<span class="c1"># chat_bot.train(&#34;chatterbot.corpus.chinese&#34;)  # 语料库</span>
-<span class="c1"># 开始对话</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">chat_bot</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="s2">&#34;我好么&#34;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></code></pre></div>
-<p>官方自带的中文聊天数据集表现比较差，你需要自己实现一个<code>trainer</code>，具体怎么实现见官方文档 <a href="http://chatterbot.readthedocs.io/en/stable/training.html#creating-a-new-training-class" target="_blank">Creating a new training class</a>.</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python3" data-lang="python3"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">chatterbot</span> <span class="kn">import</span> <span class="n">ChatBot</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">chatterbot.trainers</span> <span class="kn">import</span> <span class="n">ChatterBotCorpusTrainer</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">chat_bot</span> <span class="o">=</span> <span class="n">ChatBot</span><span class="p">(</span><span class="s2">&#34;SillyRobot&#34;</span><span class="p">)</span> <span class="c1"># 这里创建了机器人实例，并设定了机器人的名字：SillyRobot</span>
+</span></span><span class="line"><span class="cl"><span class="n">chat_bot</span><span class="o">.</span><span class="n">set_trainer</span><span class="p">(</span><span class="n">ChatterBotCorpusTrainer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 使用中文语料库训练它</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># chat_bot.train(&#34;chatterbot.corpus.chinese&#34;)  # 语料库</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 开始对话</span>
+</span></span><span class="line"><span class="cl"><span class="n">response</span> <span class="o">=</span> <span class="n">chat_bot</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="s2">&#34;我好么&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span></code></pre></div><p>官方自带的中文聊天数据集表现比较差，你需要自己实现一个<code>trainer</code>，具体怎么实现见官方文档 <a href="http://chatterbot.readthedocs.io/en/stable/training.html#creating-a-new-training-class">Creating a new training class</a>.</p>
 <h2 id="web集成">Web集成<a hidden class="anchor" aria-hidden="true" href="#web集成">#</a></h2>
-
-<p>chatter自带了Django集成，所以很容易架设一个网站，提供HTTP接口、管理后台以及在线聊天页面等功能。具体代码可以拷贝官方的示例代码<a href="https://github.com/gunthercox/ChatterBot/tree/master/examples/django_app" target="_blank">https://github.com/gunthercox/ChatterBot/tree/master/examples/django_app</a>, 这里需要注意的是，你需要更改chatterbot的配置在<code>settings.py</code>里面的<code>CHATTERBOT</code>变量处，具体怎么修改，请参考<a href="http://chatterbot.readthedocs.io/en/stable/django/settings.html#chatterbot-django-settings" target="_blank">文档1</a>和<a href="http://chatterbot.readthedocs.io/en/stable/django/training.html#training-settings" target="_blank">文档2</a>,但你仍然需要以下步骤：</p>
-
+<p>chatter自带了Django集成，所以很容易架设一个网站，提供HTTP接口、管理后台以及在线聊天页面等功能。具体代码可以拷贝官方的示例代码<a href="https://github.com/gunthercox/ChatterBot/tree/master/examples/django_app">https://github.com/gunthercox/ChatterBot/tree/master/examples/django_app</a>, 这里需要注意的是，你需要更改chatterbot的配置在<code>settings.py</code>里面的<code>CHATTERBOT</code>变量处，具体怎么修改，请参考<a href="http://chatterbot.readthedocs.io/en/stable/django/settings.html#chatterbot-django-settings">文档1</a>和<a href="http://chatterbot.readthedocs.io/en/stable/django/training.html#training-settings">文档2</a>,但你仍然需要以下步骤：</p>
 <h3 id="安装django">安装Django<a hidden class="anchor" aria-hidden="true" href="#安装django">#</a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">pip install django</code></pre></div>
-<h3 id="同步数据库">同步数据库<a hidden class="anchor" aria-hidden="true" href="#同步数据库">#</a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">python manage.py migrate</code></pre></div>
-<h3 id="创建超级用户">创建超级用户<a hidden class="anchor" aria-hidden="true" href="#创建超级用户">#</a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">python manage.py createsuperuser</code></pre></div>
-<h3 id="训练chatterbot">训练chatterbot<a hidden class="anchor" aria-hidden="true" href="#训练chatterbot">#</a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">python manage.py train</code></pre></div>
-<h3 id="运行server">运行server<a hidden class="anchor" aria-hidden="true" href="#运行server">#</a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">python manage.py runserver</code></pre></div>
-<p>web服务器默认监听5000端口，访问<a href="http://127.0.0.0.1:5000" target="_blank">http://127.0.0.0.1:5000</a>就能访问页面了，页面效果如下图：</p>
-
-<p><img src="Django_ChatterBot_Example-1024x561.png" alt="Django ChatterBot Example" /></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pip install django
+</span></span></code></pre></div><h3 id="同步数据库">同步数据库<a hidden class="anchor" aria-hidden="true" href="#同步数据库">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python manage.py migrate
+</span></span></code></pre></div><h3 id="创建超级用户">创建超级用户<a hidden class="anchor" aria-hidden="true" href="#创建超级用户">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python manage.py createsuperuser
+</span></span></code></pre></div><h3 id="训练chatterbot">训练chatterbot<a hidden class="anchor" aria-hidden="true" href="#训练chatterbot">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python manage.py train
+</span></span></code></pre></div><h3 id="运行server">运行server<a hidden class="anchor" aria-hidden="true" href="#运行server">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">python manage.py runserver
+</span></span></code></pre></div><p>web服务器默认监听5000端口，访问<a href="http://127.0.0.0.1:5000">http://127.0.0.0.1:5000</a>就能访问页面了，页面效果如下图：</p>
+<p><img loading="lazy" src="Django_ChatterBot_Example-1024x561.png" alt="Django ChatterBot Example"  />
+</p>
 
   </div>
 

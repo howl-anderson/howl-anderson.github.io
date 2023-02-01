@@ -10,7 +10,7 @@
 <meta name="description" content="TL;DR 本文将介绍神经网络中常用的几种激活函数的特性和使用场合。">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/activiation-functions-in-neural-networks/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="神经网络里的激活函数" />
+</script><meta property="og:title" content="神经网络里的激活函数" />
 <meta property="og:description" content="TL;DR 本文将介绍神经网络中常用的几种激活函数的特性和使用场合。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/activiation-functions-in-neural-networks/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -124,8 +129,8 @@ if (!doNotTrack) {
   "keywords": [
     "神经网络", "激活函数"
   ],
-  "articleBody": "TL;DR 本文将介绍神经网络中常用的几种激活函数的特性和使用场合。\n神经网络(Neural Network)中的激活函数(Activation Function)选择是至关重要的，它直接影响着模型的performance。\n各种激活函数介绍 下面将对比较常见的几种激活函数做简单的介绍：\nSigmoid Sigmoid是最早被使用的激活函数之一，现在依旧经常出现在教科书和教学中，是最经典的激活函数之一。Sigmoid函数有时使用符号$\\sigma$来表示。\n数学表示 $$ a=\\frac{1}{1+e^{-z}} $$\n图像 Note: 为了图像更加紧凑，这幅图实际对应的函数是$a=\\frac{1}{1+e^{-5z}}$\n导数 $$ f’(z)=\\frac{\\mathrm d \\sigma}{\\mathrm d z}=\\frac{1}{1+e^{-z}}(1-\\frac{1}{1+e^{-z}})=f(z)(1-f(z))=\\sigma(1-\\sigma) $$\n特性 可以看到sigmoid函数的一个最大的特点就是：值域严格限制在(0, 1)开区间。这种特性使得sigmoid可以将实数范围的值表示成概率的形式，这是sigmoid最大的特点。\ntanh tanh函数的全称是”hyperbolic tangent”,属于”Hyperbolic function”(双曲线函数)，关于这个函数的更多详细的资料可以访问Hyperbolic function在Wikipedia的相关页面\n数学表示 $$ a=\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} $$\n图像 导数 $$ f’(z)=\\frac{\\mathrm d \\tanh}{\\mathrm d z}=1-(\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}})^2=1-f(z)^2=1-\\tanh^2 $$\n特性 tanh函数和sigmoid函数非常相似，都是一个优雅的S型曲线，事实上$tanh=sigmoid(z)*2+1$。唯一不同的地方是tanh的值域严格限制在(-1, 1)开区间。\nReLU ReLU的全称是”Rectified Linear Unit”（中文名应该翻译成“线性整流函数”或“修正线性单元”，但中文名几乎无人使用）。是目前神经网络中最主流的激活函数。\n数学表示 $$ a=max(0, z) $$\n图像 导数 $$ f’(z) = \\begin{cases} 0 \u0026 \\quad \\text{if } z 0 \\end{cases} $$\n特性 ReLU可以被看作是sigmoid函数在$(-\\infty, 0)$定义域上的近似函数。如下图： 上图中，蓝色的线表示sigmoid函数，绿色的线表示ReLU函数。 Note：为了让图更加容易理解，实际使用的sigmoid函数是$a=\\frac{1}{1+e^{-5z}}$，ReLU函数是$a=max(0, z+0.5)$\n同时因为因为数学上特别简单，所以计算速度非常快。已经在很多领域替代sigmoid和tanh。\nLeaky ReLU 是对ReLU的微小改动，在某些情况下会有比较好的效果。\n数学表示 $$ a=max(\\alpha z, z) $$ 其中$\\alpha 图像 Note: 上图中使用的函数为：$ a=max(0.05z, z) $\n导数 $$ f’(z) = \\begin{cases} \\alpha \u0026 \\quad \\text{if } z 0 \\end{cases} $$\n特性 Leaky ReLU是ReLU的改动版，在某些特定的情况下会有比较好的结果。\n列表对比 下面用列表的形式，对常见的几种激活函数的特性和使用场景做一个总结：\n   函数名 函数公式 使用场景1     sigmoid $a=\\frac{1}{1+e^{-z}}$ 适合二分类问题的output layer   tanh $a=\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}$ 绝大多数情况下优于sigmoid   ReLU $a=max(0, z)$ 优先使用这种方法（推荐）   Leaky ReLU $a=max(\\alpha z, z)$ 某些情况下效果较好    Note: 在实际场景中，可以尝试不同的函数，寻找最优方案。\n 来自：Neural Networks and Deep Learning by Andrew Ng on Coursera [return]  ",
-  "wordCount" : "167",
+  "articleBody": "TL;DR 本文将介绍神经网络中常用的几种激活函数的特性和使用场合。\n神经网络(Neural Network)中的激活函数(Activation Function)选择是至关重要的，它直接影响着模型的performance。\n各种激活函数介绍 下面将对比较常见的几种激活函数做简单的介绍：\nSigmoid Sigmoid是最早被使用的激活函数之一，现在依旧经常出现在教科书和教学中，是最经典的激活函数之一。Sigmoid函数有时使用符号$\\sigma$来表示。\n数学表示 $$ a=\\frac{1}{1+e^{-z}} $$\n图像 Note: 为了图像更加紧凑，这幅图实际对应的函数是$a=\\frac{1}{1+e^{-5z}}$\n导数 $$ f’(z)=\\frac{\\mathrm d \\sigma}{\\mathrm d z}=\\frac{1}{1+e^{-z}}(1-\\frac{1}{1+e^{-z}})=f(z)(1-f(z))=\\sigma(1-\\sigma) $$\n特性 可以看到sigmoid函数的一个最大的特点就是：值域严格限制在(0, 1)开区间。这种特性使得sigmoid可以将实数范围的值表示成概率的形式，这是sigmoid最大的特点。\ntanh tanh函数的全称是\"hyperbolic tangent\",属于\"Hyperbolic function\"(双曲线函数)，关于这个函数的更多详细的资料可以访问Hyperbolic function在Wikipedia的相关页面\n数学表示 $$ a=\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} $$\n图像 导数 $$ f’(z)=\\frac{\\mathrm d \\tanh}{\\mathrm d z}=1-(\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}})^2=1-f(z)^2=1-\\tanh^2 $$\n特性 tanh函数和sigmoid函数非常相似，都是一个优雅的S型曲线，事实上$tanh=sigmoid(z)*2+1$。唯一不同的地方是tanh的值域严格限制在(-1, 1)开区间。\nReLU ReLU的全称是\"Rectified Linear Unit\"（中文名应该翻译成“线性整流函数”或“修正线性单元”，但中文名几乎无人使用）。是目前神经网络中最主流的激活函数。\n数学表示 $$ a=max(0, z) $$\n图像 导数 $$ f’(z) = \\begin{cases} 0 \u0026 \\quad \\text{if } z \u003c 0\\\\ 1 \u0026 \\quad \\text{if } z \u003e 0 \\end{cases} $$\n特性 ReLU可以被看作是sigmoid函数在$(-\\infty, 0)$定义域上的近似函数。如下图： 上图中，蓝色的线表示sigmoid函数，绿色的线表示ReLU函数。 Note：为了让图更加容易理解，实际使用的sigmoid函数是$a=\\frac{1}{1+e^{-5z}}$，ReLU函数是$a=max(0, z+0.5)$\n同时因为因为数学上特别简单，所以计算速度非常快。已经在很多领域替代sigmoid和tanh。\nLeaky ReLU 是对ReLU的微小改动，在某些情况下会有比较好的效果。\n数学表示 $$ a=max(\\alpha z, z) $$ 其中$\\alpha \u003c 1$\n图像 Note: 上图中使用的函数为：$ a=max(0.05z, z) $\n导数 $$ f’(z) = \\begin{cases} \\alpha \u0026 \\quad \\text{if } z \u003c 0\\\\ 1 \u0026 \\quad \\text{if } z \u003e 0 \\end{cases} $$\n特性 Leaky ReLU是ReLU的改动版，在某些特定的情况下会有比较好的结果。\n列表对比 下面用列表的形式，对常见的几种激活函数的特性和使用场景做一个总结：\n函数名 函数公式 使用场景^[来自：Neural Networks and Deep Learning by Andrew Ng on Coursera] sigmoid $a=\\frac{1}{1+e^{-z}}$ 适合二分类问题的output layer tanh $a=\\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}$ 绝大多数情况下优于sigmoid ReLU $a=max(0, z)$ 优先使用这种方法（推荐） Leaky ReLU $a=max(\\alpha z, z)$ 某些情况下效果较好 Note: 在实际场景中，可以尝试不同的函数，寻找最优方案。\n",
+  "wordCount" : "165",
   "inLanguage": "zh",
   "datePublished": "2017-11-09T23:31:52Z",
   "dateModified": "2017-11-09T23:31:52Z",
@@ -228,11 +233,11 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       神经网络里的激活函数
     </h1>
-    <div class="post-meta"><span title='2017-11-09 23:31:52 +0000 UTC'>November 9, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2017-11-09 23:31:52 +0000 UTC'>十一月 9, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -303,145 +308,99 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p><strong>TL;DR</strong> 本文将介绍神经网络中常用的几种激活函数的特性和使用场合。</p>
-
 <p>神经网络(Neural Network)中的激活函数(Activation Function)选择是至关重要的，它直接影响着模型的performance。</p>
-
 <h2 id="各种激活函数介绍">各种激活函数介绍<a hidden class="anchor" aria-hidden="true" href="#各种激活函数介绍">#</a></h2>
-
 <p>下面将对比较常见的几种激活函数做简单的介绍：</p>
-
 <h3 id="sigmoid">Sigmoid<a hidden class="anchor" aria-hidden="true" href="#sigmoid">#</a></h3>
-
 <p>Sigmoid是最早被使用的激活函数之一，现在依旧经常出现在教科书和教学中，是最经典的激活函数之一。Sigmoid函数有时使用符号$\sigma$来表示。</p>
-
 <h4 id="数学表示">数学表示<a hidden class="anchor" aria-hidden="true" href="#数学表示">#</a></h4>
-
 <p>$$ a=\frac{1}{1+e^{-z}} $$</p>
-
 <h4 id="图像">图像<a hidden class="anchor" aria-hidden="true" href="#图像">#</a></h4>
+<p><img loading="lazy" src="sigmoid.png" alt="graph of sigmoid function"  />
 
-<p><img src="sigmoid.png" alt="graph of sigmoid function" />
 Note: 为了图像更加紧凑，这幅图实际对应的函数是$a=\frac{1}{1+e^{-5z}}$</p>
-
 <h4 id="导数">导数<a hidden class="anchor" aria-hidden="true" href="#导数">#</a></h4>
-
 <p>$$ f&rsquo;(z)=\frac{\mathrm d \sigma}{\mathrm d z}=\frac{1}{1+e^{-z}}(1-\frac{1}{1+e^{-z}})=f(z)(1-f(z))=\sigma(1-\sigma) $$</p>
-
 <h4 id="特性">特性<a hidden class="anchor" aria-hidden="true" href="#特性">#</a></h4>
-
 <p>可以看到<code>sigmoid</code>函数的一个最大的特点就是：值域严格限制在<code>(0, 1)</code>开区间。这种特性使得<code>sigmoid</code>可以将实数范围的值表示成概率的形式，这是<code>sigmoid</code>最大的特点。</p>
-
 <h3 id="tanh">tanh<a hidden class="anchor" aria-hidden="true" href="#tanh">#</a></h3>
-
-<p>tanh函数的全称是&rdquo;hyperbolic tangent&rdquo;,属于&rdquo;Hyperbolic function&rdquo;(双曲线函数)，关于这个函数的更多详细的资料可以访问Hyperbolic function在Wikipedia的<a href="https://en.wikipedia.org/wiki/Hyperbolic_function" target="_blank">相关页面</a></p>
-
+<p>tanh函数的全称是&quot;hyperbolic tangent&quot;,属于&quot;Hyperbolic function&quot;(双曲线函数)，关于这个函数的更多详细的资料可以访问Hyperbolic function在Wikipedia的<a href="https://en.wikipedia.org/wiki/Hyperbolic_function">相关页面</a></p>
 <h4 id="数学表示-1">数学表示<a hidden class="anchor" aria-hidden="true" href="#数学表示-1">#</a></h4>
-
 <p>$$ a=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}} $$</p>
-
 <h4 id="图像-1">图像<a hidden class="anchor" aria-hidden="true" href="#图像-1">#</a></h4>
-
-<p><img src="tanh.png" alt="graph of tanh function" /></p>
-
+<p><img loading="lazy" src="tanh.png" alt="graph of tanh function"  />
+</p>
 <h4 id="导数-1">导数<a hidden class="anchor" aria-hidden="true" href="#导数-1">#</a></h4>
-
 <p>$$ f&rsquo;(z)=\frac{\mathrm d \tanh}{\mathrm d z}=1-(\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}})^2=1-f(z)^2=1-\tanh^2 $$</p>
-
 <h4 id="特性-1">特性<a hidden class="anchor" aria-hidden="true" href="#特性-1">#</a></h4>
-
 <p>tanh函数和sigmoid函数非常相似，都是一个优雅的S型曲线，事实上$tanh=sigmoid(z)*2+1$。唯一不同的地方是tanh的值域严格限制在<code>(-1, 1)</code>开区间。</p>
-
 <h3 id="relu">ReLU<a hidden class="anchor" aria-hidden="true" href="#relu">#</a></h3>
-
-<p>ReLU的全称是&rdquo;Rectified Linear Unit&rdquo;（中文名应该翻译成“线性整流函数”或“修正线性单元”，但中文名几乎无人使用）。是目前神经网络中最主流的激活函数。</p>
-
+<p>ReLU的全称是&quot;Rectified Linear Unit&quot;（中文名应该翻译成“线性整流函数”或“修正线性单元”，但中文名几乎无人使用）。是目前神经网络中最主流的激活函数。</p>
 <h4 id="数学表示-2">数学表示<a hidden class="anchor" aria-hidden="true" href="#数学表示-2">#</a></h4>
-
 <p>$$ a=max(0, z) $$</p>
-
 <h4 id="图像-2">图像<a hidden class="anchor" aria-hidden="true" href="#图像-2">#</a></h4>
-
-<p><img src="relu.png" alt="graph of ReLU function" /></p>
-
+<p><img loading="lazy" src="relu.png" alt="graph of ReLU function"  />
+</p>
 <h4 id="导数-2">导数<a hidden class="anchor" aria-hidden="true" href="#导数-2">#</a></h4>
-
 <p>$$
 f&rsquo;(z) =
-  \begin{cases}
-    0  &amp; \quad \text{if } z &lt; 0\<br />
-    1  &amp; \quad \text{if } z &gt; 0
-  \end{cases}
+\begin{cases}
+0  &amp; \quad \text{if } z &lt; 0\\
+1  &amp; \quad \text{if } z &gt; 0
+\end{cases}
 $$</p>
-
 <h4 id="特性-2">特性<a hidden class="anchor" aria-hidden="true" href="#特性-2">#</a></h4>
-
 <p>ReLU可以被看作是<code>sigmoid</code>函数在$(-\infty, 0)$定义域上的近似函数。如下图：
-<img src="relu_sigmoid.png" alt="graph of ReLU and sigmoid function" />
+<img loading="lazy" src="relu_sigmoid.png" alt="graph of ReLU and sigmoid function"  />
+
 上图中，蓝色的线表示sigmoid函数，绿色的线表示ReLU函数。
 Note：为了让图更加容易理解，实际使用的sigmoid函数是$a=\frac{1}{1+e^{-5z}}$，ReLU函数是$a=max(0, z+0.5)$</p>
-
 <p>同时因为因为数学上特别简单，所以计算速度非常快。已经在很多领域替代<code>sigmoid</code>和<code>tanh</code>。</p>
-
 <h3 id="leaky-relu">Leaky ReLU<a hidden class="anchor" aria-hidden="true" href="#leaky-relu">#</a></h3>
-
 <p>是对ReLU的微小改动，在某些情况下会有比较好的效果。</p>
-
 <h4 id="数学表示-3">数学表示<a hidden class="anchor" aria-hidden="true" href="#数学表示-3">#</a></h4>
-
 <p>$$ a=max(\alpha z, z) $$
 其中$\alpha &lt; 1$</p>
-
 <h4 id="图像-3">图像<a hidden class="anchor" aria-hidden="true" href="#图像-3">#</a></h4>
+<p><img loading="lazy" src="leaky_relu.png" alt="graph of leaky ReLU function"  />
 
-<p><img src="leaky_relu.png" alt="graph of leaky ReLU function" />
 Note: 上图中使用的函数为：$ a=max(0.05z, z) $</p>
-
 <h4 id="导数-3">导数<a hidden class="anchor" aria-hidden="true" href="#导数-3">#</a></h4>
-
 <p>$$
 f&rsquo;(z) =
-  \begin{cases}
-    \alpha  &amp; \quad \text{if } z &lt; 0\<br />
-    1  &amp; \quad \text{if } z &gt; 0
-  \end{cases}
+\begin{cases}
+\alpha  &amp; \quad \text{if } z &lt; 0\\
+1  &amp; \quad \text{if } z &gt; 0
+\end{cases}
 $$</p>
-
 <h4 id="特性-3">特性<a hidden class="anchor" aria-hidden="true" href="#特性-3">#</a></h4>
-
 <p>Leaky ReLU是ReLU的改动版，在某些特定的情况下会有比较好的结果。</p>
-
 <h2 id="列表对比">列表对比<a hidden class="anchor" aria-hidden="true" href="#列表对比">#</a></h2>
-
 <p>下面用列表的形式，对常见的几种激活函数的特性和使用场景做一个总结：</p>
-
 <table>
 <thead>
 <tr>
 <th>函数名</th>
 <th>函数公式</th>
-<th>使用场景<sup class="footnote-ref" id="fnref:Neural-Networks"><a href="#fn:Neural-Networks">1</a></sup></th>
+<th>使用场景^[来自：<a href="https://www.coursera.org/learn/neural-networks-deep-learning/lecture/4dDC1/activation-functions">Neural Networks and Deep Learning by Andrew Ng on Coursera</a>]</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td>sigmoid</td>
 <td>$a=\frac{1}{1+e^{-z}}$</td>
 <td>适合二分类问题的output layer</td>
 </tr>
-
 <tr>
 <td>tanh</td>
 <td>$a=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}$</td>
 <td>绝大多数情况下优于sigmoid</td>
 </tr>
-
 <tr>
 <td>ReLU</td>
 <td>$a=max(0, z)$</td>
 <td>优先使用这种方法（推荐）</td>
 </tr>
-
 <tr>
 <td>Leaky ReLU</td>
 <td>$a=max(\alpha z, z)$</td>
@@ -449,16 +408,7 @@ $$</p>
 </tr>
 </tbody>
 </table>
-
 <p>Note: 在实际场景中，可以尝试不同的函数，寻找最优方案。</p>
-<div class="footnotes">
-
-<hr />
-
-<ol>
-<li id="fn:Neural-Networks">来自：<a href="https://www.coursera.org/learn/neural-networks-deep-learning/lecture/4dDC1/activation-functions" target="_blank">Neural Networks and Deep Learning by Andrew Ng on Coursera</a> <a class="footnote-return" href="#fnref:Neural-Networks"><sup>[return]</sup></a></li>
-</ol>
-</div>
 
   </div>
 

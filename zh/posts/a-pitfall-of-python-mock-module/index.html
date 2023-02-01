@@ -7,10 +7,11 @@
 <meta name="robots" content="index, follow">
 <title>python mock 遇到的一个坑 | Xiaoquan Kong&#39;s Blog</title>
 <meta name="keywords" content="python, mock">
-<meta name="description" content="修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。">
+<meta name="description" content="修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。
+">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,13 +82,13 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="python mock 遇到的一个坑" />
-<meta property="og:description" content="修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。" />
+</script><meta property="og:title" content="python mock 遇到的一个坑" />
+<meta property="og:description" content="修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。
+" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
 
@@ -97,14 +98,21 @@ if (!doNotTrack) {
 <meta name="twitter:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/>
 
 <meta name="twitter:title" content="python mock 遇到的一个坑"/>
-<meta name="twitter:description" content="修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。"/>
+<meta name="twitter:description" content="修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。
+"/>
 
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -120,11 +128,11 @@ if (!doNotTrack) {
   "@type": "BlogPosting",
   "headline": "python mock 遇到的一个坑",
   "name": "python mock 遇到的一个坑",
-  "description": "修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。\n",
+  "description": "修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。 ",
   "keywords": [
     "python", "mock"
   ],
-  "articleBody": "修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。\n我给一个开源软件贡献 PR 时，遇到一个大的问题是我总是要给我的代码写单元测试，会出现一些奇怪的问题（我以为的，实际最后往往证明是我蠢 :( ，本例就是)\n经过简化，最小可复现问题代码集如下：\n文件 dependency.py def some_funny_func(): return 'funny' 文件 module.py from dependency import some_funny_func def call_func(): return some_funny_func() 文件 tester.py from unittest.mock import patch from module import call_func def test_call_func(): def mocked_funny_func(): return \"not funny at all\" with patch(\"dependency.some_funny_func\", mocked_funny_func): return_value = call_func() assert return_value == \"not funny at all\" 一切看似合情合理（有些高手，可能已经发现问题了，但我当时没有看出来问题），但是就是通过不了测试。\n这里的错误是，没有深入理解 patch 的工作原理，patch 通过修改 module 属性的方式工作。这里 from module import call_func 执行的时候已经经 dependency.some_funny_func 导入了 module， 换言之：module.some_funny_func 已经指向了 dependency.some_funny_func, 此时通过 patch(\"dependency.some_funny_func\", mocked_funny_func) 只是修改了 dependency.some_funny_func 至新的 mocked_funny_func. 但不能修改 module.some_funny_func, 因为这个是修改前赋值的，它现在依旧指向原来的函数。\n将上述改写成 python 代码，原理大概如下：\n# 模拟 dependency.some_funny_func dependency = {} dependency[\"some_funny_func\"] = \"some_value\" # 模拟 module.some_funny_func module = {} module[\"some_funny_func\"] = dependency[\"some_funny_func\"] # 模拟 mock dependency[\"some_funny_func\"] = \"some_other_value\" # 查看结果 print(dependency[\"some_funny_func\"]) print(module[\"some_funny_func\"]) 在线演示 在线演示地址\n",
+  "articleBody": "修改一个项目的 Unit Test 代码时，遇到一个关于 mock 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。 我给一个开源软件贡献 PR 时，遇到一个大的问题是我总是要给我的代码写单元测试，会出现一些奇怪的问题（我以为的，实际最后往往证明是我蠢 :( ，本例就是)\n经过简化，最小可复现问题代码集如下：\n文件 dependency.py def some_funny_func(): return 'funny' 文件 module.py from dependency import some_funny_func def call_func(): return some_funny_func() 文件 tester.py from unittest.mock import patch from module import call_func def test_call_func(): def mocked_funny_func(): return \"not funny at all\" with patch(\"dependency.some_funny_func\", mocked_funny_func): return_value = call_func() assert return_value == \"not funny at all\" 一切看似合情合理（有些高手，可能已经发现问题了，但我当时没有看出来问题），但是就是通过不了测试。\n这里的错误是，没有深入理解 patch 的工作原理，patch 通过修改 module 属性的方式工作。这里 from module import call_func 执行的时候已经经 dependency.some_funny_func 导入了 module， 换言之：module.some_funny_func 已经指向了 dependency.some_funny_func, 此时通过 patch(\"dependency.some_funny_func\", mocked_funny_func) 只是修改了 dependency.some_funny_func 至新的 mocked_funny_func. 但不能修改 module.some_funny_func, 因为这个是修改前赋值的，它现在依旧指向原来的函数。\n将上述改写成 python 代码，原理大概如下：\n# 模拟 dependency.some_funny_func dependency = {} dependency[\"some_funny_func\"] = \"some_value\" # 模拟 module.some_funny_func module = {} module[\"some_funny_func\"] = dependency[\"some_funny_func\"] # 模拟 mock dependency[\"some_funny_func\"] = \"some_other_value\" # 查看结果 print(dependency[\"some_funny_func\"]) print(module[\"some_funny_func\"]) 在线演示 在线演示地址\n",
   "wordCount" : "121",
   "inLanguage": "zh",
   "datePublished": "0001-01-01T00:00:00Z",
@@ -228,7 +236,7 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       python mock 遇到的一个坑
     </h1>
@@ -243,11 +251,11 @@ if (!doNotTrack) {
 
         <div class="inner"><ul><ul>
                 <li>
-                    <a href="#%e6%96%87%e4%bb%b6-dependency-py" aria-label="文件 dependency.py">文件 dependency.py</a></li>
+                    <a href="#%e6%96%87%e4%bb%b6-dependencypy" aria-label="文件 dependency.py">文件 dependency.py</a></li>
                 <li>
-                    <a href="#%e6%96%87%e4%bb%b6-module-py" aria-label="文件 module.py">文件 module.py</a></li>
+                    <a href="#%e6%96%87%e4%bb%b6-modulepy" aria-label="文件 module.py">文件 module.py</a></li>
                 <li>
-                    <a href="#%e6%96%87%e4%bb%b6-tester-py" aria-label="文件 tester.py">文件 tester.py</a></li></ul>
+                    <a href="#%e6%96%87%e4%bb%b6-testerpy" aria-label="文件 tester.py">文件 tester.py</a></li></ul>
                     
                 <li>
                     <a href="#%e5%9c%a8%e7%ba%bf%e6%bc%94%e7%a4%ba" aria-label="在线演示">在线演示</a>
@@ -257,55 +265,50 @@ if (!doNotTrack) {
     </details>
 </div>
 
-  <div class="post-content"><p>修改一个项目的 Unit Test 代码时，遇到一个关于 <code>mock</code> 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。<a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb" target="_blank"><img src="https://mybinder.org/badge.svg" alt="Binder" /></a></p>
-
+  <div class="post-content"><p>修改一个项目的 Unit Test 代码时，遇到一个关于 <code>mock</code> 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。<a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb"><img loading="lazy" src="https://mybinder.org/badge.svg" alt="Binder"  />
+</a></p>
 <p>我给一个开源软件贡献 PR 时，遇到一个大的问题是我总是要给我的代码写单元测试，会出现一些奇怪的问题（我以为的，实际最后往往证明是我蠢 :( ，本例就是)</p>
-
 <p>经过简化，最小可复现问题代码集如下：</p>
-
-<h2 id="文件-dependency-py">文件 dependency.py<a hidden class="anchor" aria-hidden="true" href="#文件-dependency-py">#</a></h2>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">some_funny_func</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s1">&#39;funny&#39;</span></code></pre></div>
-<h2 id="文件-module-py">文件 module.py<a hidden class="anchor" aria-hidden="true" href="#文件-module-py">#</a></h2>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">dependency</span> <span class="kn">import</span> <span class="n">some_funny_func</span>
-
-<span class="k">def</span> <span class="nf">call_func</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">some_funny_func</span><span class="p">()</span></code></pre></div>
-<h2 id="文件-tester-py">文件 tester.py<a hidden class="anchor" aria-hidden="true" href="#文件-tester-py">#</a></h2>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span>
-
-<span class="kn">from</span> <span class="nn">module</span> <span class="kn">import</span> <span class="n">call_func</span>
-
-<span class="k">def</span> <span class="nf">test_call_func</span><span class="p">():</span>
-    <span class="k">def</span> <span class="nf">mocked_funny_func</span><span class="p">():</span>
-        <span class="k">return</span> <span class="s2">&#34;not funny at all&#34;</span>
-
-    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">&#34;dependency.some_funny_func&#34;</span><span class="p">,</span> <span class="n">mocked_funny_func</span><span class="p">):</span>
-        <span class="n">return_value</span> <span class="o">=</span> <span class="n">call_func</span><span class="p">()</span>
-
-    <span class="k">assert</span> <span class="n">return_value</span> <span class="o">==</span> <span class="s2">&#34;not funny at all&#34;</span></code></pre></div>
-<p>一切看似合情合理（有些高手，可能已经发现问题了，但我当时没有看出来问题），但是就是通过不了测试。</p>
-
+<h2 id="文件-dependencypy">文件 dependency.py<a hidden class="anchor" aria-hidden="true" href="#文件-dependencypy">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">some_funny_func</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="s1">&#39;funny&#39;</span>
+</span></span></code></pre></div><h2 id="文件-modulepy">文件 module.py<a hidden class="anchor" aria-hidden="true" href="#文件-modulepy">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">dependency</span> <span class="kn">import</span> <span class="n">some_funny_func</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">call_func</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">some_funny_func</span><span class="p">()</span>
+</span></span></code></pre></div><h2 id="文件-testerpy">文件 tester.py<a hidden class="anchor" aria-hidden="true" href="#文件-testerpy">#</a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">patch</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">module</span> <span class="kn">import</span> <span class="n">call_func</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">test_call_func</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">mocked_funny_func</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="s2">&#34;not funny at all&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">&#34;dependency.some_funny_func&#34;</span><span class="p">,</span> <span class="n">mocked_funny_func</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">return_value</span> <span class="o">=</span> <span class="n">call_func</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">return_value</span> <span class="o">==</span> <span class="s2">&#34;not funny at all&#34;</span>
+</span></span></code></pre></div><p>一切看似合情合理（有些高手，可能已经发现问题了，但我当时没有看出来问题），但是就是通过不了测试。</p>
 <p>这里的错误是，没有深入理解 <code>patch</code> 的工作原理，<code>patch</code> 通过修改 module 属性的方式工作。这里 <code>from module import call_func</code> 执行的时候已经经 <code>dependency.some_funny_func</code> 导入了 <code>module</code>， 换言之：<code>module.some_funny_func</code> 已经指向了 <code>dependency.some_funny_func</code>, 此时通过 <code>patch(&quot;dependency.some_funny_func&quot;, mocked_funny_func)</code> 只是修改了 <code>dependency.some_funny_func</code> 至新的 <code>mocked_funny_func</code>. 但不能修改 <code>module.some_funny_func</code>, 因为这个是修改前赋值的，它现在依旧指向原来的函数。</p>
-
 <p>将上述改写成 python 代码，原理大概如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 模拟 dependency.some_funny_func</span>
-<span class="n">dependency</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;some_value&#34;</span>
-
-<span class="c1"># 模拟 module.some_funny_func</span>
-<span class="n">module</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">module</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span>
-
-<span class="c1"># 模拟 mock</span>
-<span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;some_other_value&#34;</span>
-
-<span class="c1"># 查看结果</span>
-<span class="k">print</span><span class="p">(</span><span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="n">module</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">])</span></code></pre></div>
-<h1 id="在线演示">在线演示<a hidden class="anchor" aria-hidden="true" href="#在线演示">#</a></h1>
-
-<p><a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb" target="_blank">在线演示地址</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># 模拟 dependency.some_funny_func</span>
+</span></span><span class="line"><span class="cl"><span class="n">dependency</span> <span class="o">=</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;some_value&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 模拟 module.some_funny_func</span>
+</span></span><span class="line"><span class="cl"><span class="n">module</span> <span class="o">=</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">module</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 模拟 mock</span>
+</span></span><span class="line"><span class="cl"><span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&#34;some_other_value&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看结果</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">dependency</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">module</span><span class="p">[</span><span class="s2">&#34;some_funny_func&#34;</span><span class="p">])</span>
+</span></span></code></pre></div><h1 id="在线演示">在线演示<a hidden class="anchor" aria-hidden="true" href="#在线演示">#</a></h1>
+<p><a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb">在线演示地址</a></p>
 
   </div>
 
@@ -320,10 +323,10 @@ if (!doNotTrack) {
     <br>
     <span>python iterator 遇到的一个坑</span>
   </a>
-  <a class="next" href="https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/">
+  <a class="next" href="https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-reverse-matching-method/">
     <span class="title">下一页 »</span>
     <br>
-    <span>基于 OpenAI Gym 的 Q-Learning 算法演示</span>
+    <span>构建中文分词器 - 反向最大匹配法</span>
   </a>
 </nav>
 

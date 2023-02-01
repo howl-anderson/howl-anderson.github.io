@@ -10,7 +10,7 @@
 <meta name="description" content="TL;DR requirements.txt中不要使用非ASCII编码的字符，否则会造成字符集错误，无法解析内容">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="python中requirements.txt的编码问题" />
+</script><meta property="og:title" content="python中requirements.txt的编码问题" />
 <meta property="og:description" content="TL;DR requirements.txt中不要使用非ASCII编码的字符，否则会造成字符集错误，无法解析内容" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -124,7 +129,7 @@ if (!doNotTrack) {
   "keywords": [
     "Python"
   ],
-  "articleBody": "TL;DR requirements.txt中不要使用非ASCII编码的字符，否则会造成字符集错误，无法解析内容\n实验设计  两份requirements.txt文件，包含相同的依赖，但不同的地方是：一份是ASCII编码（或者说只包含英文字符）；另一份包含非ASCII字符（比如中文注释之类的） 分别安装两份requirements.txt文件，观察现象  实验材料 ASCII编码的requirements.txt 命名为：all_ascii_requirements.txt\n具体内容如下：\ndummy 非ASCII编码的requirements.txt 命名为：non_ascii_requirements.txt\n具体内容如下：\n# 这个是中文注释 dummy 实验过程 安装ASCII编码的requirements.txt 执行命令 pip install -r all_ascii_requirements.txt\n命令工作正常，输入内容如下：\nCollecting dummy (from -r all_ascii_requirements.txt (line 1)) Downloading dummy-0.1.0.zip Requirement already up-to-date: jinja2=2.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy--r all_ascii_requirements.txt (line 1)) Collecting numpy=1.0.0 (from dummy--r all_ascii_requirements.txt (line 1)) Downloading numpy-1.13.1-cp27-cp27mu-manylinux1_x86_64.whl (16.6MB) 100% |################################| 16.6MB 66kB/s Requirement already up-to-date: mock=1.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy--r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: MarkupSafe=0.23 in /usr/local/lib/python2.7/dist-packages (from jinja2=2.0.0-dummy--r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: six=1.9 in /usr/local/lib/python2.7/dist-packages (from mock=1.0.0-dummy--r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: funcsigs=1; python_version =1.0.0-dummy--r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: pbr=0.11 in /usr/local/lib/python2.7/dist-packages (from mock=1.0.0-dummy--r all_ascii_requirements.txt (line 1)) Building wheels for collected packages: dummy Running setup.py bdist_wheel for dummy ... done Stored in directory: /root/.cache/pip/wheels/fb/72/de/c12e171be0c7bff52d4bcebf680bd3b012203c68b8372b02a5 Successfully built dummy Installing collected packages: numpy, dummy Found existing installation: numpy 1.11.0 Uninstalling numpy-1.11.0: Successfully uninstalled numpy-1.11.0 Successfully installed dummy-0.1.0 numpy-1.13.1 安装非ASCII编码的requirements.txt 执行命令 pip install -r non_ascii_requirements.txt\n命令工作出现异常，输出内容如下：\nException: Traceback (most recent call last): File \"/usr/local/lib/python2.7/dist-packages/pip/basecommand.py\", line 215, in main status = self.run(options, args) File \"/usr/local/lib/python2.7/dist-packages/pip/commands/install.py\", line 312, in run wheel_cache File \"/usr/local/lib/python2.7/dist-packages/pip/basecommand.py\", line 295, in populate_requirement_set wheel_cache=wheel_cache): File \"/usr/local/lib/python2.7/dist-packages/pip/req/req_file.py\", line 84, in parse_requirements filename, comes_from=comes_from, session=session File \"/usr/local/lib/python2.7/dist-packages/pip/download.py\", line 422, in get_file_content content = auto_decode(f.read()) File \"/usr/local/lib/python2.7/dist-packages/pip/utils/encoding.py\", line 31, in auto_decode return data.decode(locale.getpreferredencoding(False)) UnicodeDecodeError: 'ascii' codec can't decode byte 0xe8 in position 2: ordinal not in range(128) 实验结论 pip在解析requirements.txt，只能处理ASCII编码的文件，否则会出现Unicode错误。在编写requirements.txt时，切记使用ASCII编码，不要夹杂中文等非ASCII字符\n",
+  "articleBody": "TL;DR requirements.txt中不要使用非ASCII编码的字符，否则会造成字符集错误，无法解析内容\n实验设计 两份requirements.txt文件，包含相同的依赖，但不同的地方是：一份是ASCII编码（或者说只包含英文字符）；另一份包含非ASCII字符（比如中文注释之类的） 分别安装两份requirements.txt文件，观察现象 实验材料 ASCII编码的requirements.txt 命名为：all_ascii_requirements.txt\n具体内容如下：\ndummy 非ASCII编码的requirements.txt 命名为：non_ascii_requirements.txt\n具体内容如下：\n# 这个是中文注释 dummy 实验过程 安装ASCII编码的requirements.txt 执行命令 pip install -r all_ascii_requirements.txt\n命令工作正常，输入内容如下：\nCollecting dummy (from -r all_ascii_requirements.txt (line 1)) Downloading dummy-0.1.0.zip Requirement already up-to-date: jinja2\u003e=2.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy-\u003e-r all_ascii_requirements.txt (line 1)) Collecting numpy\u003e=1.0.0 (from dummy-\u003e-r all_ascii_requirements.txt (line 1)) Downloading numpy-1.13.1-cp27-cp27mu-manylinux1_x86_64.whl (16.6MB) 100% |################################| 16.6MB 66kB/s Requirement already up-to-date: mock\u003e=1.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy-\u003e-r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: MarkupSafe\u003e=0.23 in /usr/local/lib/python2.7/dist-packages (from jinja2\u003e=2.0.0-\u003edummy-\u003e-r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: six\u003e=1.9 in /usr/local/lib/python2.7/dist-packages (from mock\u003e=1.0.0-\u003edummy-\u003e-r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: funcsigs\u003e=1; python_version \u003c \"3.3\" in /usr/local/lib/python2.7/dist-packages (from mock\u003e=1.0.0-\u003edummy-\u003e-r all_ascii_requirements.txt (line 1)) Requirement already up-to-date: pbr\u003e=0.11 in /usr/local/lib/python2.7/dist-packages (from mock\u003e=1.0.0-\u003edummy-\u003e-r all_ascii_requirements.txt (line 1)) Building wheels for collected packages: dummy Running setup.py bdist_wheel for dummy ... done Stored in directory: /root/.cache/pip/wheels/fb/72/de/c12e171be0c7bff52d4bcebf680bd3b012203c68b8372b02a5 Successfully built dummy Installing collected packages: numpy, dummy Found existing installation: numpy 1.11.0 Uninstalling numpy-1.11.0: Successfully uninstalled numpy-1.11.0 Successfully installed dummy-0.1.0 numpy-1.13.1 安装非ASCII编码的requirements.txt 执行命令 pip install -r non_ascii_requirements.txt\n命令工作出现异常，输出内容如下：\nException: Traceback (most recent call last): File \"/usr/local/lib/python2.7/dist-packages/pip/basecommand.py\", line 215, in main status = self.run(options, args) File \"/usr/local/lib/python2.7/dist-packages/pip/commands/install.py\", line 312, in run wheel_cache File \"/usr/local/lib/python2.7/dist-packages/pip/basecommand.py\", line 295, in populate_requirement_set wheel_cache=wheel_cache): File \"/usr/local/lib/python2.7/dist-packages/pip/req/req_file.py\", line 84, in parse_requirements filename, comes_from=comes_from, session=session File \"/usr/local/lib/python2.7/dist-packages/pip/download.py\", line 422, in get_file_content content = auto_decode(f.read()) File \"/usr/local/lib/python2.7/dist-packages/pip/utils/encoding.py\", line 31, in auto_decode return data.decode(locale.getpreferredencoding(False)) UnicodeDecodeError: 'ascii' codec can't decode byte 0xe8 in position 2: ordinal not in range(128) 实验结论 pip在解析requirements.txt，只能处理ASCII编码的文件，否则会出现Unicode错误。在编写requirements.txt时，切记使用ASCII编码，不要夹杂中文等非ASCII字符\n",
   "wordCount" : "234",
   "inLanguage": "zh",
   "datePublished": "2017-11-09T17:10:26Z",
@@ -228,11 +233,11 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       python中requirements.txt的编码问题
     </h1>
-    <div class="post-meta"><span title='2017-11-09 17:10:26 +0000 UTC'>November 9, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2017-11-09 17:10:26 +0000 UTC'>十一月 9, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -248,17 +253,17 @@ if (!doNotTrack) {
                     <a href="#%e5%ae%9e%e9%aa%8c%e6%9d%90%e6%96%99" aria-label="实验材料">实验材料</a><ul>
                         
                 <li>
-                    <a href="#ascii%e7%bc%96%e7%a0%81%e7%9a%84requirements-txt" aria-label="ASCII编码的requirements.txt">ASCII编码的requirements.txt</a></li>
+                    <a href="#ascii%e7%bc%96%e7%a0%81%e7%9a%84requirementstxt" aria-label="ASCII编码的requirements.txt">ASCII编码的requirements.txt</a></li>
                 <li>
-                    <a href="#%e9%9d%9eascii%e7%bc%96%e7%a0%81%e7%9a%84requirements-txt" aria-label="非ASCII编码的requirements.txt">非ASCII编码的requirements.txt</a></li></ul>
+                    <a href="#%e9%9d%9eascii%e7%bc%96%e7%a0%81%e7%9a%84requirementstxt" aria-label="非ASCII编码的requirements.txt">非ASCII编码的requirements.txt</a></li></ul>
                 </li>
                 <li>
                     <a href="#%e5%ae%9e%e9%aa%8c%e8%bf%87%e7%a8%8b" aria-label="实验过程">实验过程</a><ul>
                         
                 <li>
-                    <a href="#%e5%ae%89%e8%a3%85ascii%e7%bc%96%e7%a0%81%e7%9a%84requirements-txt" aria-label="安装ASCII编码的requirements.txt">安装ASCII编码的requirements.txt</a></li>
+                    <a href="#%e5%ae%89%e8%a3%85ascii%e7%bc%96%e7%a0%81%e7%9a%84requirementstxt" aria-label="安装ASCII编码的requirements.txt">安装ASCII编码的requirements.txt</a></li>
                 <li>
-                    <a href="#%e5%ae%89%e8%a3%85%e9%9d%9eascii%e7%bc%96%e7%a0%81%e7%9a%84requirements-txt" aria-label="安装非ASCII编码的requirements.txt">安装非ASCII编码的requirements.txt</a></li></ul>
+                    <a href="#%e5%ae%89%e8%a3%85%e9%9d%9eascii%e7%bc%96%e7%a0%81%e7%9a%84requirementstxt" aria-label="安装非ASCII编码的requirements.txt">安装非ASCII编码的requirements.txt</a></li></ul>
                 </li>
                 <li>
                     <a href="#%e5%ae%9e%e9%aa%8c%e7%bb%93%e8%ae%ba" aria-label="实验结论">实验结论</a>
@@ -269,78 +274,64 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p><strong>TL;DR</strong> requirements.txt中不要使用非ASCII编码的字符，否则会造成字符集错误，无法解析内容</p>
-
 <h2 id="实验设计">实验设计<a hidden class="anchor" aria-hidden="true" href="#实验设计">#</a></h2>
-
 <ol>
 <li>两份requirements.txt文件，包含相同的依赖，但不同的地方是：一份是ASCII编码（或者说只包含英文字符）；另一份包含非ASCII字符（比如中文注释之类的）</li>
 <li>分别安装两份requirements.txt文件，观察现象</li>
 </ol>
-
 <h2 id="实验材料">实验材料<a hidden class="anchor" aria-hidden="true" href="#实验材料">#</a></h2>
-
-<h3 id="ascii编码的requirements-txt">ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#ascii编码的requirements-txt">#</a></h3>
-
+<h3 id="ascii编码的requirementstxt">ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#ascii编码的requirementstxt">#</a></h3>
 <p>命名为：<code>all_ascii_requirements.txt</code></p>
-
 <p>具体内容如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">dummy</code></pre></div>
-<h3 id="非ascii编码的requirements-txt">非ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#非ascii编码的requirements-txt">#</a></h3>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">dummy
+</span></span></code></pre></div><h3 id="非ascii编码的requirementstxt">非ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#非ascii编码的requirementstxt">#</a></h3>
 <p>命名为：<code>non_ascii_requirements.txt</code></p>
-
 <p>具体内容如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text"># 这个是中文注释
-dummy</code></pre></div>
-<h2 id="实验过程">实验过程<a hidden class="anchor" aria-hidden="true" href="#实验过程">#</a></h2>
-
-<h3 id="安装ascii编码的requirements-txt">安装ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#安装ascii编码的requirements-txt">#</a></h3>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl"># 这个是中文注释
+</span></span><span class="line"><span class="cl">dummy
+</span></span></code></pre></div><h2 id="实验过程">实验过程<a hidden class="anchor" aria-hidden="true" href="#实验过程">#</a></h2>
+<h3 id="安装ascii编码的requirementstxt">安装ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#安装ascii编码的requirementstxt">#</a></h3>
 <p>执行命令 <code>pip install -r all_ascii_requirements.txt</code></p>
-
 <p>命令工作正常，输入内容如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">Collecting dummy (from -r all_ascii_requirements.txt (line 1))
-  Downloading dummy-0.1.0.zip
-Requirement already up-to-date: jinja2&gt;=2.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy-&gt;-r all_ascii_requirements.txt (line 1))
-Collecting numpy&gt;=1.0.0 (from dummy-&gt;-r all_ascii_requirements.txt (line 1))
-  Downloading numpy-1.13.1-cp27-cp27mu-manylinux1_x86_64.whl (16.6MB)
-    100% |################################| 16.6MB 66kB/s 
-Requirement already up-to-date: mock&gt;=1.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy-&gt;-r all_ascii_requirements.txt (line 1))
-Requirement already up-to-date: MarkupSafe&gt;=0.23 in /usr/local/lib/python2.7/dist-packages (from jinja2&gt;=2.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
-Requirement already up-to-date: six&gt;=1.9 in /usr/local/lib/python2.7/dist-packages (from mock&gt;=1.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
-Requirement already up-to-date: funcsigs&gt;=1; python_version &lt; &#34;3.3&#34; in /usr/local/lib/python2.7/dist-packages (from mock&gt;=1.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
-Requirement already up-to-date: pbr&gt;=0.11 in /usr/local/lib/python2.7/dist-packages (from mock&gt;=1.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
-Building wheels for collected packages: dummy
-  Running setup.py bdist_wheel for dummy ... done
-  Stored in directory: /root/.cache/pip/wheels/fb/72/de/c12e171be0c7bff52d4bcebf680bd3b012203c68b8372b02a5
-Successfully built dummy
-Installing collected packages: numpy, dummy
-  Found existing installation: numpy 1.11.0
-    Uninstalling numpy-1.11.0:
-      Successfully uninstalled numpy-1.11.0
-Successfully installed dummy-0.1.0 numpy-1.13.1</code></pre></div>
-<h3 id="安装非ascii编码的requirements-txt">安装非ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#安装非ascii编码的requirements-txt">#</a></h3>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Collecting dummy (from -r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">  Downloading dummy-0.1.0.zip
+</span></span><span class="line"><span class="cl">Requirement already up-to-date: jinja2&gt;=2.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy-&gt;-r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">Collecting numpy&gt;=1.0.0 (from dummy-&gt;-r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">  Downloading numpy-1.13.1-cp27-cp27mu-manylinux1_x86_64.whl (16.6MB)
+</span></span><span class="line"><span class="cl">    100% |################################| 16.6MB 66kB/s 
+</span></span><span class="line"><span class="cl">Requirement already up-to-date: mock&gt;=1.0.0 in /usr/local/lib/python2.7/dist-packages (from dummy-&gt;-r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">Requirement already up-to-date: MarkupSafe&gt;=0.23 in /usr/local/lib/python2.7/dist-packages (from jinja2&gt;=2.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">Requirement already up-to-date: six&gt;=1.9 in /usr/local/lib/python2.7/dist-packages (from mock&gt;=1.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">Requirement already up-to-date: funcsigs&gt;=1; python_version &lt; &#34;3.3&#34; in /usr/local/lib/python2.7/dist-packages (from mock&gt;=1.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">Requirement already up-to-date: pbr&gt;=0.11 in /usr/local/lib/python2.7/dist-packages (from mock&gt;=1.0.0-&gt;dummy-&gt;-r all_ascii_requirements.txt (line 1))
+</span></span><span class="line"><span class="cl">Building wheels for collected packages: dummy
+</span></span><span class="line"><span class="cl">  Running setup.py bdist_wheel for dummy ... done
+</span></span><span class="line"><span class="cl">  Stored in directory: /root/.cache/pip/wheels/fb/72/de/c12e171be0c7bff52d4bcebf680bd3b012203c68b8372b02a5
+</span></span><span class="line"><span class="cl">Successfully built dummy
+</span></span><span class="line"><span class="cl">Installing collected packages: numpy, dummy
+</span></span><span class="line"><span class="cl">  Found existing installation: numpy 1.11.0
+</span></span><span class="line"><span class="cl">    Uninstalling numpy-1.11.0:
+</span></span><span class="line"><span class="cl">      Successfully uninstalled numpy-1.11.0
+</span></span><span class="line"><span class="cl">Successfully installed dummy-0.1.0 numpy-1.13.1
+</span></span></code></pre></div><h3 id="安装非ascii编码的requirementstxt">安装非ASCII编码的requirements.txt<a hidden class="anchor" aria-hidden="true" href="#安装非ascii编码的requirementstxt">#</a></h3>
 <p>执行命令 <code>pip install -r non_ascii_requirements.txt</code></p>
-
 <p>命令工作出现异常，输出内容如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">Exception:
-Traceback (most recent call last):
-  File &#34;/usr/local/lib/python2.7/dist-packages/pip/basecommand.py&#34;, line 215, in main
-    status = self.run(options, args)
-  File &#34;/usr/local/lib/python2.7/dist-packages/pip/commands/install.py&#34;, line 312, in run
-    wheel_cache
-  File &#34;/usr/local/lib/python2.7/dist-packages/pip/basecommand.py&#34;, line 295, in populate_requirement_set
-    wheel_cache=wheel_cache):
-  File &#34;/usr/local/lib/python2.7/dist-packages/pip/req/req_file.py&#34;, line 84, in parse_requirements
-    filename, comes_from=comes_from, session=session
-  File &#34;/usr/local/lib/python2.7/dist-packages/pip/download.py&#34;, line 422, in get_file_content
-    content = auto_decode(f.read())
-  File &#34;/usr/local/lib/python2.7/dist-packages/pip/utils/encoding.py&#34;, line 31, in auto_decode
-    return data.decode(locale.getpreferredencoding(False))
-UnicodeDecodeError: &#39;ascii&#39; codec can&#39;t decode byte 0xe8 in position 2: ordinal not in range(128)</code></pre></div>
-<h2 id="实验结论">实验结论<a hidden class="anchor" aria-hidden="true" href="#实验结论">#</a></h2>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">Exception:
+</span></span><span class="line"><span class="cl">Traceback (most recent call last):
+</span></span><span class="line"><span class="cl">  File &#34;/usr/local/lib/python2.7/dist-packages/pip/basecommand.py&#34;, line 215, in main
+</span></span><span class="line"><span class="cl">    status = self.run(options, args)
+</span></span><span class="line"><span class="cl">  File &#34;/usr/local/lib/python2.7/dist-packages/pip/commands/install.py&#34;, line 312, in run
+</span></span><span class="line"><span class="cl">    wheel_cache
+</span></span><span class="line"><span class="cl">  File &#34;/usr/local/lib/python2.7/dist-packages/pip/basecommand.py&#34;, line 295, in populate_requirement_set
+</span></span><span class="line"><span class="cl">    wheel_cache=wheel_cache):
+</span></span><span class="line"><span class="cl">  File &#34;/usr/local/lib/python2.7/dist-packages/pip/req/req_file.py&#34;, line 84, in parse_requirements
+</span></span><span class="line"><span class="cl">    filename, comes_from=comes_from, session=session
+</span></span><span class="line"><span class="cl">  File &#34;/usr/local/lib/python2.7/dist-packages/pip/download.py&#34;, line 422, in get_file_content
+</span></span><span class="line"><span class="cl">    content = auto_decode(f.read())
+</span></span><span class="line"><span class="cl">  File &#34;/usr/local/lib/python2.7/dist-packages/pip/utils/encoding.py&#34;, line 31, in auto_decode
+</span></span><span class="line"><span class="cl">    return data.decode(locale.getpreferredencoding(False))
+</span></span><span class="line"><span class="cl">UnicodeDecodeError: &#39;ascii&#39; codec can&#39;t decode byte 0xe8 in position 2: ordinal not in range(128)
+</span></span></code></pre></div><h2 id="实验结论">实验结论<a hidden class="anchor" aria-hidden="true" href="#实验结论">#</a></h2>
 <p>pip在解析requirements.txt，只能处理ASCII编码的文件，否则会出现Unicode错误。在编写requirements.txt时，切记使用ASCII编码，不要夹杂中文等非ASCII字符</p>
 
   </div>

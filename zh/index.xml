@@ -72,7 +72,6 @@
       
       <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/</guid>
       <description>&lt;!-- TODO: https://github.com/hexojs/hexo/issues/2150 caused can not use GitHub badge --&gt;
-
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。&lt;/p&gt;</description>
     </item>
     
@@ -218,7 +217,8 @@
       
       <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</guid>
       <description>&lt;p&gt;在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
-&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34; /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
+&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -227,20 +227,9 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</guid>
-      <description>&lt;p&gt;修改一个项目的 Unit Test 代码时，遇到一个关于 &lt;code&gt;mock&lt;/code&gt; 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34; /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;修改一个项目的 Unit Test 代码时，遇到一个关于 &lt;code&gt;mock&lt;/code&gt; 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
+&lt;/a&gt;&lt;/p&gt;</description>
     </item>
-    
-    <item>
-      <title>基于 OpenAI Gym 的 Q-Learning 算法演示</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。&lt;/p&gt;</description>
-    </item>
-    
     
     <item>
       <title>构建中文分词器 - 反向最大匹配法</title>
@@ -268,6 +257,18 @@
       <guid>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-forward-matching-method/</guid>
       <description>&lt;p&gt;最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的左边到右边（正向）依次寻找最大匹配。&lt;/p&gt;</description>
     </item>
+    
+    <item>
+      <title>基于 OpenAI Gym 的 Q-Learning 算法演示</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。&lt;/p&gt;</description>
+    </item>
+    
     
   </channel>
 </rss>

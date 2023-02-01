@@ -16,8 +16,8 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-
+      <description>&lt;p&gt;&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
+&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。&lt;/p&gt;</description>
     </item>
     

@@ -8,11 +8,10 @@
 <title>TenserFlow 新特性：Eager Execution | Xiaoquan Kong&#39;s Blog</title>
 <meta name="keywords" content="">
 <meta name="description" content="
-
 TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -83,14 +82,12 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="TenserFlow 新特性：Eager Execution" />
+</script><meta property="og:title" content="TenserFlow 新特性：Eager Execution" />
 <meta property="og:description" content="
-
 TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -102,7 +99,6 @@ TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，T
 
 <meta name="twitter:title" content="TenserFlow 新特性：Eager Execution"/>
 <meta name="twitter:description" content="
-
 TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。"/>
 
 
@@ -110,7 +106,13 @@ TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，T
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -126,12 +128,12 @@ TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，T
   "@type": "BlogPosting",
   "headline": "TenserFlow 新特性：Eager Execution",
   "name": "TenserFlow 新特性：Eager Execution",
-  "description": "TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。\n",
+  "description": " TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。\n",
   "keywords": [
     
   ],
-  "articleBody": "TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。\n安装 TensorFlow 对应的版本 因为 TensorFlow 正式版（写作时间 2018-01-06，此时的正式版本为1.4.1）中还不包含此功能，因此我们需要安装 TensorFlow nightly build 版本。\npip install tf-nightly # or tf-nightly-gpu if you have GPU 特性探索 Eager execution 在开启这个模式后，TensorFlow 将会立即执行操作，返回结果给 Python，而不需要使用 Session.run(), 例如：\nimport tensorflow as tf import tensorflow.contrib.eager as tfe tfe.enable_eager_execution() x = [[2]] m = tf.matmul(x, x) print(m)  点击这里 launch binder ，在线运行这个例子\n 你会得到如下显示：\ntf.Tensor([[4]], shape=(1, 1), dtype=int32) Dynamic models 在不具备动态模型的能力前，TensorFlow 中的每一个 operator 都需要明确定声明和定义。在具备的了动态模型能力之后，TensorFlow 具备了从操作中推导操作数类型的能力，让复杂的动态模型容易实现，例如：\nimport tensorflow as tf import tensorflow.contrib.eager as tfe tfe.enable_eager_execution() a = tf.constant(12) counter = 0 while not tf.equal(a, 1): if tf.equal(a % 2, 0): a = a / 2 else: a = 3 * a + 1 print(a)  点击这里 launch binder ，在线运行这个例子\n 如果没有启用 Eager Execution 会显示如下错误：\n Using a tf.Tensor as a Python bool is not allowed.\n 原因是在 while not tf.equal(a, 1) 处，如果没有启动 Eager Execution 那么返回的结果是 tf.Tensor 对象，因为还不知道具体的值所以不能转换成bool类型。\nGradients 得益于 Eager Execution 立即执行的特性，Gradients 也可以立即得到，而不用等到运行时才能知道，例子如下：\nimport tensorflow as tf import tensorflow.contrib.eager as tfe tfe.enable_eager_execution() def square(x): return tf.multiply(x, x) grad = tfe.gradients_function(square) print(square(3.)) # 输出 [9.] print(grad(3.)) # 输出 [6.]  点击这里 launch binder ，在线运行这个例子\n 输入的具体情况如下：\ntf.Tensor(9.0, shape=(), dtype=float32) [] Building models 官方推荐应该使用 Python 的 class 来组织模型结构而不是 function。Eager Execution 带有的 tfe.Network 就是设计用来作为模型的父类的，继承这个类之后就支持网络的套嵌，下面这段代码是官方推荐的简易 MNIST 模型的参考：\nclass MNISTModel(tfe.Network): def __init__(self): super(MNISTModel, self).__init__() self.layer1 = self.track_layer(tf.layers.Dense(units=10)) self.layer2 = self.track_layer(tf.layers.Dense(units=10)) def call(self, input): \"\"\"Actually runs the model.\"\"\" result = self.layer1(input) result = self.layer2(result) return result 即使没有训练，我们也能够立即调用它并观察输出：\n# Let's make up a blank input image model = MNISTModel() batch = tf.zeros([1, 1, 784]) print(batch.shape) # (1, 1, 784) result = model(batch) print(result) # tf.Tensor([[[ 0. 0., ...., 0.]]], shape=(1, 1, 10), dtype=float32) 这里并不需要使用 placeholders 或者 sessions。当我们第一输入时，模型的参数会被设定好。\n为了训练任何模型，我们都需要 loss function，calculate gradients 和 optimizer 去优化参数。 loss function\ndef loss_function(model, x, y): y_ = model(x) return tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=y_) calculate gradients \u0026 optimizer\noptimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001) for (x, y) in tfe.Iterator(dataset): grads = tfe.implicit_gradients(loss_function)(model, x, y) optimizer.apply_gradients(grads)  点击这里 launch binder ，在线运行这个例子\n 其他特性 还有其他特性，如： * get the second derivative * derivative under control flow * Custom Gradients\n这里就不再介绍，感兴趣的可以参考官方文档或者本文的参考文档。\n参考文档  Google Research Blog  Eager Execution: An imperative, define-by-run interface to TensorFlow ",
-  "wordCount" : "337",
+  "articleBody": " TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。\n安装 TensorFlow 对应的版本 因为 TensorFlow 正式版（写作时间 2018-01-06，此时的正式版本为1.4.1）中还不包含此功能，因此我们需要安装 TensorFlow nightly build 版本。\npip install tf-nightly # or tf-nightly-gpu if you have GPU 特性探索 Eager execution 在开启这个模式后，TensorFlow 将会立即执行操作，返回结果给 Python，而不需要使用 Session.run(), 例如：\nimport tensorflow as tf import tensorflow.contrib.eager as tfe tfe.enable_eager_execution() x = [[2]] m = tf.matmul(x, x) print(m) 点击这里 launch binder ，在线运行这个例子\n你会得到如下显示：\ntf.Tensor([[4]], shape=(1, 1), dtype=int32) Dynamic models 在不具备动态模型的能力前，TensorFlow 中的每一个 operator 都需要明确定声明和定义。在具备的了动态模型能力之后，TensorFlow 具备了从操作中推导操作数类型的能力，让复杂的动态模型容易实现，例如：\nimport tensorflow as tf import tensorflow.contrib.eager as tfe tfe.enable_eager_execution() a = tf.constant(12) counter = 0 while not tf.equal(a, 1): if tf.equal(a % 2, 0): a = a / 2 else: a = 3 * a + 1 print(a) 点击这里 launch binder ，在线运行这个例子\n如果没有启用 Eager Execution 会显示如下错误：\nUsing a tf.Tensor as a Python bool is not allowed.\n原因是在 while not tf.equal(a, 1) 处，如果没有启动 Eager Execution 那么返回的结果是 tf.Tensor 对象，因为还不知道具体的值所以不能转换成bool类型。\nGradients 得益于 Eager Execution 立即执行的特性，Gradients 也可以立即得到，而不用等到运行时才能知道，例子如下：\nimport tensorflow as tf import tensorflow.contrib.eager as tfe tfe.enable_eager_execution() def square(x): return tf.multiply(x, x) grad = tfe.gradients_function(square) print(square(3.)) # 输出 [9.] print(grad(3.)) # 输出 [6.] 点击这里 launch binder ，在线运行这个例子\n输入的具体情况如下：\ntf.Tensor(9.0, shape=(), dtype=float32) [] Building models 官方推荐应该使用 Python 的 class 来组织模型结构而不是 function。Eager Execution 带有的 tfe.Network 就是设计用来作为模型的父类的，继承这个类之后就支持网络的套嵌，下面这段代码是官方推荐的简易 MNIST 模型的参考：\nclass MNISTModel(tfe.Network): def __init__(self): super(MNISTModel, self).__init__() self.layer1 = self.track_layer(tf.layers.Dense(units=10)) self.layer2 = self.track_layer(tf.layers.Dense(units=10)) def call(self, input): \"\"\"Actually runs the model.\"\"\" result = self.layer1(input) result = self.layer2(result) return result 即使没有训练，我们也能够立即调用它并观察输出：\n# Let's make up a blank input image model = MNISTModel() batch = tf.zeros([1, 1, 784]) print(batch.shape) # (1, 1, 784) result = model(batch) print(result) # tf.Tensor([[[ 0. 0., ...., 0.]]], shape=(1, 1, 10), dtype=float32) 这里并不需要使用 placeholders 或者 sessions。当我们第一输入时，模型的参数会被设定好。\n为了训练任何模型，我们都需要 loss function，calculate gradients 和 optimizer 去优化参数。 loss function\ndef loss_function(model, x, y): y_ = model(x) return tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=y_) calculate gradients \u0026 optimizer\noptimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001) for (x, y) in tfe.Iterator(dataset): grads = tfe.implicit_gradients(loss_function)(model, x, y) optimizer.apply_gradients(grads) 点击这里 launch binder ，在线运行这个例子\n其他特性 还有其他特性，如：\nget the second derivative derivative under control flow Custom Gradients 这里就不再介绍，感兴趣的可以参考官方文档或者本文的参考文档。\n参考文档 Google Research Blog \u003e Eager Execution: An imperative, define-by-run interface to TensorFlow ",
+  "wordCount" : "334",
   "inLanguage": "zh",
   "datePublished": "2017-12-23T21:16:51Z",
   "dateModified": "2017-12-23T21:16:51Z",
@@ -234,11 +236,11 @@ TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，T
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       TenserFlow 新特性：Eager Execution
     </h1>
-    <div class="post-meta"><span title='2017-12-23 21:16:51 +0000 UTC'>December 23, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2017-12-23 21:16:51 +0000 UTC'>十二月 23, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -275,134 +277,116 @@ TL;DR 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，T
 </div>
 
   <div class="post-content"><!-- TODO: https://github.com/hexojs/hexo/issues/2150 caused can not use GitHub badge -->
-
 <p><strong>TL;DR</strong> 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。</p>
-
 <h1 id="安装-tensorflow-对应的版本">安装 TensorFlow 对应的版本<a hidden class="anchor" aria-hidden="true" href="#安装-tensorflow-对应的版本">#</a></h1>
-
 <p>因为 TensorFlow 正式版（写作时间 2018-01-06，此时的正式版本为1.4.1）中还不包含此功能，因此我们需要安装 TensorFlow nightly build 版本。</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">pip install tf-nightly  <span class="c1"># or tf-nightly-gpu if you have GPU</span></code></pre></div>
-<h1 id="特性探索">特性探索<a hidden class="anchor" aria-hidden="true" href="#特性探索">#</a></h1>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">pip install tf-nightly  <span class="c1"># or tf-nightly-gpu if you have GPU</span>
+</span></span></code></pre></div><h1 id="特性探索">特性探索<a hidden class="anchor" aria-hidden="true" href="#特性探索">#</a></h1>
 <h2 id="eager-execution">Eager execution<a hidden class="anchor" aria-hidden="true" href="#eager-execution">#</a></h2>
-
 <p>在开启这个模式后，TensorFlow 将会立即执行操作，返回结果给 Python，而不需要使用 <code>Session.run()</code>, 例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">tensorflow.contrib.eager</span> <span class="kn">as</span> <span class="nn">tfe</span>
-
-<span class="n">tfe</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">2</span><span class="p">]]</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span></code></pre></div>
-<blockquote>
-<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FEager%20execution.ipynb" target="_blank">launch binder</a> ，在线运行这个例子</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow.contrib.eager</span> <span class="k">as</span> <span class="nn">tfe</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">tfe</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">x</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">2</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+</span></span></code></pre></div><blockquote>
+<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FEager%20execution.ipynb">launch binder</a> ，在线运行这个例子</p>
 </blockquote>
-
 <p>你会得到如下显示：</p>
-<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">tf.Tensor([[4]], shape=(1, 1), dtype=int32)</code></pre></div>
-<h3 id="dynamic-models">Dynamic models<a hidden class="anchor" aria-hidden="true" href="#dynamic-models">#</a></h3>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">tf.Tensor([[4]], shape=(1, 1), dtype=int32)
+</span></span></code></pre></div><h3 id="dynamic-models">Dynamic models<a hidden class="anchor" aria-hidden="true" href="#dynamic-models">#</a></h3>
 <p>在不具备动态模型的能力前，TensorFlow 中的每一个 operator 都需要明确定声明和定义。在具备的了动态模型能力之后，TensorFlow 具备了从操作中推导操作数类型的能力，让复杂的动态模型容易实现，例如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">tensorflow.contrib.eager</span> <span class="kn">as</span> <span class="nn">tfe</span>
-
-<span class="n">tfe</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
-
-<span class="n">a</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
-<span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">while</span> <span class="ow">not</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
-  <span class="k">if</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">a</span> <span class="o">%</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">/</span> <span class="mi">2</span>
-  <span class="k">else</span><span class="p">:</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
-  <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></code></pre></div>
-<blockquote>
-<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FDynamic%20models.ipynb" target="_blank">launch binder</a> ，在线运行这个例子</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow.contrib.eager</span> <span class="k">as</span> <span class="nn">tfe</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">tfe</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">a</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span> <span class="ow">not</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="n">tf</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">a</span> <span class="o">%</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">/</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div><blockquote>
+<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FDynamic%20models.ipynb">launch binder</a> ，在线运行这个例子</p>
 </blockquote>
-
 <p>如果没有启用 Eager Execution 会显示如下错误：</p>
-
 <blockquote>
 <p>Using a <code>tf.Tensor</code> as a Python <code>bool</code> is not allowed.</p>
 </blockquote>
-
 <p>原因是在 <code>while not tf.equal(a, 1)</code> 处，如果没有启动 Eager Execution 那么返回的结果是 <code>tf.Tensor</code> 对象，因为还不知道具体的值所以不能转换成bool类型。</p>
-
 <h2 id="gradients">Gradients<a hidden class="anchor" aria-hidden="true" href="#gradients">#</a></h2>
-
 <p>得益于 Eager Execution 立即执行的特性，Gradients 也可以立即得到，而不用等到运行时才能知道，例子如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">tensorflow.contrib.eager</span> <span class="kn">as</span> <span class="nn">tfe</span>
-
-<span class="n">tfe</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
-
-<span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-  <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-
-<span class="n">grad</span> <span class="o">=</span> <span class="n">tfe</span><span class="o">.</span><span class="n">gradients_function</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="mf">3.</span><span class="p">))</span>    <span class="c1"># 输出 [9.]</span>
-<span class="k">print</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="mf">3.</span><span class="p">))</span>      <span class="c1"># 输出 [6.]</span></code></pre></div>
-<blockquote>
-<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FGradients.ipynb" target="_blank">launch binder</a> ，在线运行这个例子</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow.contrib.eager</span> <span class="k">as</span> <span class="nn">tfe</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">tfe</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">grad</span> <span class="o">=</span> <span class="n">tfe</span><span class="o">.</span><span class="n">gradients_function</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="mf">3.</span><span class="p">))</span>    <span class="c1"># 输出 [9.]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">grad</span><span class="p">(</span><span class="mf">3.</span><span class="p">))</span>      <span class="c1"># 输出 [6.]</span>
+</span></span></code></pre></div><blockquote>
+<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FGradients.ipynb">launch binder</a> ，在线运行这个例子</p>
 </blockquote>
-
 <p>输入的具体情况如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-text" data-lang="text">tf.Tensor(9.0, shape=(), dtype=float32)
-[&lt;tf.Tensor: id=11, shape=(), dtype=float32, numpy=6.0&gt;]</code></pre></div>
-<h2 id="building-models">Building models<a hidden class="anchor" aria-hidden="true" href="#building-models">#</a></h2>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">tf.Tensor(9.0, shape=(), dtype=float32)
+</span></span><span class="line"><span class="cl">[&lt;tf.Tensor: id=11, shape=(), dtype=float32, numpy=6.0&gt;]
+</span></span></code></pre></div><h2 id="building-models">Building models<a hidden class="anchor" aria-hidden="true" href="#building-models">#</a></h2>
 <p>官方推荐应该使用 Python 的 class 来组织模型结构而不是 function。Eager Execution 带有的 <code>tfe.Network</code> 就是设计用来作为模型的父类的，继承这个类之后就支持网络的套嵌，下面这段代码是官方推荐的简易 MNIST 模型的参考：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">MNISTModel</span><span class="p">(</span><span class="n">tfe</span><span class="o">.</span><span class="n">Network</span><span class="p">):</span>
-  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="nb">super</span><span class="p">(</span><span class="n">MNISTModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">layer1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_layer</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">layer2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_layer</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
-  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
-    <span class="s2">&#34;&#34;&#34;Actually runs the model.&#34;&#34;&#34;</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer1</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer2</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></code></pre></div>
-<p>即使没有训练，我们也能够立即调用它并观察输出：</p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="c1"># Let&#39;s make up a blank input image</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">MNISTModel</span><span class="p">()</span>
-<span class="n">batch</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="c1"># (1, 1, 784)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="c1"># tf.Tensor([[[ 0.  0., ...., 0.]]], shape=(1, 1, 10), dtype=float32)</span></code></pre></div>
-<p>这里并不需要使用 placeholders 或者 sessions。当我们第一输入时，模型的参数会被设定好。</p>
-
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">MNISTModel</span><span class="p">(</span><span class="n">tfe</span><span class="o">.</span><span class="n">Network</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">super</span><span class="p">(</span><span class="n">MNISTModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="bp">self</span><span class="o">.</span><span class="n">layer1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_layer</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="bp">self</span><span class="o">.</span><span class="n">layer2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_layer</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="n">units</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;&#34;&#34;Actually runs the model.&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer1</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer2</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">result</span>
+</span></span></code></pre></div><p>即使没有训练，我们也能够立即调用它并观察输出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># Let&#39;s make up a blank input image</span>
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">MNISTModel</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">batch</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># (1, 1, 784)</span>
+</span></span><span class="line"><span class="cl"><span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># tf.Tensor([[[ 0.  0., ...., 0.]]], shape=(1, 1, 10), dtype=float32)</span>
+</span></span></code></pre></div><p>这里并不需要使用 placeholders 或者 sessions。当我们第一输入时，模型的参数会被设定好。</p>
 <p>为了训练任何模型，我们都需要 loss function，calculate gradients 和 optimizer 去优化参数。
-<strong><em>loss function</em></strong></p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">loss_function</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-    <span class="n">y_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">y_</span><span class="p">)</span></code></pre></div>
-<p><strong><em>calculate gradients &amp; optimizer</em></strong></p>
-<div class="highlight"><pre class="chroma"><code class="language-python" data-lang="python"><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tfe</span><span class="o">.</span><span class="n">Iterator</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
-    <span class="n">grads</span> <span class="o">=</span> <span class="n">tfe</span><span class="o">.</span><span class="n">implicit_gradients</span><span class="p">(</span><span class="n">loss_function</span><span class="p">)(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span></code></pre></div>
-<blockquote>
-<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FBuilding%20models.ipynb" target="_blank">launch binder</a> ，在线运行这个例子</p>
+<em><strong>loss function</strong></em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">loss_function</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">y_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">y_</span><span class="p">)</span>
+</span></span></code></pre></div><p><em><strong>calculate gradients &amp; optimizer</strong></em></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="n">tfe</span><span class="o">.</span><span class="n">Iterator</span><span class="p">(</span><span class="n">dataset</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">grads</span> <span class="o">=</span> <span class="n">tfe</span><span class="o">.</span><span class="n">implicit_gradients</span><span class="p">(</span><span class="n">loss_function</span><span class="p">)(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
+</span></span></code></pre></div><blockquote>
+<p>点击这里 <a href="https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=binder%2FTenserFlow%20%E6%96%B0%E7%89%B9%E6%80%A7%EF%BC%9AEager%20Execution%2FBuilding%20models.ipynb">launch binder</a> ，在线运行这个例子</p>
 </blockquote>
-
 <h2 id="其他特性">其他特性<a hidden class="anchor" aria-hidden="true" href="#其他特性">#</a></h2>
-
-<p>还有其他特性，如：
-* get the second derivative
-* derivative under control flow
-* Custom Gradients</p>
-
-<p>这里就不再介绍，感兴趣的可以参考官方文档或者本文的参考文档。</p>
-
-<h1 id="参考文档">参考文档<a hidden class="anchor" aria-hidden="true" href="#参考文档">#</a></h1>
-
+<p>还有其他特性，如：</p>
 <ul>
-<li><a href="https://research.googleblog.com/2017/10/eager-execution-imperative-define-by.html" target="_blank">Google Research Blog &gt; Eager Execution: An imperative, define-by-run interface to TensorFlow</a></li>
+<li>get the second derivative</li>
+<li>derivative under control flow</li>
+<li>Custom Gradients</li>
+</ul>
+<p>这里就不再介绍，感兴趣的可以参考官方文档或者本文的参考文档。</p>
+<h1 id="参考文档">参考文档<a hidden class="anchor" aria-hidden="true" href="#参考文档">#</a></h1>
+<ul>
+<li><a href="https://research.googleblog.com/2017/10/eager-execution-imperative-define-by.html">Google Research Blog &gt; Eager Execution: An imperative, define-by-run interface to TensorFlow</a></li>
 </ul>
 
   </div>

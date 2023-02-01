@@ -10,7 +10,7 @@
 <meta name="description" content="TL:DR 本文属于入门级课程101，用图文并茂的方式详细的介绍了LSTM的工作原理。">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/quickly-understand-lstm/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.2af4e238783dd6516e7a376ec8aa77e7e3a2f6214d9bb3f8d69a116e557b3af0.css" integrity="sha256-KvTiOHg91lFuejduyKp35&#43;Oi9iFNm7P41poRblV7OvA=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -81,12 +81,11 @@ if (!doNotTrack) {
 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-	ga('create', 'G-ED44PRBHE8', 'auto');
+	ga('create', 'UA-105150423-2', 'auto');
 	
 	ga('send', 'pageview');
 }
-</script>
-<meta property="og:title" content="理解LSTM的工作原理" />
+</script><meta property="og:title" content="理解LSTM的工作原理" />
 <meta property="og:description" content="TL:DR 本文属于入门级课程101，用图文并茂的方式详细的介绍了LSTM的工作原理。" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://blog.xiaoquankong.ai/zh/posts/quickly-understand-lstm/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
@@ -104,7 +103,13 @@ if (!doNotTrack) {
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [, 
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/zh/posts/"
+    }, 
     {
       "@type": "ListItem",
       "position":  2 ,
@@ -124,8 +129,8 @@ if (!doNotTrack) {
   "keywords": [
     "LSTM", "神经网络"
   ],
-  "articleBody": "TL:DR 本文属于入门级课程101，用图文并茂的方式详细的介绍了LSTM的工作原理。\n神经网络 本文假设你已经了解最基本的神经网络的知识，为了更好的理解本文内容，本文先简单回顾一下神经网络的一些重要的术语和符号，这些符号将在后续的内容中持续使用。\n矩阵表示下的神经网络 假设： * $x$是input layer的值 * $W$是hidden layer的权重 * $h$是hidden layer的输出值 * $V$是hidden layer到output layer的权重 * $y$是output layer的值 * $\\phi$是激活函数，常见激活函数与特性请见神经网络里的激活函数, 这里使用$\\sigma$表示sigmoid函数 * $[x,y]$表示两个列向量，在列的维度上concatenate\n则有：\n$$ h = \\phi (Wx) $$\n$$ y = Vh $$\n下面是大意图：\nTODO: 替换本图\nRNN 应用场景 现实生活中很多事情都是序列的，后面的事情和前面是存在上下文关系的，单从一个片段是无法做出判断的。比如：你向上扔一个苹果，在任意时刻，你只能得到一个苹果的瞬时照片，单从照片你根本没法正确推测这个苹果的运动状态的，成功的推测苹果的运动状态，需要模型具备记忆能力能够记住之前苹果的位置信息。传统的神经网络只能判断一个瞬间状态的情况，不具备这种记忆的能力，因此在很多复杂的场景中无法适用。为此人们提出了RNN（Recurrent Neural Network)通过将上一个场景的信息引入下一个场景的方式来记住重要信息。\nRNN原理 既然上一个场景的hidden layer的值中包含了场景信息，那么理所当然的我们认为hidden layer中包含了有用的上下文知识。所以RNN就是在当前的预测中引入上一个场景的hidden layer值：\n$$ h_t = \\phi (W x_t + U h_{t-1}) $$\n$$ y_t = V h_t $$\n其中： * $ht$是$t$时刻的hidden layer的值 * $h{t-1}$是$t-1$时刻（亦即上一个时刻）的hidden layer的值\n缺陷 尽管RNN成功记忆了部分上下文信息，但存在一个很大的缺陷，那就是它很难记住长期的记忆。还是上面抛苹果的例子，RNN能够记住短期的上下文，所以在后期它能够识别出苹果在加速下落，但是由于没有记住比较久远的苹果先是上升的这个信息，因此RNN只能识别出这个苹果是下降的。\nLSTM 为了解决这个问题，人们提出了LSTM（Long Short-Term Memory）网络，LSTM最大的特点就是能够记住长期记忆。是目前工业界和学术界最重要的RNN实现。\n工作原理 LSTM有两个重要的state或者memory： * 长期记忆 (long-term memory: $lsm$, 通常被称为cell state, 标识为$C$) * 工作记忆 (working memory: $wm$, 通常被称为hidden state, 标识为$h$)。\n一个学习迭代有一下几个部分： * 选择性遗忘部分长期记忆：将记忆中不需要的记忆移除 * 将现有的一些信息加入到长期记忆中 - 计算候选长期记忆 - 选择函数 * 从long-term memory中提取working memory - 计算候选的working memory - 选择函数\n选择性遗忘部分长期记忆 这个部分也称之为forget gate layer\n遗忘函数/遗忘门(forget gate) 我们先决定哪些长期记忆需要被遗忘（或者保留）。我们使用一个单独的浅层神经网络来学习。在$t$时刻：\n$$ remember_t = \\sigma (W_r x_t + U_r wm_{t-1}) $$\n这里的$remember_t$是一个boolean序列，长度和$lsm_{t-1}$相同，通常被称为forget gate。值1表示保留$lsm_{t-1}$对应位置的数值，0则表示抛弃或者删除。\n上述公式还可以表示成：\n$$ f_t = \\sigma (W_f \\cdot [ h_{t-1} , x_t ] + b_f) $$\n保存下来的长期记忆 有了遗忘函数后，我们就能确定保存下来的长期记忆是什么了。在$t$时刻：\n$$ olsm_t = forget_t \\odot lsm_{t-1} $$\n增加新的长期记忆 除了有些某些老的记忆需要继续保留，我们需要把当前的一些重要信息添加到长期记忆中。\n计算候选的长期记忆 首先算出来全体候选记忆。在$t$时刻：\n$$ lsm’_t = \\phi (W_l x_t + U_l wm_{t-1}) $$\n这里的$lsm’_t$代表可能加入长期记忆的记忆序列，长度和$lsm_{t-1}$相同。这里的$\\phi$函数常常选择$tanh$函数。\n上述公式还可以表示成： $$ \\tilde{C}_t = \\phi (W_C \\cdot [ h_{t-1} , x_t ] + b_C) $$\n选择函数 有了候选记忆后，需要一个选择函数负责实际选择哪些记忆可以加入长期记忆。在$t$时刻：\n$$ save_t = \\phi (W_s x_t + U_s wm_{t-1}) $$\n上述公式还可以表示成： $$ i_t = \\sigma (W_i \\cdot [h_{t-1},x_t] + b_i) $$\n新的长期记忆 有了候选的长期记忆和选择函数后，我们就可以确定哪些记忆是要添加到长期记忆的。在$t$时刻：\n$$ nlsm_t = save_t \\odot lsm’_t $$\n更新长期记忆 既然有了遗忘和更新机制，那么最终的长期记忆也就可以确定了。在$t$时刻：\n$$ lsm_t = olsm_t + nlsm_t $$\n上述公式还可以表示成： $$ C_t = f_t \\odot C_{t-1} + i_t \\odot \\tilde{C}_t $$\n其中$\\odot$表示element-wise product, 如果使用*替代，则能得到： $$ C_t = f_t * C_{t-1} + i_t * \\tilde{C}_t $$\n应用长期记忆 长期记忆需要应用在当前的工作记忆中才有作用。\n选择函数 从上一个工作记忆和当前输入中确定选择函数。在$t$时刻：\n$$ focus_t = \\sigma (W_f x_t + U_f wm_{t-1}) $$\n上述公式还可以表示成： $$ o_t = \\sigma (W_o \\cdot [h_{t-1},x_t] + b_o) $$\n候选的工作记忆 工作记忆是从长期记忆转换来的。在$t$时刻：\n$$ wm’_t = \\phi (lsm_{t-1}) $$\n其中这里的$\\phi$常常选择$tanh$\n上述公式还可以表示成：\n$$ \\tilde{h}_t = \\phi (C_t) $$\n更新工作记忆 既然有了候选工作记忆和选择函数，那么最终的工作记忆也就确定了。在$t$时刻：\n$$ wm_t = focus_t \\odot wm’_t $$\n上述公式还可以表示成：\n$$ h_t = o_t * \\tilde{h}_t $$\n变种 LSTM诞生后，不断有人改进模型，至今LSTM已经有很多变种了(请参考[参考文献]部分)。本节将介绍其中最重要的两个变种：Peephole LSTM和Gated Recurrent Unit\nPeephole LSTM 普通的LSTM的所有的门的决策全部都是由输入$x$和$wm_{t-1}$决定，Peephole LSTM改进了门的实现，让$lsm_{t-1}$也参与门的决策。\nCoupled Input and Forget Gate (CIFG) 既然forget gate和input gate都是控制更新long-term memory（$C$）的，那么他们可以合并成为一个update gate:forget gate忘记的信息全部由input gate提供。\nGated Recurrent Unit (GRU) GRU不仅使用了update gate替代了forget gate和input gate,而且将long-term memory ($C$)和working memory（$h$）合并了，并做了一些细微的调整。由于简化了原有LSTM的结构，速度更快，目前流行度不断增加。\n参考文献  Understanding LSTM Networks Exploring LSTMs http://slazebni.cs.illinois.edu/spring17/lec03_rnn.pdf ",
-  "wordCount" : "355",
+  "articleBody": "TL:DR 本文属于入门级课程101，用图文并茂的方式详细的介绍了LSTM的工作原理。\n神经网络 本文假设你已经了解最基本的神经网络的知识，为了更好的理解本文内容，本文先简单回顾一下神经网络的一些重要的术语和符号，这些符号将在后续的内容中持续使用。\n矩阵表示下的神经网络 假设：\n$x$是input layer的值 $W$是hidden layer的权重 $h$是hidden layer的输出值 $V$是hidden layer到output layer的权重 $y$是output layer的值 $\\phi$是激活函数，常见激活函数与特性请见神经网络里的激活函数, 这里使用$\\sigma$表示sigmoid函数 $[x,y]$表示两个列向量，在列的维度上concatenate 则有：\n$$ h = \\phi (Wx) $$\n$$ y = Vh $$\n下面是大意图：\nTODO: 替换本图\nRNN 应用场景 现实生活中很多事情都是序列的，后面的事情和前面是存在上下文关系的，单从一个片段是无法做出判断的。比如：你向上扔一个苹果，在任意时刻，你只能得到一个苹果的瞬时照片，单从照片你根本没法正确推测这个苹果的运动状态的，成功的推测苹果的运动状态，需要模型具备记忆能力能够记住之前苹果的位置信息。传统的神经网络只能判断一个瞬间状态的情况，不具备这种记忆的能力，因此在很多复杂的场景中无法适用。为此人们提出了RNN（Recurrent Neural Network)通过将上一个场景的信息引入下一个场景的方式来记住重要信息。\nRNN原理 既然上一个场景的hidden layer的值中包含了场景信息，那么理所当然的我们认为hidden layer中包含了有用的上下文知识。所以RNN就是在当前的预测中引入上一个场景的hidden layer值：\n$$ h_t = \\phi (W x_t + U h_{t-1}) $$\n$$ y_t = V h_t $$\n其中：\n$h_t$是$t$时刻的hidden layer的值 $h_{t-1}$是$t-1$时刻（亦即上一个时刻）的hidden layer的值 缺陷 尽管RNN成功记忆了部分上下文信息，但存在一个很大的缺陷，那就是它很难记住长期的记忆。还是上面抛苹果的例子，RNN能够记住短期的上下文，所以在后期它能够识别出苹果在加速下落，但是由于没有记住比较久远的苹果先是上升的这个信息，因此RNN只能识别出这个苹果是下降的。\nLSTM 为了解决这个问题，人们提出了LSTM（Long Short-Term Memory）网络，LSTM最大的特点就是能够记住长期记忆。是目前工业界和学术界最重要的RNN实现。\n工作原理 LSTM有两个重要的state或者memory：\n长期记忆 (long-term memory: $lsm$, 通常被称为cell state, 标识为$C$) 工作记忆 (working memory: $wm$, 通常被称为hidden state, 标识为$h$)。 一个学习迭代有一下几个部分：\n选择性遗忘部分长期记忆：将记忆中不需要的记忆移除 将现有的一些信息加入到长期记忆中 计算候选长期记忆 选择函数 从long-term memory中提取working memory 计算候选的working memory 选择函数 选择性遗忘部分长期记忆 这个部分也称之为forget gate layer\n遗忘函数/遗忘门(forget gate) 我们先决定哪些长期记忆需要被遗忘（或者保留）。我们使用一个单独的浅层神经网络来学习。在$t$时刻：\n$$ remember_t = \\sigma (W_r x_t + U_r wm_{t-1}) $$\n这里的$remember_t$是一个boolean序列，长度和$lsm_{t-1}$相同，通常被称为forget gate。值1表示保留$lsm_{t-1}$对应位置的数值，0则表示抛弃或者删除。\n上述公式还可以表示成：\n$$ f_t = \\sigma (W_f \\cdot [ h_{t-1} , x_t ] + b_f) $$\n保存下来的长期记忆 有了遗忘函数后，我们就能确定保存下来的长期记忆是什么了。在$t$时刻：\n$$ olsm_t = forget_t \\odot lsm_{t-1} $$\n增加新的长期记忆 除了有些某些老的记忆需要继续保留，我们需要把当前的一些重要信息添加到长期记忆中。\n计算候选的长期记忆 首先算出来全体候选记忆。在$t$时刻：\n$$ lsm’_t = \\phi (W_l x_t + U_l wm_{t-1}) $$\n这里的$lsm’_t$代表可能加入长期记忆的记忆序列，长度和$lsm_{t-1}$相同。这里的$\\phi$函数常常选择$tanh$函数。\n上述公式还可以表示成： $$ \\tilde{C}_t = \\phi (W_C \\cdot [ h_{t-1} , x_t ] + b_C) $$\n选择函数 有了候选记忆后，需要一个选择函数负责实际选择哪些记忆可以加入长期记忆。在$t$时刻：\n$$ save_t = \\phi (W_s x_t + U_s wm_{t-1}) $$\n上述公式还可以表示成： $$ i_t = \\sigma (W_i \\cdot [h_{t-1},x_t] + b_i) $$\n新的长期记忆 有了候选的长期记忆和选择函数后，我们就可以确定哪些记忆是要添加到长期记忆的。在$t$时刻：\n$$ nlsm_t = save_t \\odot lsm’_t $$\n更新长期记忆 既然有了遗忘和更新机制，那么最终的长期记忆也就可以确定了。在$t$时刻：\n$$ lsm_t = olsm_t + nlsm_t $$\n上述公式还可以表示成： $$ C_t = f_t \\odot C_{t-1} + i_t \\odot \\tilde{C}_t $$\n其中$\\odot$表示element-wise product, 如果使用*替代，则能得到： $$ C_t = f_t * C_{t-1} + i_t * \\tilde{C}_t $$\n应用长期记忆 长期记忆需要应用在当前的工作记忆中才有作用。\n选择函数 从上一个工作记忆和当前输入中确定选择函数。在$t$时刻：\n$$ focus_t = \\sigma (W_f x_t + U_f wm_{t-1}) $$\n上述公式还可以表示成： $$ o_t = \\sigma (W_o \\cdot [h_{t-1},x_t] + b_o) $$\n候选的工作记忆 工作记忆是从长期记忆转换来的。在$t$时刻：\n$$ wm’_t = \\phi (lsm_{t-1}) $$\n其中这里的$\\phi$常常选择$tanh$\n上述公式还可以表示成：\n$$ \\tilde{h}_t = \\phi (C_t) $$\n更新工作记忆 既然有了候选工作记忆和选择函数，那么最终的工作记忆也就确定了。在$t$时刻：\n$$ wm_t = focus_t \\odot wm’_t $$\n上述公式还可以表示成：\n$$ h_t = o_t * \\tilde{h}_t $$\n变种 LSTM诞生后，不断有人改进模型，至今LSTM已经有很多变种了(请参考[参考文献]部分)。本节将介绍其中最重要的两个变种：Peephole LSTM和Gated Recurrent Unit\nPeephole LSTM 普通的LSTM的所有的门的决策全部都是由输入$x$和$wm_{t-1}$决定，Peephole LSTM改进了门的实现，让$lsm_{t-1}$也参与门的决策。\nCoupled Input and Forget Gate (CIFG) 既然forget gate和input gate都是控制更新long-term memory（$C$）的，那么他们可以合并成为一个update gate:forget gate忘记的信息全部由input gate提供。\nGated Recurrent Unit (GRU) GRU不仅使用了update gate替代了forget gate和input gate,而且将long-term memory ($C$)和working memory（$h$）合并了，并做了一些细微的调整。由于简化了原有LSTM的结构，速度更快，目前流行度不断增加。\n参考文献 Understanding LSTM Networks Exploring LSTMs http://slazebni.cs.illinois.edu/spring17/lec03_rnn.pdf ",
+  "wordCount" : "337",
   "inLanguage": "zh",
   "datePublished": "2017-11-16T21:45:58Z",
   "dateModified": "2017-11-16T21:45:58Z",
@@ -228,11 +233,11 @@ if (!doNotTrack) {
 
 <article class="post-single">
   <header class="post-header">
-    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/zh/posts/">Posts</a></div>
     <h1 class="post-title">
       理解LSTM的工作原理
     </h1>
-    <div class="post-meta"><span title='2017-11-16 21:45:58 +0000 UTC'>November 16, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
+    <div class="post-meta"><span title='2017-11-16 21:45:58 +0000 UTC'>十一月 16, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong
 
 </div>
   </header> <div class="toc">
@@ -268,7 +273,7 @@ if (!doNotTrack) {
                     <a href="#%e9%80%89%e6%8b%a9%e6%80%a7%e9%81%97%e5%bf%98%e9%83%a8%e5%88%86%e9%95%bf%e6%9c%9f%e8%ae%b0%e5%bf%86" aria-label="选择性遗忘部分长期记忆">选择性遗忘部分长期记忆</a><ul>
                         
                 <li>
-                    <a href="#%e9%81%97%e5%bf%98%e5%87%bd%e6%95%b0-%e9%81%97%e5%bf%98%e9%97%a8-forget-gate" aria-label="遗忘函数/遗忘门(forget gate)">遗忘函数/遗忘门(forget gate)</a></li>
+                    <a href="#%e9%81%97%e5%bf%98%e5%87%bd%e6%95%b0%e9%81%97%e5%bf%98%e9%97%a8forget-gate" aria-label="遗忘函数/遗忘门(forget gate)">遗忘函数/遗忘门(forget gate)</a></li>
                 <li>
                     <a href="#%e4%bf%9d%e5%ad%98%e4%b8%8b%e6%9d%a5%e7%9a%84%e9%95%bf%e6%9c%9f%e8%ae%b0%e5%bf%86" aria-label="保存下来的长期记忆">保存下来的长期记忆</a></li></ul>
                 </li>
@@ -315,209 +320,143 @@ if (!doNotTrack) {
 </div>
 
   <div class="post-content"><p><strong>TL:DR</strong> 本文属于入门级课程101，用图文并茂的方式详细的介绍了LSTM的工作原理。</p>
-
 <h1 id="神经网络">神经网络<a hidden class="anchor" aria-hidden="true" href="#神经网络">#</a></h1>
-
 <p>本文假设你已经了解最基本的神经网络的知识，为了更好的理解本文内容，本文先简单回顾一下神经网络的一些重要的术语和符号，这些符号将在后续的内容中持续使用。</p>
-
 <h2 id="矩阵表示下的神经网络">矩阵表示下的神经网络<a hidden class="anchor" aria-hidden="true" href="#矩阵表示下的神经网络">#</a></h2>
-
-<p>假设：
-* $x$是input layer的值
-* $W$是hidden layer的权重
-* $h$是hidden layer的输出值
-* $V$是hidden layer到output layer的权重
-* $y$是output layer的值
-* $\phi$是激活函数，常见激活函数与特性请见<a href="/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E9%87%8C%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/">神经网络里的激活函数</a>, 这里使用$\sigma$表示sigmoid函数
-* $[x,y]$表示两个列向量，在列的维度上concatenate</p>
-
+<p>假设：</p>
+<ul>
+<li>$x$是input layer的值</li>
+<li>$W$是hidden layer的权重</li>
+<li>$h$是hidden layer的输出值</li>
+<li>$V$是hidden layer到output layer的权重</li>
+<li>$y$是output layer的值</li>
+<li>$\phi$是激活函数，常见激活函数与特性请见<a href="/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E9%87%8C%E7%9A%84%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/">神经网络里的激活函数</a>, 这里使用$\sigma$表示sigmoid函数</li>
+<li>$[x,y]$表示两个列向量，在列的维度上concatenate</li>
+</ul>
 <p>则有：</p>
-
 <p>$$ h = \phi (Wx) $$</p>
-
 <p>$$ y = Vh $$</p>
-
 <p>下面是大意图：</p>
+<p><img loading="lazy" src="pictorial_view_of_nn.png" alt="pictorial view of NN"  />
 
-<p><img src="pictorial_view_of_nn.png" alt="pictorial view of NN" />
 <strong>TODO: 替换本图</strong></p>
-
 <h1 id="rnn">RNN<a hidden class="anchor" aria-hidden="true" href="#rnn">#</a></h1>
-
 <h2 id="应用场景">应用场景<a hidden class="anchor" aria-hidden="true" href="#应用场景">#</a></h2>
-
 <p>现实生活中很多事情都是序列的，后面的事情和前面是存在上下文关系的，单从一个片段是无法做出判断的。比如：你向上扔一个苹果，在任意时刻，你只能得到一个苹果的瞬时照片，单从照片你根本没法正确推测这个苹果的运动状态的，成功的推测苹果的运动状态，需要模型具备记忆能力能够记住之前苹果的位置信息。传统的神经网络只能判断一个瞬间状态的情况，不具备这种记忆的能力，因此在很多复杂的场景中无法适用。为此人们提出了RNN（Recurrent Neural Network)通过将上一个场景的信息引入下一个场景的方式来记住重要信息。</p>
-
 <h2 id="rnn原理">RNN原理<a hidden class="anchor" aria-hidden="true" href="#rnn原理">#</a></h2>
-
 <p>既然上一个场景的hidden layer的值中包含了场景信息，那么理所当然的我们认为hidden layer中包含了有用的上下文知识。所以RNN就是在当前的预测中引入上一个场景的hidden layer值：</p>
-
 <p>$$ h_t = \phi (W x_t + U h_{t-1}) $$</p>
-
 <p>$$ y_t = V h_t $$</p>
-
-<p>其中：
-* $h<em>t$是$t$时刻的hidden layer的值
-* $h</em>{t-1}$是$t-1$时刻（亦即上一个时刻）的hidden layer的值</p>
-
+<p>其中：</p>
+<ul>
+<li>$h_t$是$t$时刻的hidden layer的值</li>
+<li>$h_{t-1}$是$t-1$时刻（亦即上一个时刻）的hidden layer的值</li>
+</ul>
 <h2 id="缺陷">缺陷<a hidden class="anchor" aria-hidden="true" href="#缺陷">#</a></h2>
-
 <p>尽管RNN成功记忆了部分上下文信息，但存在一个很大的缺陷，那就是它很难记住长期的记忆。还是上面抛苹果的例子，RNN能够记住短期的上下文，所以在后期它能够识别出苹果在加速下落，但是由于没有记住比较久远的苹果先是上升的这个信息，因此RNN只能识别出这个苹果是下降的。</p>
-
 <h1 id="lstm">LSTM<a hidden class="anchor" aria-hidden="true" href="#lstm">#</a></h1>
-
 <p>为了解决这个问题，人们提出了LSTM（Long Short-Term Memory）网络，LSTM最大的特点就是能够记住长期记忆。是目前工业界和学术界最重要的RNN实现。</p>
-
 <h2 id="工作原理">工作原理<a hidden class="anchor" aria-hidden="true" href="#工作原理">#</a></h2>
-
-<p>LSTM有两个重要的state或者memory：
-* 长期记忆 (long-term memory: $lsm$, 通常被称为<code>cell state</code>, 标识为$C$)
-* 工作记忆 (working memory: $wm$, 通常被称为<code>hidden state</code>, 标识为$h$)。</p>
-
-<p>一个学习迭代有一下几个部分：
-* 选择性遗忘部分长期记忆：将记忆中不需要的记忆移除
-* 将现有的一些信息加入到长期记忆中
-  - 计算候选长期记忆
-  - 选择函数
-* 从long-term memory中提取working memory
-  - 计算候选的working memory
-  - 选择函数</p>
-
+<p>LSTM有两个重要的state或者memory：</p>
+<ul>
+<li>长期记忆 (long-term memory: $lsm$, 通常被称为<code>cell state</code>, 标识为$C$)</li>
+<li>工作记忆 (working memory: $wm$, 通常被称为<code>hidden state</code>, 标识为$h$)。</li>
+</ul>
+<p>一个学习迭代有一下几个部分：</p>
+<ul>
+<li>选择性遗忘部分长期记忆：将记忆中不需要的记忆移除</li>
+<li>将现有的一些信息加入到长期记忆中
+<ul>
+<li>计算候选长期记忆</li>
+<li>选择函数</li>
+</ul>
+</li>
+<li>从long-term memory中提取working memory
+<ul>
+<li>计算候选的working memory</li>
+<li>选择函数</li>
+</ul>
+</li>
+</ul>
 <h3 id="选择性遗忘部分长期记忆">选择性遗忘部分长期记忆<a hidden class="anchor" aria-hidden="true" href="#选择性遗忘部分长期记忆">#</a></h3>
-
 <p>这个部分也称之为<code>forget gate layer</code></p>
-
-<h4 id="遗忘函数-遗忘门-forget-gate">遗忘函数/遗忘门(forget gate)<a hidden class="anchor" aria-hidden="true" href="#遗忘函数-遗忘门-forget-gate">#</a></h4>
-
+<h4 id="遗忘函数遗忘门forget-gate">遗忘函数/遗忘门(forget gate)<a hidden class="anchor" aria-hidden="true" href="#遗忘函数遗忘门forget-gate">#</a></h4>
 <p>我们先决定哪些长期记忆需要被遗忘（或者保留）。我们使用一个单独的浅层神经网络来学习。在$t$时刻：</p>
-
 <p>$$ remember_t = \sigma (W_r x_t + U_r wm_{t-1}) $$</p>
-
 <p>这里的$remember_t$是一个boolean序列，长度和$lsm_{t-1}$相同，通常被称为<code>forget gate</code>。值<code>1</code>表示保留$lsm_{t-1}$对应位置的数值，<code>0</code>则表示抛弃或者删除。</p>
-
 <p>上述公式还可以表示成：</p>
-
 <p>$$ f_t = \sigma (W_f \cdot [ h_{t-1} , x_t ] + b_f) $$</p>
-
-<p><img src="forget_func.png" alt="forget function" /></p>
-
+<p><img loading="lazy" src="forget_func.png" alt="forget function"  />
+</p>
 <h4 id="保存下来的长期记忆">保存下来的长期记忆<a hidden class="anchor" aria-hidden="true" href="#保存下来的长期记忆">#</a></h4>
-
 <p>有了遗忘函数后，我们就能确定保存下来的长期记忆是什么了。在$t$时刻：</p>
-
 <p>$$ olsm_t = forget_t \odot lsm_{t-1} $$</p>
-
 <h3 id="增加新的长期记忆">增加新的长期记忆<a hidden class="anchor" aria-hidden="true" href="#增加新的长期记忆">#</a></h3>
-
 <p>除了有些某些老的记忆需要继续保留，我们需要把当前的一些重要信息添加到长期记忆中。</p>
-
 <h4 id="计算候选的长期记忆">计算候选的长期记忆<a hidden class="anchor" aria-hidden="true" href="#计算候选的长期记忆">#</a></h4>
-
 <p>首先算出来全体候选记忆。在$t$时刻：</p>
-
 <p>$$ lsm&rsquo;_t = \phi (W_l x_t + U_l wm_{t-1}) $$</p>
-
 <p>这里的$lsm&rsquo;_t$代表可能加入长期记忆的记忆序列，长度和$lsm_{t-1}$相同。这里的$\phi$函数常常选择$tanh$函数。</p>
-
 <p>上述公式还可以表示成：
 $$ \tilde{C}_t = \phi (W_C \cdot [ h_{t-1} , x_t ] + b_C) $$</p>
-
 <h4 id="选择函数">选择函数<a hidden class="anchor" aria-hidden="true" href="#选择函数">#</a></h4>
-
 <p>有了候选记忆后，需要一个选择函数负责实际选择哪些记忆可以加入长期记忆。在$t$时刻：</p>
-
 <p>$$ save_t = \phi (W_s x_t + U_s wm_{t-1}) $$</p>
-
 <p>上述公式还可以表示成：
 $$ i_t = \sigma (W_i \cdot [h_{t-1},x_t] + b_i) $$</p>
-
 <h4 id="新的长期记忆">新的长期记忆<a hidden class="anchor" aria-hidden="true" href="#新的长期记忆">#</a></h4>
-
 <p>有了候选的长期记忆和选择函数后，我们就可以确定哪些记忆是要添加到长期记忆的。在$t$时刻：</p>
-
 <p>$$ nlsm_t = save_t \odot lsm&rsquo;_t $$</p>
-
-<p><img src="input_func.png" alt="input function" /></p>
-
+<p><img loading="lazy" src="input_func.png" alt="input function"  />
+</p>
 <h3 id="更新长期记忆">更新长期记忆<a hidden class="anchor" aria-hidden="true" href="#更新长期记忆">#</a></h3>
-
 <p>既然有了遗忘和更新机制，那么最终的长期记忆也就可以确定了。在$t$时刻：</p>
-
 <p>$$ lsm_t = olsm_t + nlsm_t $$</p>
-
 <p>上述公式还可以表示成：
 $$ C_t = f_t \odot C_{t-1} + i_t \odot \tilde{C}_t $$</p>
-
 <p>其中$\odot$表示element-wise product, 如果使用<code>*</code>替代，则能得到：
 $$ C_t = f_t * C_{t-1} + i_t * \tilde{C}_t $$</p>
-
-<p><img src="update_func.png" alt="update function" /></p>
-
+<p><img loading="lazy" src="update_func.png" alt="update function"  />
+</p>
 <h3 id="应用长期记忆">应用长期记忆<a hidden class="anchor" aria-hidden="true" href="#应用长期记忆">#</a></h3>
-
 <p>长期记忆需要应用在当前的工作记忆中才有作用。</p>
-
 <h4 id="选择函数-1">选择函数<a hidden class="anchor" aria-hidden="true" href="#选择函数-1">#</a></h4>
-
 <p>从上一个工作记忆和当前输入中确定选择函数。在$t$时刻：</p>
-
 <p>$$ focus_t = \sigma (W_f x_t + U_f wm_{t-1}) $$</p>
-
 <p>上述公式还可以表示成：
 $$ o_t = \sigma (W_o \cdot [h_{t-1},x_t] + b_o) $$</p>
-
 <h4 id="候选的工作记忆">候选的工作记忆<a hidden class="anchor" aria-hidden="true" href="#候选的工作记忆">#</a></h4>
-
 <p>工作记忆是从长期记忆转换来的。在$t$时刻：</p>
-
 <p>$$ wm&rsquo;_t = \phi (lsm_{t-1}) $$</p>
-
 <p>其中这里的$\phi$常常选择$tanh$</p>
-
 <p>上述公式还可以表示成：</p>
-
 <p>$$ \tilde{h}_t = \phi (C_t) $$</p>
-
 <h4 id="更新工作记忆">更新工作记忆<a hidden class="anchor" aria-hidden="true" href="#更新工作记忆">#</a></h4>
-
 <p>既然有了候选工作记忆和选择函数，那么最终的工作记忆也就确定了。在$t$时刻：</p>
-
 <p>$$ wm_t = focus_t \odot wm&rsquo;_t $$</p>
-
 <p>上述公式还可以表示成：</p>
-
 <p>$$ h_t = o_t * \tilde{h}_t $$</p>
-
-<p><img src="gen_func.png" alt="generate function" /></p>
-
+<p><img loading="lazy" src="gen_func.png" alt="generate function"  />
+</p>
 <h2 id="变种">变种<a hidden class="anchor" aria-hidden="true" href="#变种">#</a></h2>
-
 <p>LSTM诞生后，不断有人改进模型，至今LSTM已经有很多变种了(请参考[参考文献]部分)。本节将介绍其中最重要的两个变种：Peephole LSTM和Gated Recurrent Unit</p>
-
 <h3 id="peephole-lstm">Peephole LSTM<a hidden class="anchor" aria-hidden="true" href="#peephole-lstm">#</a></h3>
-
 <p>普通的LSTM的所有的门的决策全部都是由输入$x$和$wm_{t-1}$决定，Peephole LSTM改进了门的实现，让$lsm_{t-1}$也参与门的决策。</p>
-
-<p><img src="peephole_lstm.png" alt="peephole lstm" /></p>
-
+<p><img loading="lazy" src="peephole_lstm.png" alt="peephole lstm"  />
+</p>
 <h3 id="coupled-input-and-forget-gate-cifg">Coupled Input and Forget Gate (CIFG)<a hidden class="anchor" aria-hidden="true" href="#coupled-input-and-forget-gate-cifg">#</a></h3>
-
 <p>既然<code>forget gate</code>和<code>input gate</code>都是控制更新long-term memory（$C$）的，那么他们可以合并成为一个<code>update gate</code>:<code>forget gate</code>忘记的信息全部由<code>input gate</code>提供。</p>
-
-<p><img src="CIFG_lstm.png" alt="CIFG lstm" /></p>
-
+<p><img loading="lazy" src="CIFG_lstm.png" alt="CIFG lstm"  />
+</p>
 <h3 id="gated-recurrent-unit-gru">Gated Recurrent Unit (GRU)<a hidden class="anchor" aria-hidden="true" href="#gated-recurrent-unit-gru">#</a></h3>
-
 <p>GRU不仅使用了<code>update gate</code>替代了<code>forget gate</code>和<code>input gate</code>,而且将long-term memory ($C$)和working memory（$h$）合并了，并做了一些细微的调整。由于简化了原有LSTM的结构，速度更快，目前流行度不断增加。</p>
-
-<p><img src="GRU_lstm.png" alt="GRU lstm" /></p>
-
+<p><img loading="lazy" src="GRU_lstm.png" alt="GRU lstm"  />
+</p>
 <h1 id="参考文献">参考文献<a hidden class="anchor" aria-hidden="true" href="#参考文献">#</a></h1>
-
 <ul>
-<li><a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/" target="_blank">Understanding LSTM Networks</a></li>
-<li><a href="http://blog.echen.me/2017/05/30/exploring-lstms/" target="_blank">Exploring LSTMs</a></li>
-<li><a href="http://slazebni.cs.illinois.edu/spring17/lec03_rnn.pdf" target="_blank">http://slazebni.cs.illinois.edu/spring17/lec03_rnn.pdf</a></li>
+<li><a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks</a></li>
+<li><a href="http://blog.echen.me/2017/05/30/exploring-lstms/">Exploring LSTMs</a></li>
+<li><a href="http://slazebni.cs.illinois.edu/spring17/lec03_rnn.pdf">http://slazebni.cs.illinois.edu/spring17/lec03_rnn.pdf</a></li>
 </ul>
 
   </div>

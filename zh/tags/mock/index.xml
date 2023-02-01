@@ -16,7 +16,8 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</guid>
-      <description>&lt;p&gt;修改一个项目的 Unit Test 代码时，遇到一个关于 &lt;code&gt;mock&lt;/code&gt; 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34; /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+      <description>&lt;p&gt;修改一个项目的 Unit Test 代码时，遇到一个关于 &lt;code&gt;mock&lt;/code&gt; 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
+&lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
   </channel>
