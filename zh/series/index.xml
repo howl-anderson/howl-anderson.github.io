@@ -9,6 +9,6 @@
       <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://blog.xiaoquankong.ai/zh/series/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh</language><atom:link href="https://blog.xiaoquankong.ai/zh/series/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

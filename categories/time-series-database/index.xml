@@ -9,7 +9,7 @@
       <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>en</language>
     <lastBuildDate>Wed, 05 Oct 2016 18:49:49 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/categories/time-series-database/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Introduce to the implement of Whisper: the time-serial database</title>

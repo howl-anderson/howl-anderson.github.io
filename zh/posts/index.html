@@ -10,7 +10,7 @@
 <meta name="description" content="Posts - Xiaoquan Kong&#39;s Blog">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bf26bdb49ef54e8a3512e42be7571296309f9c383b1f25e7afb4355f5c9b5381.css" integrity="sha256-vya9tJ71Too1EuQr51cSljCfnDg7HyXnr7Q1X1ybU4E=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -207,6 +207,22 @@ if (!doNotTrack) {
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2>ChatGPT 的解码过程和其中的各种参数
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>TL:DR OpenAI 的 ChatGPT 在其官方文档（https://platform.openai.com/docs/api-reference/chat/create）中给出了各种参数的范围和含义。我们将讨论 ChatGPT 的生成过程和这些参数是如何实现其生成的效果的。
+ChatGPT 的解码过程 我们假设 minGPT （等同于 GPT-2） 和 ChatGPT 拥有一样的解码过程：https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#LL283C12-L283C12 。
+总体过程可以概括为以下几个步骤：
+将用户的请求，从 1 个扩充成 num_samples 大小的 batch 进行模型推理，得到 logits 进行 temperature 映射：logits = logits / temperature [可选] 进行 topk 处理：logits = topk_func(logits, top_k) logits 到 概率的转换：probs = softmax(logits) 是否 sample： 进行 sample：idx_next = multinomial_sample(probs, num_samples=1) 不进行 sample：idx_next = topk_func(probs, k=1) 重复上述过程 max_new_tokens 次 ChatGPT 的解码参数 temperature temperature 参数的官方定义如下：
+temperature number Optional Defaults to 1...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-07 22:10:18 +0800 CST'>八月 7, 2023</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;Xiaoquan Kong</footer>
+  <a class="entry-link" aria-label="post link to ChatGPT 的解码过程和其中的各种参数" href="https://blog.xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2>使用 Rasa 构建天气查询机器人
     </h2>
   </header>
@@ -320,19 +336,6 @@ if (!doNotTrack) {
   </div>
   <footer class="entry-footer"><span title='2017-11-17 18:57:39 +0000 UTC'>十一月 17, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong</footer>
   <a class="entry-link" aria-label="post link to Python bisect模块的妙用" href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>理解LSTM的工作原理
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>TL:DR 本文属于入门级课程101，用图文并茂的方式详细的介绍了LSTM的工作原理。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2017-11-16 21:45:58 +0000 UTC'>十一月 16, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong</footer>
-  <a class="entry-link" aria-label="post link to 理解LSTM的工作原理" href="https://blog.xiaoquankong.ai/zh/posts/quickly-understand-lstm/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

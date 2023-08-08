@@ -9,7 +9,7 @@
       <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <language>zh</language>
     <lastBuildDate>Fri, 17 Nov 2017 18:57:39 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Python bisect模块的妙用</title>

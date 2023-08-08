@@ -9,8 +9,21 @@
       <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Sun, 09 Sep 2018 11:08:04 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/posts/index.xml" rel="self" type="application/rss+xml" />
+    <language>zh</language>
+    <lastBuildDate>Mon, 07 Aug 2023 22:10:18 +0800</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ChatGPT 的解码过程和其中的各种参数</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</link>
+      <pubDate>Mon, 07 Aug 2023 22:10:18 +0800</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</guid>
+      <description>TL:DR OpenAI 的 ChatGPT 在其官方文档（https://platform.openai.com/docs/api-reference/chat/create）中给出了各种参数的范围和含义。我们将讨论 ChatGPT 的生成过程和这些参数是如何实现其生成的效果的。
+ChatGPT 的解码过程 我们假设 minGPT （等同于 GPT-2） 和 ChatGPT 拥有一样的解码过程：https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#LL283C12-L283C12 。
+总体过程可以概括为以下几个步骤：
+将用户的请求，从 1 个扩充成 num_samples 大小的 batch 进行模型推理，得到 logits 进行 temperature 映射：logits = logits / temperature [可选] 进行 topk 处理：logits = topk_func(logits, top_k) logits 到 概率的转换：probs = softmax(logits) 是否 sample： 进行 sample：idx_next = multinomial_sample(probs, num_samples=1) 不进行 sample：idx_next = topk_func(probs, k=1) 重复上述过程 max_new_tokens 次 ChatGPT 的解码参数 temperature temperature 参数的官方定义如下：
+temperature number Optional Defaults to 1</description>
+    </item>
+    
     <item>
       <title>使用 Rasa 构建天气查询机器人</title>
       <link>https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</link>

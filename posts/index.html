@@ -10,7 +10,7 @@
 <meta name="description" content="Posts - Xiaoquan Kong&#39;s Blog">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/posts/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.9c4f5aa85dab72ee82fc33b8dfb12a3f7459e6c1b389f9fae73095efa3ecb4d6.css" integrity="sha256-nE9aqF2rcu6C/DO437EqP3RZ5sGzifn65zCV76PstNY=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.bf26bdb49ef54e8a3512e42be7571296309f9c383b1f25e7afb4355f5c9b5381.css" integrity="sha256-vya9tJ71Too1EuQr51cSljCfnDg7HyXnr7Q1X1ybU4E=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -204,6 +204,21 @@ if (!doNotTrack) {
     </a>
   </h1>
 </header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>The decoding process of ChatGPT and the various parameters in it
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>TL;DR OpenAI’s ChatGPT provides the range and meaning of various parameters in its official documentation (https://platform.openai.com/docs/api-reference/chat/create). We will discuss ChatGPT’s generation process and how these parameters implement its generation effects.
+ChatGPT’s Decoding Process We assume minGPT (equivalent to GPT-2) and ChatGPT have the same decoding process: https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#LL283C12-L283C12.
+The overall process can be summarized as the following steps:
+Expand the user’s request from 1 to a batch size of num_samples Perform model inference to obtain logits Perform temperature mapping: logits = logits / temperature [Optional] Perform topk processing: logits = topk_func(logits, top_k) Map logits to probabilities: probs = softmax(logits) Whether to sample: Sample: idx_next = multinomial_sample(probs, num_samples=1) Don’t sample: idx_next = topk_func(probs, k=1) Repeat the above process max_new_tokens times Decoding Parameters of ChatGPT temperature The official definition of the temperature parameter is:...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-07 22:10:08 +0800 CST'>August 7, 2023</span>&nbsp;·&nbsp;7 min&nbsp;·&nbsp;Xiaoquan Kong</footer>
+  <a class="entry-link" aria-label="post link to The decoding process of ChatGPT and the various parameters in it" href="https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/"></a>
+</article>
 
 <article class="post-entry"> 
   <header class="entry-header">
