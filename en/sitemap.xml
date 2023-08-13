@@ -2,8 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</loc>
+    <lastmod>2023-08-09T07:43:05+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/"
+                />
+  </url><url>
     <loc>https://blog.xiaoquankong.ai/posts/</loc>
-    <lastmod>2023-08-07T22:10:08+08:00</lastmod>
+    <lastmod>2023-08-09T07:43:05+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
@@ -13,6 +26,19 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://blog.xiaoquankong.ai/posts/"
+                />
+  </url><url>
+    <loc>https://blog.xiaoquankong.ai/</loc>
+    <lastmod>2023-08-09T07:43:05+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://blog.xiaoquankong.ai/zh/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://blog.xiaoquankong.ai/"
                 />
   </url><url>
     <loc>https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</loc>
@@ -26,19 +52,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/"
-                />
-  </url><url>
-    <loc>https://blog.xiaoquankong.ai/</loc>
-    <lastmod>2023-08-07T22:10:08+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://blog.xiaoquankong.ai/"
                 />
   </url><url>
     <loc>https://blog.xiaoquankong.ai/categories/</loc>

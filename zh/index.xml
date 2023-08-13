@@ -5,13 +5,26 @@
     <link>https://blog.xiaoquankong.ai/zh/</link>
     <description>Recent content on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <title>Xiaoquan Kong&#39;s Blog</title>
       <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
       <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Mon, 07 Aug 2023 22:10:18 +0800</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Aug 2023 07:42:59 +0800</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TensorFlow 用户编程接口演化简史</title>
+      <link>https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/</link>
+      <pubDate>Wed, 09 Aug 2023 07:42:59 +0800</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/</guid>
+      <description>TL;DR TensorFlow 从 2015 年发布至今，用户编程接口经历了几次重大演化，本文将对这几次演化进行简要介绍，并讨论其背后的动机，方便读者理解 TensorFlow 在不同阶段的设计思路。
+注解：
+这里所说的用户编程接口，是指 TensorFlow 提供给用户的编程接口，而不是指 TensorFlow 的内部编程接口。 我们讨论的 TensorFlow 是一个泛义的概念，包括 TensorFlow 和 JAX 等基于相同底层的同样来自 Google 的机器学习框架。 TensorFlow 0.x 时代（2015 - 2017） 源代码：https://github.com/tensorflow/tensorflow/releases/tag/0.12.1
+TensorFlow 0.x 时代的用户编程接口，后来被称为 TensorFlow Core, 是基于 Python 的，主要包括：
+tf.placeholder：用于定义占位符，用于表示输入数据的维度和类型，但不包含具体的数据。 tf.Variable：用于定义变量，用于表示模型参数，包含具体的数据。 tf.Session：用于执行计算图，将计算图中的节点映射到具体的设备上，并执行计算。 代码示例 一个经典的线性回归模型，可以用 TensorFlow 0.x 的代码表示如下：
+import tensorflow as tf sess = tf.InteractiveSession() # 定义模型输入 x = tf.placeholder(tf.float32, shape=[None, 784]) y_ = tf.placeholder(tf.float32, shape=[None, 10]) # 定义模型参数 W = tf.Variable(tf.zeros([784,10])) b = tf.</description>
+    </item>
+    
     <item>
       <title>ChatGPT 的解码过程和其中的各种参数</title>
       <link>https://blog.xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</link>

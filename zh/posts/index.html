@@ -10,7 +10,7 @@
 <meta name="description" content="Posts - Xiaoquan Kong&#39;s Blog">
 <meta name="author" content="Xiaoquan Kong">
 <link rel="canonical" href="https://blog.xiaoquankong.ai/zh/posts/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.ddf8a1131e5ee910ad62ceef67eaeda962dffdd057098a9b91e635fd160b369b.css" integrity="sha256-3fihEx5e6RCtYs7vZ&#43;rtqWLf/dBXCYqbkeY1/RYLNps=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6241554ba6657cb3d8ee7df2a72ca4c7d99bc1a124d451815cd614cf9e887b2f.css" integrity="sha256-YkFVS6ZlfLPY7n3ypyykx9mbwaEk1FGBXNYUz56Iey8=" rel="preload stylesheet" as="style">
 <link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
@@ -58,24 +58,6 @@
 
     </style>
 </noscript>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
-    onload="renderMathInElement(document.body);"></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        renderMathInElement(document.body, {
-            delimiters: [
-                {left: "$$", right: "$$", display: true},
-                {left: "$", right: "$", display: false}
-            ]
-        });
-    });
-</script>
-
-
-
 <script type="application/javascript">
 var doNotTrack = false;
 if (!doNotTrack) {
@@ -194,7 +176,7 @@ if (!doNotTrack) {
 <header class="page-header"><div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/zh/">主页</a></div>
   <h1>
     Posts
-    <a href="/zh/posts/index.xml" title="RSS" aria-label="RSS">
+    <a href="index.xml" title="RSS" aria-label="RSS">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round" height="23">
         <path d="M4 11a9 9 0 0 1 9 9" />
@@ -204,6 +186,23 @@ if (!doNotTrack) {
     </a>
   </h1>
 </header>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>TensorFlow 用户编程接口演化简史
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>TL;DR TensorFlow 从 2015 年发布至今，用户编程接口经历了几次重大演化，本文将对这几次演化进行简要介绍，并讨论其背后的动机，方便读者理解 TensorFlow 在不同阶段的设计思路。
+注解：
+这里所说的用户编程接口，是指 TensorFlow 提供给用户的编程接口，而不是指 TensorFlow 的内部编程接口。 我们讨论的 TensorFlow 是一个泛义的概念，包括 TensorFlow 和 JAX 等基于相同底层的同样来自 Google 的机器学习框架。 TensorFlow 0.x 时代（2015 - 2017） 源代码：https://github.com/tensorflow/tensorflow/releases/tag/0.12.1
+TensorFlow 0.x 时代的用户编程接口，后来被称为 TensorFlow Core, 是基于 Python 的，主要包括：
+tf.placeholder：用于定义占位符，用于表示输入数据的维度和类型，但不包含具体的数据。 tf.Variable：用于定义变量，用于表示模型参数，包含具体的数据。 tf.Session：用于执行计算图，将计算图中的节点映射到具体的设备上，并执行计算。 代码示例 一个经典的线性回归模型，可以用 TensorFlow 0.x 的代码表示如下：
+import tensorflow as tf sess = tf.InteractiveSession() # 定义模型输入 x = tf.placeholder(tf.float32, shape=[None, 784]) y_ = tf.placeholder(tf.float32, shape=[None, 10]) # 定义模型参数 W = tf.Variable(tf.zeros([784,10])) b = tf....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-08-09 07:42:59 +0800 CST'>八月 9, 2023</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;Xiaoquan Kong</footer>
+  <a class="entry-link" aria-label="post link to TensorFlow 用户编程接口演化简史" href="https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/"></a>
+</article>
 
 <article class="post-entry"> 
   <header class="entry-header">
@@ -323,19 +322,6 @@ temperature number Optional Defaults to 1...</p>
   </div>
   <footer class="entry-footer"><span title='2017-11-24 14:46:15 +0000 UTC'>十一月 24, 2017</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xiaoquan Kong</footer>
   <a class="entry-link" aria-label="post link to Reinforcement Learning: 初次交手，多多指教" href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2>Python bisect模块的妙用
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>TL;DR 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2017-11-17 18:57:39 +0000 UTC'>十一月 17, 2017</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;Xiaoquan Kong</footer>
-  <a class="entry-link" aria-label="post link to Python bisect模块的妙用" href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

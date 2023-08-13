@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Brief History of Tensorflow Programing Interface | Xiaoquan Kong&#39;s Blog</title>
+<meta name="keywords" content="">
+<meta name="description" content="TL;DR TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader&rsquo;s understanding of TensorFlow&rsquo;s design thinking at different stages.
+Notes:
+By user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow.">
+<meta name="author" content="Xiaoquan Kong">
+<link rel="canonical" href="https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.6241554ba6657cb3d8ee7df2a72ca4c7d99bc1a124d451815cd614cf9e887b2f.css" integrity="sha256-YkFVS6ZlfLPY7n3ypyykx9mbwaEk1FGBXNYUz56Iey8=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://blog.xiaoquankong.ai/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.xiaoquankong.ai/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.xiaoquankong.ai/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.xiaoquankong.ai/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.xiaoquankong.ai/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/">
+<link rel="alternate" hreflang="zh" href="https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-105150423-2', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script><meta property="og:title" content="Brief History of Tensorflow Programing Interface" />
+<meta property="og:description" content="TL;DR TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader&rsquo;s understanding of TensorFlow&rsquo;s design thinking at different stages.
+Notes:
+By user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/" /><meta property="og:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-08-09T07:43:05+08:00" />
+<meta property="article:modified_time" content="2023-08-09T07:43:05+08:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://blog.xiaoquankong.ai/papermod-cover.png"/>
+
+<meta name="twitter:title" content="Brief History of Tensorflow Programing Interface"/>
+<meta name="twitter:description" content="TL;DR TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader&rsquo;s understanding of TensorFlow&rsquo;s design thinking at different stages.
+Notes:
+By user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow."/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xiaoquankong.ai/posts/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Brief History of Tensorflow Programing Interface",
+      "item": "https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Brief History of Tensorflow Programing Interface",
+  "name": "Brief History of Tensorflow Programing Interface",
+  "description": "TL;DR TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader\u0026rsquo;s understanding of TensorFlow\u0026rsquo;s design thinking at different stages.\nNotes:\nBy user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow.",
+  "keywords": [
+    
+  ],
+  "articleBody": "TL;DR TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader’s understanding of TensorFlow’s design thinking at different stages.\nNotes:\nBy user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow. We are discussing TensorFlow as a generalized concept, including TensorFlow and JAX, which are machine learning frameworks from Google based on the same underlying layers. TensorFlow 0.x era (2015 - 2017) Source code: https://github.com/tensorflow/tensorflow/releases/tag/0.12.1\nThe user programming interface for the TensorFlow 0.x era, later known as TensorFlow Core, is based on Python and consists mainly of:\ntf.placeholder: used to define placeholders, which are used to represent the dimension and type of input data, but do not contain specific data. tf.Variable: used to define variables, which are used to represent model parameters and contain concrete data. tf.Session: used to execute the computation graph, map nodes in the computation graph to specific devices, and perform computations. Code example A classic linear regression model can be represented in TensorFlow 0.x code as follows:\nimport tensorflow as tf sess = tf.InteractiveSession() # Define the model inputs x = tf.placeholder(tf.float32, shape=[None, 784]) y_ = tf.placeholder(tf.float32, shape=[None, 10]) # Define the model parameters W = tf.Variable(tf.zeros([784,10])) b = tf.Variable(tf.zeros([10])) sess.run(tf.global_variables_initializer()) # initialize model parameters # Calculate the predicted values y = tf.matmul(x,W) + b # network design, here is a linear model, y = Wx + b, W and b are model parameters, x is model input, y is model output # Define the loss function cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(y, y_)) # cross entropy loss function # Define the optimizer train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy) # Train the model for i in range(1000). batch = mnist.train.next_batch(100) train_step.run(feed_dict={x: batch[0], y_: batch[1]}) TensorFlow 1.x Era (2017 - 2019) In terms of working principles, the TensorFlow 1.x era is designed along the same lines as the TensorFlow 0.x era. However, in terms of the user programming interface, there are several significant changes in the design thinking of the TensorFlow 1.x era from that of the TensorFlow 0.x era:\nIn the TensorFlow 1.x era, in addition to continuing to use the original approach to graph construction (the tf.placeholder approach), TensorFlow strongly recommends the use of estimator, a programming paradigm. The estimator has been around since version 0.x, but it was only in version 1.x that it really took off. During the TensorFlow 1.x era, support for the Keras interface was introduced, which was originally a standalone machine learning framework that supported a variety of backends, including TensorFlow, Theano, and CNTK. The interface was designed to be easy to use, and with a wealth of documentation and examples, Keras grew to become one of the most popular machine learning frameworks of its time. Keras was later acquired by Google and became part of TensorFlow. Keras evolved in the direction of TensorFlow, dropping support for other backends, and eventually becoming part of TensorFlow in the TensorFlow 1.x era. Eager Execution was a major change in the TensorFlow 1.x era. It was primarily designed to solve the problem of separating computational graph construction from computational graph execution in TensorFlow 0.x and 1.x. The main competitor of TensorFlow at that time was TensorFlow. PyTorch, TensorFlow’s main competitor at the time, had the ability to build and execute graphs at the same time, which gave PyTorch a huge advantage in development efficiency, and Eager Execution was designed to solve this problem. The Eager Execution pattern does not change the underlying implementation of TensorFlow, but rather makes TensorFlow’s user programming interface look like PyTorch’s user programming interface through syntactic sugar. Since Eager Execution is not based on a true dynamic computation graph, in practice, in some cases, Eager Execution can exhibit behavior that is difficult to understand. Estimator code example import tensorflow as tf import tensorflow.feature_column as fc def my_model_fn( features, # This is batch_features from input_fn labels, # This is batch_labels from input_fn mode, # An instance of tf.estimator.ModeKeys ModeKeys): # Additional configuration x = features[\"x\"] logits = tf.layers.dense(inputs=x, units=10, activation=tf.nn.relu) # Generate predictions (for predict and eval mode) predictions = { \"classes\": tf.argmax(inputs=logits, axis=1), \"probabilities\": tf.nn.softmax(logits, name=\"softmax_tensor\") } # if in prediction mode, return result and exit if mode == tf.estimator.ModeKeys.PREDICT: return tf.estimator. return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions) loss = tf.losses.sparse_softmax_cross_entropy(labels=labels, logits=logits) # if in training mode, return result and exit if mode == tf.estimator.ModeKeys.TRAIN. optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.001) train_op = optimizer.minimize( loss=loss, global_step=tf.train.get_global_step()) return tf.estimator.EstimatorSpec(mode=mode, loss=loss, train_op=train_op) # if in evaluation mode, return result and exit eval_metric_ops = { \"accuracy\": tf.metrics.accuracy( labels=labels, predictions=predictions[\"classes\"]) } return tf.estimator.EstimatorSpec( mode=mode, loss=loss, eval_metric_ops=eval_metric_ops) Keras code example import tensorflow as tf from tensorflow import keras fashion_mnist = keras.datasets.fashion_mnist (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data() model = keras.Sequential([ keras.layers.Flatten(input_shape=(28, 28)), keras.layers.Dense(128, activation=tf.nn.relu), keras.layers.Dense(10, activation=tf.nn.softmax) ]) model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy']) model.fit(train_images, train_labels, epochs=5) test_loss, test_acc = model.evaluate(test_images, test_labels) predictions = model.predict(test_images) Eager Execution code example import tensorflow as tf import tensorflow.contrib.eager as tfe tfe.enable_eager_execution() x = [[2.]] m = tf.matmul(x, x) print(m) # The 1x1 matrix [[4.]] TensorFlow 2.x Era (2019 - Now) The user programming interface in the TensorFlow 2.x era has not changed significantly from the user programming interface in the TensorFlow 1.x era. There are just a few tweaks to the default settings, the main ones being:\nUse Eager Execution mode by default. The Keras interface is used by default. JAX era (2020 - Now) JAX is not a replacement or successor to TensorFlow, it’s just another machine learning framework from Google with an underlying implementation that is consistent with that of the TensorFlow 2.x era. JAX attempts to use a new programming paradigm to solve the problems of TensorFlow that are less popular among researchers.\nThe JAX era user programming interface has two major changes from the TensorFlow 2.x era design:\nthe main target group of the JAX programming approach is researchers, while the main target group of TensorFlow 2.x is engineers. This counteracts the threat of PyTorch, whose main target group is also researchers. JAX tries to use a more advanced but relatively rare programming paradigm and tries to create a new programming paradigm, not a continuation of TensorFlow or PyTorch. ",
+  "wordCount" : "1040",
+  "inLanguage": "en",
+  "datePublished": "2023-08-09T07:43:05+08:00",
+  "dateModified": "2023-08-09T07:43:05+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xiaoquan Kong"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xiaoquan Kong's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.xiaoquankong.ai/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.xiaoquankong.ai/" accesskey="h" title="Xiaoquan Kong&#39;s Blog (Alt + H)">Xiaoquan Kong&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                    <li>
+                        <a href="https://blog.xiaoquankong.ai/zh/" title="中文"
+                            aria-label="中文">中文</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.xiaoquankong.ai/archives" title="Archive">
+                    <span>Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xiaoquankong.ai/categories" title="Categories">
+                    <span>Categories</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xiaoquankong.ai/tags/" title="Tags">
+                    <span>Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.xiaoquankong.ai" title="About Me">
+                    <span>About Me</span>&nbsp;
+                    <svg fill="none" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" height="12" width="12">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"></path>
+                        <path d="M15 3h6v6"></path>
+                        <path d="M10 14L21 3"></path>
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="https://blog.xiaoquankong.ai/">Home</a>&nbsp;»&nbsp;<a href="https://blog.xiaoquankong.ai/posts/">Posts</a></div>
+    <h1 class="post-title">
+      Brief History of Tensorflow Programing Interface
+    </h1>
+    <div class="post-meta"><span title='2023-08-09 07:43:05 +0800 CST'>August 9, 2023</span>&nbsp;·&nbsp;5 min&nbsp;·&nbsp;Xiaoquan Kong&nbsp;|&nbsp;Translations:
+<ul class="i18n_list">
+    <li>
+        <a href="https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/">中文</a>
+    </li>
+</ul>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#tensorflow-0x-era-2015---2017" aria-label="TensorFlow 0.x era (2015 - 2017)">TensorFlow 0.x era (2015 - 2017)</a><ul>
+                        
+                <li>
+                    <a href="#code-example" aria-label="Code example">Code example</a></li></ul>
+                </li>
+                <li>
+                    <a href="#tensorflow-1x-era-2017---2019" aria-label="TensorFlow 1.x Era (2017 - 2019)">TensorFlow 1.x Era (2017 - 2019)</a><ul>
+                        
+                <li>
+                    <a href="#estimator-code-example" aria-label="Estimator code example">Estimator code example</a></li>
+                <li>
+                    <a href="#keras-code-example" aria-label="Keras code example">Keras code example</a></li>
+                <li>
+                    <a href="#eager-execution-code-example" aria-label="Eager Execution code example">Eager Execution code example</a></li></ul>
+                </li>
+                <li>
+                    <a href="#tensorflow-2x-era-2019---now" aria-label="TensorFlow 2.x Era (2019 - Now)">TensorFlow 2.x Era (2019 - Now)</a></li>
+                <li>
+                    <a href="#jax-era-2020---now" aria-label="JAX era (2020 - Now)">JAX era (2020 - Now)</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><strong>TL;DR</strong> TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader&rsquo;s understanding of TensorFlow&rsquo;s design thinking at different stages.</p>
+<p>Notes:</p>
+<ol>
+<li>By user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow.</li>
+<li>We are discussing TensorFlow as a generalized concept, including TensorFlow and JAX, which are machine learning frameworks from Google based on the same underlying layers.</li>
+</ol>
+<h2 id="tensorflow-0x-era-2015---2017">TensorFlow 0.x era (2015 - 2017)<a hidden class="anchor" aria-hidden="true" href="#tensorflow-0x-era-2015---2017">#</a></h2>
+<p>Source code: <a href="https://github.com/tensorflow/tensorflow/releases/tag/0.12.1">https://github.com/tensorflow/tensorflow/releases/tag/0.12.1</a></p>
+<p>The user programming interface for the TensorFlow 0.x era, later known as TensorFlow Core, is based on Python and consists mainly of:</p>
+<ul>
+<li><code>tf.placeholder</code>: used to define placeholders, which are used to represent the dimension and type of input data, but do not contain specific data.</li>
+<li><code>tf.Variable</code>: used to define variables, which are used to represent model parameters and contain concrete data.</li>
+<li><code>tf.Session</code>: used to execute the computation graph, map nodes in the computation graph to specific devices, and perform computations.</li>
+</ul>
+<h3 id="code-example">Code example<a hidden class="anchor" aria-hidden="true" href="#code-example">#</a></h3>
+<p>A classic linear regression model can be represented in TensorFlow 0.x code as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</span></span><span class="line"><span class="cl"><span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">InteractiveSession</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define the model inputs</span>
+</span></span><span class="line"><span class="cl"><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">784</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="n">y_</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define the model parameters</span>
+</span></span><span class="line"><span class="cl"><span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">784</span><span class="p">,</span><span class="mi">10</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl"><span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">10</span><span class="p">]))</span>
+</span></span><span class="line"><span class="cl"><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span> <span class="c1"># initialize model parameters</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Calculate the predicted values</span>
+</span></span><span class="line"><span class="cl"><span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span> <span class="c1"># network design, here is a linear model, y = Wx + b, W and b are model parameters, x is model input, y is model output</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define the loss function</span>
+</span></span><span class="line"><span class="cl"><span class="n">cross_entropy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_</span><span class="p">))</span> <span class="c1"># cross entropy loss function</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Define the optimizer</span>
+</span></span><span class="line"><span class="cl"><span class="n">train_step</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">cross_entropy</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Train the model</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">  <span class="n">batch</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">next_batch</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">train_step</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">batch</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_</span><span class="p">:</span> <span class="n">batch</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+</span></span></code></pre></div><h2 id="tensorflow-1x-era-2017---2019">TensorFlow 1.x Era (2017 - 2019)<a hidden class="anchor" aria-hidden="true" href="#tensorflow-1x-era-2017---2019">#</a></h2>
+<p>In terms of working principles, the TensorFlow 1.x era is designed along the same lines as the TensorFlow 0.x era. However, in terms of the user programming interface, there are several significant changes in the design thinking of the TensorFlow 1.x era from that of the TensorFlow 0.x era:</p>
+<ul>
+<li>In the TensorFlow 1.x era, in addition to continuing to use the original approach to graph construction (the tf.placeholder approach), TensorFlow strongly recommends the use of estimator, a programming paradigm. The estimator has been around since version 0.x, but it was only in version 1.x that it really took off.</li>
+<li>During the TensorFlow 1.x era, support for the Keras interface was introduced, which was originally a standalone machine learning framework that supported a variety of backends, including TensorFlow, Theano, and CNTK. The interface was designed to be easy to use, and with a wealth of documentation and examples, Keras grew to become one of the most popular machine learning frameworks of its time. Keras was later acquired by Google and became part of TensorFlow. Keras evolved in the direction of TensorFlow, dropping support for other backends, and eventually becoming part of TensorFlow in the TensorFlow 1.x era.</li>
+<li>Eager Execution was a major change in the TensorFlow 1.x era. It was primarily designed to solve the problem of separating computational graph construction from computational graph execution in TensorFlow 0.x and 1.x. The main competitor of TensorFlow at that time was TensorFlow. PyTorch, TensorFlow&rsquo;s main competitor at the time, had the ability to build and execute graphs at the same time, which gave PyTorch a huge advantage in development efficiency, and Eager Execution was designed to solve this problem. The Eager Execution pattern does not change the underlying implementation of TensorFlow, but rather makes TensorFlow&rsquo;s user programming interface look like PyTorch&rsquo;s user programming interface through syntactic sugar. Since Eager Execution is not based on a true dynamic computation graph, in practice, in some cases, Eager Execution can exhibit behavior that is difficult to understand.</li>
+</ul>
+<h3 id="estimator-code-example">Estimator code example<a hidden class="anchor" aria-hidden="true" href="#estimator-code-example">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow.feature_column</span> <span class="k">as</span> <span class="nn">fc</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">my_model_fn</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">  <span class="n">features</span><span class="p">,</span> <span class="c1"># This is batch_features from input_fn</span>
+</span></span><span class="line"><span class="cl">  <span class="n">labels</span><span class="p">,</span> <span class="c1"># This is batch_labels from input_fn</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mode</span><span class="p">,</span> <span class="c1"># An instance of tf.estimator.ModeKeys</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ModeKeys</span><span class="p">):</span> <span class="c1"># Additional configuration</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">x</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s2">&#34;x&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">logits</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># Generate predictions (for predict and eval mode)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">predictions</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;classes&#34;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">logits</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;probabilities&#34;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&#34;softmax_tensor&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># if in prediction mode, return result and exit</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">tf</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">ModeKeys</span><span class="o">.</span><span class="n">PREDICT</span><span class="p">:</span> <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">EstimatorSpec</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">predictions</span><span class="o">=</span><span class="n">predictions</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">sparse_softmax_cross_entropy</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">logits</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># if in training mode, return result and exit</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">tf</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">ModeKeys</span><span class="o">.</span><span class="n">TRAIN</span><span class="o">.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">train_op</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="n">global_step</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">get_global_step</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">EstimatorSpec</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">train_op</span><span class="o">=</span><span class="n">train_op</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1"># if in evaluation mode, return result and exit</span>
+</span></span><span class="line"><span class="cl">  <span class="n">eval_metric_ops</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;accuracy&#34;</span><span class="p">:</span> <span class="n">tf</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">          <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">predictions</span><span class="o">=</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&#34;classes&#34;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">estimator</span><span class="o">.</span><span class="n">EstimatorSpec</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">eval_metric_ops</span><span class="o">=</span><span class="n">eval_metric_ops</span><span class="p">)</span>
+</span></span></code></pre></div><h3 id="keras-code-example">Keras code example<a hidden class="anchor" aria-hidden="true" href="#keras-code-example">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">tensorflow</span> <span class="kn">import</span> <span class="n">keras</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">fashion_mnist</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">fashion_mnist</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">),</span> <span class="p">(</span><span class="n">test_images</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span> <span class="o">=</span> <span class="n">fashion_mnist</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">Sequential</span><span class="p">([</span>
+</span></span><span class="line"><span class="cl">    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(</span><span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;sparse_categorical_crossentropy&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_images</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">test_images</span><span class="p">,</span> <span class="n">test_labels</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_images</span><span class="p">)</span>
+</span></span></code></pre></div><h3 id="eager-execution-code-example">Eager Execution code example<a hidden class="anchor" aria-hidden="true" href="#eager-execution-code-example">#</a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">tensorflow.contrib.eager</span> <span class="k">as</span> <span class="nn">tfe</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">tfe</span><span class="o">.</span><span class="n">enable_eager_execution</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">x</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl"><span class="n">m</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># The 1x1 matrix [[4.]]</span>
+</span></span></code></pre></div><h2 id="tensorflow-2x-era-2019---now">TensorFlow 2.x Era (2019 - Now)<a hidden class="anchor" aria-hidden="true" href="#tensorflow-2x-era-2019---now">#</a></h2>
+<p>The user programming interface in the TensorFlow 2.x era has not changed significantly from the user programming interface in the TensorFlow 1.x era. There are just a few tweaks to the default settings, the main ones being:</p>
+<ul>
+<li>Use Eager Execution mode by default.</li>
+<li>The Keras interface is used by default.</li>
+</ul>
+<h2 id="jax-era-2020---now">JAX era (2020 - Now)<a hidden class="anchor" aria-hidden="true" href="#jax-era-2020---now">#</a></h2>
+<p>JAX is not a replacement or successor to TensorFlow, it&rsquo;s just another machine learning framework from Google with an underlying implementation that is consistent with that of the TensorFlow 2.x era. JAX attempts to use a new programming paradigm to solve the problems of TensorFlow that are less popular among researchers.</p>
+<p>The JAX era user programming interface has two major changes from the TensorFlow 2.x era design:</p>
+<ol>
+<li>the main target group of the JAX programming approach is researchers, while the main target group of TensorFlow 2.x is engineers. This counteracts the threat of PyTorch, whose main target group is also researchers.</li>
+<li>JAX tries to use a more advanced but relatively rare programming paradigm and tries to create a new programming paradigm, not a continuation of TensorFlow or PyTorch.</li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/">
+    <span class="title">Next »</span>
+    <br>
+    <span>The decoding process of ChatGPT and the various parameters in it</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Brief History of Tensorflow Programing Interface on twitter"
+        href="https://twitter.com/intent/tweet/?text=Brief%20History%20of%20Tensorflow%20Programing%20Interface&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fbrief-history-of-tensorflow-programing-interface%2f&amp;hashtags=">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Brief History of Tensorflow Programing Interface on linkedin"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fbrief-history-of-tensorflow-programing-interface%2f&amp;title=Brief%20History%20of%20Tensorflow%20Programing%20Interface&amp;summary=Brief%20History%20of%20Tensorflow%20Programing%20Interface&amp;source=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fbrief-history-of-tensorflow-programing-interface%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Brief History of Tensorflow Programing Interface on reddit"
+        href="https://reddit.com/submit?url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fbrief-history-of-tensorflow-programing-interface%2f&title=Brief%20History%20of%20Tensorflow%20Programing%20Interface">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Brief History of Tensorflow Programing Interface on facebook"
+        href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fbrief-history-of-tensorflow-programing-interface%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Brief History of Tensorflow Programing Interface on whatsapp"
+        href="https://api.whatsapp.com/send?text=Brief%20History%20of%20Tensorflow%20Programing%20Interface%20-%20https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fbrief-history-of-tensorflow-programing-interface%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="share Brief History of Tensorflow Programing Interface on telegram"
+        href="https://telegram.me/share/url?text=Brief%20History%20of%20Tensorflow%20Programing%20Interface&amp;url=https%3a%2f%2fblog.xiaoquankong.ai%2fposts%2fbrief-history-of-tensorflow-programing-interface%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28" height="30px" width="30px" fill="currentColor">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2023 <a href="https://blog.xiaoquankong.ai/">Xiaoquan Kong&#39;s Blog</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

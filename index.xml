@@ -5,13 +5,23 @@
     <link>https://blog.xiaoquankong.ai/</link>
     <description>Recent content on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <title>Xiaoquan Kong&#39;s Blog</title>
       <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
       <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Mon, 07 Aug 2023 22:10:08 +0800</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Aug 2023 07:43:05 +0800</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Brief History of Tensorflow Programing Interface</title>
+      <link>https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</link>
+      <pubDate>Wed, 09 Aug 2023 07:43:05 +0800</pubDate>
+      
+      <guid>https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</guid>
+      <description>TL;DR TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader&amp;rsquo;s understanding of TensorFlow&amp;rsquo;s design thinking at different stages.
+Notes:
+By user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow.</description>
+    </item>
+    
     <item>
       <title>The decoding process of ChatGPT and the various parameters in it</title>
       <link>https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</link>
