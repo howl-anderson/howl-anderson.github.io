@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Categories on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://blog.xiaoquankong.ai/categories/</link>
+    <link>https://xiaoquankong.ai/categories/</link>
     <description>Recent content in Categories on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 17 Aug 2017 14:50:24 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 17 Aug 2017 14:50:24 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>TensorFlow</title>
-      <link>https://blog.xiaoquankong.ai/categories/tensorflow/</link>
+      <link>https://xiaoquankong.ai/categories/tensorflow/</link>
       <pubDate>Thu, 17 Aug 2017 14:50:24 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/categories/tensorflow/</guid>
+      <guid>https://xiaoquankong.ai/categories/tensorflow/</guid>
       <description></description>
     </item>
     
     <item>
       <title>time-series-database</title>
-      <link>https://blog.xiaoquankong.ai/categories/time-series-database/</link>
+      <link>https://xiaoquankong.ai/categories/time-series-database/</link>
       <pubDate>Wed, 05 Oct 2016 18:49:49 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/categories/time-series-database/</guid>
+      <guid>https://xiaoquankong.ai/categories/time-series-database/</guid>
       <description></description>
     </item>
     

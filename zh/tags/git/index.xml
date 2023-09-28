@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Git on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://blog.xiaoquankong.ai/zh/tags/git/</link>
+    <link>https://xiaoquankong.ai/zh/tags/git/</link>
     <description>Recent content in Git on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Sun, 13 Aug 2017 12:38:08 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Aug 2017 12:38:08 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/zh/tags/git/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Git Flow开发模型</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-git-flow/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-git-flow/</link>
       <pubDate>Sun, 13 Aug 2017 12:38:08 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-git-flow/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-git-flow/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Git Flow是一种得到广泛认可的模型，通过确定分支的实际用途（master/develop/feature等），达到团队共同认知认可全部开发过程效果。&lt;/p&gt;</description>
     </item>
     

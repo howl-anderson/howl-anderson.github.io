@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Posts on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://blog.xiaoquankong.ai/zh/posts/</link>
+    <link>https://xiaoquankong.ai/zh/posts/</link>
     <description>Recent content in Posts on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Wed, 09 Aug 2023 07:42:59 +0800</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Aug 2023 07:42:59 +0800</lastBuildDate><atom:link href="https://xiaoquankong.ai/zh/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>TensorFlow 用户编程接口演化简史</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/</link>
+      <link>https://xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/</link>
       <pubDate>Wed, 09 Aug 2023 07:42:59 +0800</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/</guid>
       <description>TL;DR TensorFlow 从 2015 年发布至今，用户编程接口经历了几次重大演化，本文将对这几次演化进行简要介绍，并讨论其背后的动机，方便读者理解 TensorFlow 在不同阶段的设计思路。
 注解：
 这里所说的用户编程接口，是指 TensorFlow 提供给用户的编程接口，而不是指 TensorFlow 的内部编程接口。 我们讨论的 TensorFlow 是一个泛义的概念，包括 TensorFlow 和 JAX 等基于相同底层的同样来自 Google 的机器学习框架。 TensorFlow 0.x 时代（2015 - 2017） 源代码：https://github.com/tensorflow/tensorflow/releases/tag/0.12.1
@@ -27,10 +27,10 @@ import tensorflow as tf sess = tf.InteractiveSession() # 定义模型输入 x = 
     
     <item>
       <title>ChatGPT 的解码过程和其中的各种参数</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</link>
+      <link>https://xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</link>
       <pubDate>Mon, 07 Aug 2023 22:10:18 +0800</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</guid>
       <description>TL:DR OpenAI 的 ChatGPT 在其官方文档（https://platform.openai.com/docs/api-reference/chat/create）中给出了各种参数的范围和含义。我们将讨论 ChatGPT 的生成过程和这些参数是如何实现其生成的效果的。
 ChatGPT 的解码过程 我们假设 minGPT （等同于 GPT-2） 和 ChatGPT 拥有一样的解码过程：https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#LL283C12-L283C12 。
 总体过程可以概括为以下几个步骤：
@@ -40,209 +40,209 @@ temperature number Optional Defaults to 1</description>
     
     <item>
       <title>使用 Rasa 构建天气查询机器人</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</link>
+      <link>https://xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</link>
       <pubDate>Sun, 09 Sep 2018 11:08:04 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</guid>
       <description>&lt;p&gt;本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Rasa NLU 的 pipeline 和 component</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</link>
+      <link>https://xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</link>
       <pubDate>Sat, 08 Sep 2018 19:41:52 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</guid>
       <description>&lt;p&gt;本文将详细介绍 Rasa NLU 的 pipeline 和 component，介绍其原理和如何使用。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>构建中文分词器 - 隐马尔科夫模型</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/implementing-a-hmm-based-chinese-tokenizer/</link>
+      <link>https://xiaoquankong.ai/zh/posts/implementing-a-hmm-based-chinese-tokenizer/</link>
       <pubDate>Mon, 20 Aug 2018 16:19:38 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/implementing-a-hmm-based-chinese-tokenizer/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/implementing-a-hmm-based-chinese-tokenizer/</guid>
       <description>&lt;p&gt;利用 隐马尔科夫模型（HMM） 的解码能力，能从一个观察序列（字符串序列）解码成另一个隐藏状态序列（分词符号序列）。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>构建中文分词器 - 双向最大匹配法</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-bidirectional-matching-method/</link>
+      <link>https://xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-bidirectional-matching-method/</link>
       <pubDate>Tue, 14 Aug 2018 11:41:17 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-bidirectional-matching-method/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-bidirectional-matching-method/</guid>
       <description>&lt;p&gt;结合 &lt;code&gt;正向最大匹配法&lt;/code&gt; 和 &lt;code&gt;反向最大匹配法&lt;/code&gt; 的优点，按照一定的规则选择其中表现最优秀的结果作为 &lt;code&gt;双向最大匹配法&lt;/code&gt; 的结果。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>「盤古之白」</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/chinese-document-typesetting-specification-spacing-of-pangu/</link>
+      <link>https://xiaoquankong.ai/zh/posts/chinese-document-typesetting-specification-spacing-of-pangu/</link>
       <pubDate>Wed, 24 Jan 2018 02:56:26 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/chinese-document-typesetting-specification-spacing-of-pangu/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/chinese-document-typesetting-specification-spacing-of-pangu/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 中文文案排版指南&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Chinese Spelling Check Task: 资料汇总</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/chinese-spelling-check-task-related-materials/</link>
+      <link>https://xiaoquankong.ai/zh/posts/chinese-spelling-check-task-related-materials/</link>
       <pubDate>Tue, 16 Jan 2018 18:24:24 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/chinese-spelling-check-task-related-materials/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/chinese-spelling-check-task-related-materials/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 一些关于 Chinese Spelling Check Task 比较重要的会议和资料的整理和汇总。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>TenserFlow 新特性：Eager Execution</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/</link>
       <pubDate>Sat, 23 Dec 2017 21:16:51 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-eager-execution-of-tensorflow/</guid>
       <description>&lt;!-- TODO: https://github.com/hexojs/hexo/issues/2150 caused can not use GitHub badge --&gt;
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 在即将发布（本文章写于 2018-01-06）的 TenserFlow v1.5 中，TensorFlow将会引入一个重要的 User-friendly 特性：Eager Execution. 本文章将展示 Eager Execution 引入的一些新的特性。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Reinforcement Learning: 初次交手，多多指教</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/</link>
       <pubDate>Fri, 24 Nov 2017 14:46:15 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-reinforcement-leanring/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 图形游戏（比如坦克大战）如果要实现智能Agent（AKA 电脑玩家）的话，目前最佳的方案就是Reinforcement Learning (简称 RL ;中文：增强学习)。 本文记录了我和Reinforcement Learning的第一次交手，将带你了解这位名扬四海却又神秘莫测的对手。:)&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Python bisect模块的妙用</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</link>
       <pubDate>Fri, 17 Nov 2017 18:57:39 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>理解LSTM的工作原理</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/quickly-understand-lstm/</link>
+      <link>https://xiaoquankong.ai/zh/posts/quickly-understand-lstm/</link>
       <pubDate>Thu, 16 Nov 2017 21:45:58 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/quickly-understand-lstm/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/quickly-understand-lstm/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL:DR&lt;/strong&gt; 本文属于入门级课程101，用图文并茂的方式详细的介绍了LSTM的工作原理。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>机器学习相关的理论资料汇总</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/machine-learning-related-materials/</link>
+      <link>https://xiaoquankong.ai/zh/posts/machine-learning-related-materials/</link>
       <pubDate>Mon, 13 Nov 2017 11:53:40 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/machine-learning-related-materials/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/machine-learning-related-materials/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文章收集了一些机器学习相关的理论方面的入门级的资料，适合初学者作为入门课程101。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>神经网络里的激活函数</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/activiation-functions-in-neural-networks/</link>
+      <link>https://xiaoquankong.ai/zh/posts/activiation-functions-in-neural-networks/</link>
       <pubDate>Thu, 09 Nov 2017 23:31:52 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/activiation-functions-in-neural-networks/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/activiation-functions-in-neural-networks/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文将介绍神经网络中常用的几种激活函数的特性和使用场合。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python中requirements.txt的编码问题</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</link>
+      <link>https://xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</link>
       <pubDate>Thu, 09 Nov 2017 17:10:26 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; requirements.txt中不要使用非ASCII编码的字符，否则会造成字符集错误，无法解析内容&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>使用chatterbot构建自己的中文chat(闲聊)机器人</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</link>
+      <link>https://xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</link>
       <pubDate>Thu, 09 Nov 2017 15:05:54 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文使用开源框架chatterbot从零开始构建你自己的聊天机器人（还带有WEB界面奥～）。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>再见wordpress,你好hexo</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/bye-wordpress-and-hello-hexo/</link>
+      <link>https://xiaoquankong.ai/zh/posts/bye-wordpress-and-hello-hexo/</link>
       <pubDate>Wed, 08 Nov 2017 20:40:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/bye-wordpress-and-hello-hexo/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/bye-wordpress-and-hello-hexo/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 弃坑wordpress，走向hexo&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>map函数与相似函数在python2和python3中的不同</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/the-difference-of-map-function-in-python-2-and-python-3/</link>
+      <link>https://xiaoquankong.ai/zh/posts/the-difference-of-map-function-in-python-2-and-python-3/</link>
       <pubDate>Sat, 09 Sep 2017 06:53:03 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/the-difference-of-map-function-in-python-2-and-python-3/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/the-difference-of-map-function-in-python-2-and-python-3/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; map函数及其类似函数在python2和python3下表现差异很大，py2下返回list，而py3下返回迭代器。解决办法是使用list函数显式求值。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>TensorBoard的embedding卡在Loading metadata的解决方案</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</link>
+      <link>https://xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</link>
       <pubDate>Thu, 17 Aug 2017 14:22:15 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 指定&lt;code&gt;metadata_path&lt;/code&gt;时，使用相对路径会造成tensorboard找不到文件。解决办法：使用绝对路径&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Python描述器</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-descriptor/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-python-descriptor/</link>
       <pubDate>Sun, 13 Aug 2017 13:26:42 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-descriptor/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-python-descriptor/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Descriptor是Python实现streagy模式的一种变形，它将属性的访问／修改／删除委托给了Descriptor。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Python函数默认参数的问题</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/default-arguments-in-python-function/</link>
+      <link>https://xiaoquankong.ai/zh/posts/default-arguments-in-python-function/</link>
       <pubDate>Sun, 13 Aug 2017 13:22:12 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/default-arguments-in-python-function/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/default-arguments-in-python-function/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Python的默认参数实现机制很容易导致难以调试的bug。正确的使用方法是避免使用可变类型作为默认参数。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Python context manager 上下文管理器</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</link>
       <pubDate>Sun, 13 Aug 2017 13:18:22 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Git Flow开发模型</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-git-flow/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-git-flow/</link>
       <pubDate>Sun, 13 Aug 2017 12:38:08 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-git-flow/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-git-flow/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; Git Flow是一种得到广泛认可的模型，通过确定分支的实际用途（master/develop/feature等），达到团队共同认知认可全部开发过程效果。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>时间数据库Whisper的实现简介</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</link>
       <pubDate>Mon, 05 Dec 2016 11:56:37 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文从代码级别详细介绍了 Whisper 的实现和一些其中用到的编程技巧&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python iterator 遇到的一个坑</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</link>
+      <link>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</guid>
       <description>&lt;p&gt;在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
 &lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
 &lt;/a&gt;&lt;/p&gt;</description>
@@ -250,47 +250,47 @@ temperature number Optional Defaults to 1</description>
     
     <item>
       <title>python mock 遇到的一个坑</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</link>
+      <link>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</guid>
       <description>&lt;p&gt;修改一个项目的 Unit Test 代码时，遇到一个关于 &lt;code&gt;mock&lt;/code&gt; 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
 &lt;/a&gt;&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>构建中文分词器 - 反向最大匹配法</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-reverse-matching-method/</link>
+      <link>https://xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-reverse-matching-method/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-reverse-matching-method/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-reverse-matching-method/</guid>
       <description>&lt;p&gt;最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的右边到左边（反向）依次寻找最大匹配。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>构建中文分词器 - 有向无环图法</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/implementing-a-dag-based-chinese-tokenizer/</link>
+      <link>https://xiaoquankong.ai/zh/posts/implementing-a-dag-based-chinese-tokenizer/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/implementing-a-dag-based-chinese-tokenizer/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/implementing-a-dag-based-chinese-tokenizer/</guid>
       <description>&lt;p&gt;将所有可能的分词结果按照词语构建成一个有向无环图，寻找其中联合概率最大的路径。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>构建中文分词器 - 正向最大匹配法</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-forward-matching-method/</link>
+      <link>https://xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-forward-matching-method/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-forward-matching-method/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/creating-a-chinese-tokenizer-using-the-maximum-forward-matching-method/</guid>
       <description>&lt;p&gt;最大匹配每次寻找和确定最佳分词的时候按照最长（最大）匹配作为依据，从字符串的左边到右边（正向）依次寻找最大匹配。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>基于 OpenAI Gym 的 Q-Learning 算法演示</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</link>
+      <link>https://xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/demo-of-q-learning-in-openai-gym/</guid>
       <description>&lt;p&gt;&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/q_learning_demo/master?filepath=jupyter_notebooks%2Fproof-of-concept.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
 &lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 从零开始实现 Q-learning 算法，在 OpenAI Gym 的环境中演示：如何一步步实现增强学习。&lt;/p&gt;</description>

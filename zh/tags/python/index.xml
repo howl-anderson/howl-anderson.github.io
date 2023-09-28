@@ -2,57 +2,57 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>python on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://blog.xiaoquankong.ai/zh/tags/python/</link>
+    <link>https://xiaoquankong.ai/zh/tags/python/</link>
     <description>Recent content in python on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Fri, 17 Nov 2017 18:57:39 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 17 Nov 2017 18:57:39 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/zh/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Python bisect模块的妙用</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</link>
       <pubDate>Fri, 17 Nov 2017 18:57:39 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-python-bisect-module/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文将介绍Python bisect模块在某些场景下的妙用，可以高效和优雅的改善原有使用if-else才能解决问题。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python中requirements.txt的编码问题</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</link>
+      <link>https://xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</link>
       <pubDate>Thu, 09 Nov 2017 17:10:26 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/encoding-issue-in-python-requirements/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; requirements.txt中不要使用非ASCII编码的字符，否则会造成字符集错误，无法解析内容&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Python context manager 上下文管理器</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</link>
       <pubDate>Sun, 13 Aug 2017 13:18:22 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-context-manager-in-python/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 上下文管理器通过控制代码块级别的上下文，可以实现的很多诸如自动关闭文件、捕获异常等功能&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>时间数据库Whisper的实现简介</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</link>
+      <link>https://xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</link>
       <pubDate>Mon, 05 Dec 2016 11:56:37 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文从代码级别详细介绍了 Whisper 的实现和一些其中用到的编程技巧&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>python iterator 遇到的一个坑</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</link>
+      <link>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-iterator/</guid>
       <description>&lt;p&gt;在使用 Python 的 iterator 时，遇到一个很愚蠢的错误，浪费的很多时间才找到原因。特此记录一下，提醒自己，提示他人。
 &lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-iterator-%E9%81%87%E5%88%B0%E7%9A%84%E4%B8%80%E4%B8%AA%E5%9D%91%2Fproof-of-concept.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
 &lt;/a&gt;&lt;/p&gt;</description>
@@ -60,10 +60,10 @@
     
     <item>
       <title>python mock 遇到的一个坑</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</link>
+      <link>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/a-pitfall-of-python-mock-module/</guid>
       <description>&lt;p&gt;修改一个项目的 Unit Test 代码时，遇到一个关于 &lt;code&gt;mock&lt;/code&gt; 的问题点，花了我很久时间才，找到解决方案。特此记录一下，提醒自己，提示他人。&lt;a href=&#34;https://mybinder.org/v2/gh/howl-anderson/howl-anderson.github.io/master?filepath=python-mock-%25E9%2581%2587%25E5%2588%25B0%25E7%259A%2584%25E4%25B8%2580%25E4%25B8%25AA%25E5%259D%2591%2Fmain.py.ipynb&#34;&gt;&lt;img loading=&#34;lazy&#34; src=&#34;https://mybinder.org/badge.svg&#34; alt=&#34;Binder&#34;  /&gt;
 &lt;/a&gt;&lt;/p&gt;</description>
     </item>

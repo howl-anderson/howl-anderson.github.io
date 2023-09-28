@@ -2,147 +2,147 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</loc>
+    <loc>https://xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</loc>
     <lastmod>2023-08-09T07:43:05+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/"
+                href="https://xiaoquankong.ai/zh/posts/brief-history-of-tensorflow-programing-interface/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/"
+                href="https://xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/posts/</loc>
+    <loc>https://xiaoquankong.ai/posts/</loc>
     <lastmod>2023-08-09T07:43:05+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/posts/"
+                href="https://xiaoquankong.ai/zh/posts/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/posts/"
+                href="https://xiaoquankong.ai/posts/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/</loc>
+    <loc>https://xiaoquankong.ai/</loc>
     <lastmod>2023-08-09T07:43:05+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/"
+                href="https://xiaoquankong.ai/zh/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/"
+                href="https://xiaoquankong.ai/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</loc>
+    <loc>https://xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</loc>
     <lastmod>2023-08-07T22:10:08+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/"
+                href="https://xiaoquankong.ai/zh/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/"
+                href="https://xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/categories/</loc>
+    <loc>https://xiaoquankong.ai/categories/</loc>
     <lastmod>2017-08-17T14:50:24+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/categories/"
+                href="https://xiaoquankong.ai/zh/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/categories/"
+                href="https://xiaoquankong.ai/categories/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</loc>
+    <loc>https://xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</loc>
     <lastmod>2017-08-17T14:50:24+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/"
+                href="https://xiaoquankong.ai/zh/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/"
+                href="https://xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/categories/tensorflow/</loc>
+    <loc>https://xiaoquankong.ai/categories/tensorflow/</loc>
     <lastmod>2017-08-17T14:50:24+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/categories/tensorflow/"
+                href="https://xiaoquankong.ai/zh/categories/tensorflow/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/categories/tensorflow/"
+                href="https://xiaoquankong.ai/categories/tensorflow/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</loc>
+    <loc>https://xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</loc>
     <lastmod>2016-10-05T18:49:49+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/"
+                href="https://xiaoquankong.ai/zh/posts/introduce-to-the-implement-of-whisper/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/"
+                href="https://xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/categories/time-series-database/</loc>
+    <loc>https://xiaoquankong.ai/categories/time-series-database/</loc>
     <lastmod>2016-10-05T18:49:49+00:00</lastmod>
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/archives/</loc>
+    <loc>https://xiaoquankong.ai/archives/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/archives/"
+                href="https://xiaoquankong.ai/zh/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/archives/"
+                href="https://xiaoquankong.ai/archives/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/series/</loc>
+    <loc>https://xiaoquankong.ai/series/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/series/"
+                href="https://xiaoquankong.ai/zh/series/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/series/"
+                href="https://xiaoquankong.ai/series/"
                 />
   </url><url>
-    <loc>https://blog.xiaoquankong.ai/tags/</loc>
+    <loc>https://xiaoquankong.ai/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://blog.xiaoquankong.ai/zh/tags/"
+                href="https://xiaoquankong.ai/zh/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://blog.xiaoquankong.ai/tags/"
+                href="https://xiaoquankong.ai/tags/"
                 />
   </url>
 </urlset>

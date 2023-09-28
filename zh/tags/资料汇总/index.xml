@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>资料汇总 on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://blog.xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/</link>
+    <link>https://xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/</link>
     <description>Recent content in 资料汇总 on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Mon, 13 Nov 2017 11:53:40 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 13 Nov 2017 11:53:40 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>机器学习相关的理论资料汇总</title>
-      <link>https://blog.xiaoquankong.ai/zh/posts/machine-learning-related-materials/</link>
+      <link>https://xiaoquankong.ai/zh/posts/machine-learning-related-materials/</link>
       <pubDate>Mon, 13 Nov 2017 11:53:40 +0000</pubDate>
       
-      <guid>https://blog.xiaoquankong.ai/zh/posts/machine-learning-related-materials/</guid>
+      <guid>https://xiaoquankong.ai/zh/posts/machine-learning-related-materials/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文章收集了一些机器学习相关的理论方面的入门级的资料，适合初学者作为入门课程101。&lt;/p&gt;</description>
     </item>
     
