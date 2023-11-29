@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>time-series-database on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://xiaoquankong.ai/categories/time-series-database/</link>
+    <link>https://blog.xiaoquankong.ai/categories/time-series-database/</link>
     <description>Recent content in time-series-database on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 Oct 2016 18:49:49 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/categories/time-series-database/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 05 Oct 2016 18:49:49 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/categories/time-series-database/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Introduce to the implement of Whisper: the time-serial database</title>
-      <link>https://xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</link>
+      <link>https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</link>
       <pubDate>Wed, 05 Oct 2016 18:49:49 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</guid>
+      <guid>https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; This article show how Whisper work and some Linux programming tricks it used.&lt;/p&gt;</description>
     </item>
     

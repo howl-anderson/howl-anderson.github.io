@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Rasa on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://xiaoquankong.ai/zh/tags/rasa/</link>
+    <link>https://blog.xiaoquankong.ai/zh/tags/rasa/</link>
     <description>Recent content in Rasa on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Sun, 09 Sep 2018 11:08:04 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/zh/tags/rasa/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 09 Sep 2018 11:08:04 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/rasa/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>使用 Rasa 构建天气查询机器人</title>
-      <link>https://xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</link>
+      <link>https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</link>
       <pubDate>Sun, 09 Sep 2018 11:08:04 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/posts/creating-a-weather-query-bot-using-rasa/</guid>
       <description>&lt;p&gt;本文将介绍如何使用 Rasa NLU 和 Rasa Core 来构建一个简单的带 Web UI 界面的中文天气情况问询机器人(chatbot)。&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Rasa NLU 的 pipeline 和 component</title>
-      <link>https://xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</link>
+      <link>https://blog.xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</link>
       <pubDate>Sat, 08 Sep 2018 19:41:52 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/posts/pipeline-and-components-in-rasa-nlu/</guid>
       <description>&lt;p&gt;本文将详细介绍 Rasa NLU 的 pipeline 和 component，介绍其原理和如何使用。&lt;/p&gt;</description>
     </item>
     

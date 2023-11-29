@@ -2,210 +2,210 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Tags on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://xiaoquankong.ai/zh/tags/</link>
+    <link>https://blog.xiaoquankong.ai/zh/tags/</link>
     <description>Recent content in Tags on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Sun, 09 Sep 2018 11:08:04 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/zh/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 09 Sep 2018 11:08:04 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Rasa</title>
-      <link>https://xiaoquankong.ai/zh/tags/rasa/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/rasa/</link>
       <pubDate>Sun, 09 Sep 2018 11:08:04 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/rasa/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/rasa/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Rasa Core</title>
-      <link>https://xiaoquankong.ai/zh/tags/rasa-core/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/rasa-core/</link>
       <pubDate>Sun, 09 Sep 2018 11:08:04 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/rasa-core/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/rasa-core/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Rasa NLU</title>
-      <link>https://xiaoquankong.ai/zh/tags/rasa-nlu/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/rasa-nlu/</link>
       <pubDate>Sun, 09 Sep 2018 11:08:04 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/rasa-nlu/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/rasa-nlu/</guid>
       <description></description>
     </item>
     
     <item>
       <title>中文分词器</title>
-      <link>https://xiaoquankong.ai/zh/tags/%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8/</link>
       <pubDate>Mon, 20 Aug 2018 16:19:38 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/%E4%B8%AD%E6%96%87%E5%88%86%E8%AF%8D%E5%99%A8/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reinforcement_Learning</title>
-      <link>https://xiaoquankong.ai/zh/tags/reinforcement_learning/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/reinforcement_learning/</link>
       <pubDate>Fri, 24 Nov 2017 14:46:15 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/reinforcement_learning/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/reinforcement_learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>机器学习</title>
-      <link>https://xiaoquankong.ai/zh/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
       <pubDate>Fri, 24 Nov 2017 14:46:15 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</guid>
       <description></description>
     </item>
     
     <item>
       <title>坦克大战</title>
-      <link>https://xiaoquankong.ai/zh/tags/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98/</link>
       <pubDate>Fri, 24 Nov 2017 14:46:15 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/%E5%9D%A6%E5%85%8B%E5%A4%A7%E6%88%98/</guid>
       <description></description>
     </item>
     
     <item>
       <title>python</title>
-      <link>https://xiaoquankong.ai/zh/tags/python/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/python/</link>
       <pubDate>Fri, 17 Nov 2017 18:57:39 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/python/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/python/</guid>
       <description></description>
     </item>
     
     <item>
       <title>LSTM</title>
-      <link>https://xiaoquankong.ai/zh/tags/lstm/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/lstm/</link>
       <pubDate>Thu, 16 Nov 2017 21:45:58 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/lstm/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/lstm/</guid>
       <description></description>
     </item>
     
     <item>
       <title>神经网络</title>
-      <link>https://xiaoquankong.ai/zh/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</link>
       <pubDate>Thu, 16 Nov 2017 21:45:58 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/</guid>
       <description></description>
     </item>
     
     <item>
       <title>资料汇总</title>
-      <link>https://xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/</link>
       <pubDate>Mon, 13 Nov 2017 11:53:40 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/%E8%B5%84%E6%96%99%E6%B1%87%E6%80%BB/</guid>
       <description></description>
     </item>
     
     <item>
       <title>激活函数</title>
-      <link>https://xiaoquankong.ai/zh/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/</link>
       <pubDate>Thu, 09 Nov 2017 23:31:52 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/</guid>
       <description></description>
     </item>
     
     <item>
       <title>NLU</title>
-      <link>https://xiaoquankong.ai/zh/tags/nlu/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/nlu/</link>
       <pubDate>Thu, 09 Nov 2017 15:05:54 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/nlu/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/nlu/</guid>
       <description></description>
     </item>
     
     <item>
       <title>TensorFlow</title>
-      <link>https://xiaoquankong.ai/zh/tags/tensorflow/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/tensorflow/</link>
       <pubDate>Thu, 17 Aug 2017 14:22:15 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/tensorflow/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/tensorflow/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Git</title>
-      <link>https://xiaoquankong.ai/zh/tags/git/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/git/</link>
       <pubDate>Sun, 13 Aug 2017 12:38:08 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/git/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/git/</guid>
       <description></description>
     </item>
     
     <item>
       <title>时间序列数据库</title>
-      <link>https://xiaoquankong.ai/zh/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
       <pubDate>Mon, 05 Dec 2016 11:56:37 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93/</guid>
       <description></description>
     </item>
     
     <item>
       <title>iterable</title>
-      <link>https://xiaoquankong.ai/zh/tags/iterable/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/iterable/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/iterable/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/iterable/</guid>
       <description></description>
     </item>
     
     <item>
       <title>iterator</title>
-      <link>https://xiaoquankong.ai/zh/tags/iterator/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/iterator/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/iterator/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/iterator/</guid>
       <description></description>
     </item>
     
     <item>
       <title>mock</title>
-      <link>https://xiaoquankong.ai/zh/tags/mock/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/mock/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/mock/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/mock/</guid>
       <description></description>
     </item>
     
     <item>
       <title>OpenAI Gym</title>
-      <link>https://xiaoquankong.ai/zh/tags/openai-gym/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/openai-gym/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/openai-gym/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/openai-gym/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Q-Learning</title>
-      <link>https://xiaoquankong.ai/zh/tags/q-learning/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/q-learning/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/q-learning/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/q-learning/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Reinforcement Learning</title>
-      <link>https://xiaoquankong.ai/zh/tags/reinforcement-learning/</link>
+      <link>https://blog.xiaoquankong.ai/zh/tags/reinforcement-learning/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/tags/reinforcement-learning/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/tags/reinforcement-learning/</guid>
       <description></description>
     </item>
     

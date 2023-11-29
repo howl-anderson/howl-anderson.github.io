@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Xiaoquan Kong&#39;s Blog</title>
-    <link>https://xiaoquankong.ai/</link>
+    <link>https://blog.xiaoquankong.ai/</link>
     <description>Recent content on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 09 Aug 2023 07:43:05 +0800</lastBuildDate><atom:link href="https://xiaoquankong.ai/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Aug 2023 07:43:05 +0800</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Brief History of Tensorflow Programing Interface</title>
-      <link>https://xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</link>
+      <link>https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</link>
       <pubDate>Wed, 09 Aug 2023 07:43:05 +0800</pubDate>
       
-      <guid>https://xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</guid>
+      <guid>https://blog.xiaoquankong.ai/posts/brief-history-of-tensorflow-programing-interface/</guid>
       <description>TL;DR TensorFlow has gone through several major evolutions of the user programming interface since its release in 2015, and this article will provide a brief introduction to these evolutions and discuss the motivations behind them, so as to facilitate the reader&amp;rsquo;s understanding of TensorFlow&amp;rsquo;s design thinking at different stages.
 Notes:
 By user programming interface, we mean the programming interface that TensorFlow provides to users, not the internal programming interface of TensorFlow.</description>
@@ -24,10 +24,10 @@ By user programming interface, we mean the programming interface that TensorFlow
     
     <item>
       <title>The decoding process of ChatGPT and the various parameters in it</title>
-      <link>https://xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</link>
+      <link>https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</link>
       <pubDate>Mon, 07 Aug 2023 22:10:08 +0800</pubDate>
       
-      <guid>https://xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</guid>
+      <guid>https://blog.xiaoquankong.ai/posts/the-decoding-process-of-chatgpt-and-the-various-parameters-in-it/</guid>
       <description>TL;DR OpenAI&amp;rsquo;s ChatGPT provides the range and meaning of various parameters in its official documentation (https://platform.openai.com/docs/api-reference/chat/create). We will discuss ChatGPT&amp;rsquo;s generation process and how these parameters implement its generation effects.
 ChatGPT&amp;rsquo;s Decoding Process We assume minGPT (equivalent to GPT-2) and ChatGPT have the same decoding process: https://github.com/karpathy/minGPT/blob/master/mingpt/model.py#LL283C12-L283C12.
 The overall process can be summarized as the following steps:
@@ -36,19 +36,19 @@ Expand the user&amp;rsquo;s request from 1 to a batch size of num_samples Perfor
     
     <item>
       <title>Solution for TensorBoard embedding blocked when loading metadata</title>
-      <link>https://xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</link>
+      <link>https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</link>
       <pubDate>Thu, 17 Aug 2017 14:50:24 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</guid>
+      <guid>https://blog.xiaoquankong.ai/posts/solution-for-tensorboard-embedding-blocked-when-loading-metadata/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; using relative path as &lt;code&gt;metadata_path&lt;/code&gt; to &lt;code&gt;projector&lt;/code&gt; will cause TensorBoard cannot find metadata. The correct way is use FQPN (fully-qualified path name, aka absolute path)&lt;/p&gt;</description>
     </item>
     
     <item>
       <title>Introduce to the implement of Whisper: the time-serial database</title>
-      <link>https://xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</link>
+      <link>https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</link>
       <pubDate>Wed, 05 Oct 2016 18:49:49 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</guid>
+      <guid>https://blog.xiaoquankong.ai/posts/introduce-to-the-implement-of-whisper/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; This article show how Whisper work and some Linux programming tricks it used.&lt;/p&gt;</description>
     </item>
     

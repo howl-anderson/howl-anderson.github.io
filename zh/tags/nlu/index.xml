@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>NLU on Xiaoquan Kong&#39;s Blog</title>
-    <link>https://xiaoquankong.ai/zh/tags/nlu/</link>
+    <link>https://blog.xiaoquankong.ai/zh/tags/nlu/</link>
     <description>Recent content in NLU on Xiaoquan Kong&#39;s Blog</description>
     <image>
-      <url>https://xiaoquankong.ai/papermod-cover.png</url>
-      <link>https://xiaoquankong.ai/papermod-cover.png</link>
+      <url>https://blog.xiaoquankong.ai/papermod-cover.png</url>
+      <link>https://blog.xiaoquankong.ai/papermod-cover.png</link>
     </image>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Thu, 09 Nov 2017 15:05:54 +0000</lastBuildDate><atom:link href="https://xiaoquankong.ai/zh/tags/nlu/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Nov 2017 15:05:54 +0000</lastBuildDate><atom:link href="https://blog.xiaoquankong.ai/zh/tags/nlu/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>使用chatterbot构建自己的中文chat(闲聊)机器人</title>
-      <link>https://xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</link>
+      <link>https://blog.xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</link>
       <pubDate>Thu, 09 Nov 2017 15:05:54 +0000</pubDate>
       
-      <guid>https://xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</guid>
+      <guid>https://blog.xiaoquankong.ai/zh/posts/building-your-own-chitbot-using-chatterbot/</guid>
       <description>&lt;p&gt;&lt;strong&gt;TL;DR&lt;/strong&gt; 本文使用开源框架chatterbot从零开始构建你自己的聊天机器人（还带有WEB界面奥～）。&lt;/p&gt;</description>
     </item>
     
